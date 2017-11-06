@@ -40,7 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data.cs" />
+    <Compile Include="DataFile.cs" />
+    <Compile Include="DataFiles\TAE.cs" />
+    <Compile Include="DataTypes\TAE\Animation.cs" />
+    <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
+    <Compile Include="DataTypes\TAE\AnimationEventParam.cs" />
+    <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
