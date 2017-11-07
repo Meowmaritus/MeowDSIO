@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MeowDSIO.DataTypes.TAE;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace MeowDSIO.DataFiles
 {
@@ -16,8 +17,11 @@ namespace MeowDSIO.DataFiles
         public class TAEHeader
         {
             //"TAE "
+            [JsonConverter(typeof(Json.ByteArrayConverter))]
             public byte[] Signature { get; set; } = { 0x54, 0x41, 0x45, 0x20 };
+
             //Sample taken from Artorias (c4100.tae)
+            [JsonConverter(typeof(Json.ByteArrayConverter))]
             public byte[] MagicBytes { get; set; } =
             { 
                 0x40, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
@@ -33,7 +37,11 @@ namespace MeowDSIO.DataFiles
             //Value samples below taken from Artorias (c4100.tae)
             public int Unk1 { get; set; } = 0;
             public int Unk2 { get; set; } = 65547;
+
+            [JsonConverter(typeof(Json.ByteArrayConverter))]
             public byte[] Unk3 { get; set; } = { 0x90, 0, 0, 0 };
+
+            [JsonConverter(typeof(Json.ByteArrayConverter))]
             public byte[] Unk4 { get; set; } =
             {
                 0x00, 0x00, 0x00, 0x00,
@@ -50,12 +58,12 @@ namespace MeowDSIO.DataFiles
             
             public int ID { get; set; } = 204100;
         }
-        
+
         public TAEHeader Header { get; set; }
         public string SkeletonName { get; set; }
         public string SibName { get; set; }
-        public Dictionary<int, Animation> Animations { get; set; }
-        public List<AnimationGroup> AnimationGroups { get; set; }
+        public Dictionary<int, Animation> Animations { get; set; } = new Dictionary<int, Animation>();
+        public List<AnimationGroup> AnimationGroups { get; set; } = new List<AnimationGroup>();
 
         private Animation LoadAnimationFromOffset(DSBinaryReader bin, int offset, int animID_ForDebug)
         {
@@ -97,7 +105,16 @@ namespace MeowDSIO.DataFiles
 
                     for (int j = 0; j < nextEvent.Parameters.Length; j++)
                     {
-                        nextEvent.Parameters[j] = bin.ReadInt32();
+                        var nextParamVal = new AnimationEventParam() { Int = bin.ReadInt32() };
+
+                        if (AnimationEvent.CheckIfParamIsUnlikelyToBeFloat(nextParamVal))
+                        {
+                            nextEvent.Parameters[j] = nextParamVal.Int.ToString();
+                        }
+                        else
+                        {
+                            nextEvent.Parameters[j] = nextParamVal.Float.ToString() + "F";
+                        }
                     }
 
                     anim.Events.Add(nextEvent);
@@ -413,9 +430,16 @@ namespace MeowDSIO.DataFiles
                         //Note: the logic for the length of a particular event param array is handled 
                         //      in the read function as well as in the AnimationEvent class itself.
 
-                        for (int i = 0; i < e.Parameters.Length; i++)
+                        foreach (var p in e.Parameters.Select(x => x.ToUpper()))
                         {
-                            bin.Write(e.Parameters[i].Int);
+                            if (p.EndsWith("F") || p.Contains(".") || p.Contains(","))
+                            {
+                                bin.Write(float.Parse(p.Replace("F", "")));
+                            }
+                            else
+                            {
+                                bin.Write(int.Parse(p));
+                            }
                         }
                     }
 
