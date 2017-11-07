@@ -8,6 +8,8 @@ namespace MeowDSIO
 {
     public abstract class Data
     {
-        internal uint Offset;
+        //Placeholder I guess
+
+        //internal uint Offset;
     }
 }

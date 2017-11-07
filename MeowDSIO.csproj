@@ -47,8 +47,15 @@
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
     <Compile Include="DataTypes\TAE\AnimationEventParam.cs" />
     <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
+    <Compile Include="DSBinaryReader.cs" />
+    <Compile Include="DSBinaryWriter.cs" />
+    <Compile Include="LoadAbortedException.cs" />
+    <Compile Include="MiscUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EmbResMan.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="EmbeddedResource\TAE\AnimationEventParamDefs.h" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

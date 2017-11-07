@@ -9,18 +9,27 @@ namespace MeowDSIO
 {
     public abstract class DataFile
     {
-        protected abstract void Read(BinaryReader bin);
-        protected abstract void Write(BinaryWriter bin);
+        protected abstract void Read(DSBinaryReader bin);
+        protected abstract void Write(DSBinaryWriter bin);
 
         public static T LoadFromFile<T>(string filePath)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.Open))
             {
-                using (var binaryReader = new BinaryReader(fileStream))
+                using (var binaryReader = new DSBinaryReader(fileStream))
                 {
                     T result = new T();
-                    result.Read(binaryReader);
+
+                    try
+                    {
+                        result.Read(binaryReader);
+                    }
+                    catch (LoadAbortedException)
+                    {
+                        throw new LoadAbortedException(filePath);
+                    }
+                    
                     return result;
                 }
             }
@@ -31,7 +40,8 @@ namespace MeowDSIO
         {
             using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))
             {
-                using (var binaryWriter = new BinaryWriter(fileStream))
+                fileStream.SetLength(0);
+                using (var binaryWriter = new DSBinaryWriter(fileStream))
                 {
                     data.Write(binaryWriter);
                 }
