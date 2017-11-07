@@ -113,7 +113,8 @@ namespace MeowDSIO.DataFiles
                         }
                         else
                         {
-                            nextEvent.Parameters[j] = nextParamVal.Float.ToString() + "F";
+                            string convStr = nextParamVal.Float.ToString();
+                            nextEvent.Parameters[j] = convStr + (convStr.Contains(".") ? "" : ".0");
                         }
                     }
 

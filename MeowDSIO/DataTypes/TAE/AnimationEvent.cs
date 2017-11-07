@@ -70,6 +70,7 @@ namespace MeowDSIO.DataTypes.TAE
         public float EndTime { get; set; } = 0;
         private AnimationEventType _type;
         [JsonProperty(Order = -2)]
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AnimationEventType Type
         {
             get => _type;
