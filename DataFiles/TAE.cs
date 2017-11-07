@@ -190,11 +190,8 @@ namespace MeowDSIO.DataFiles
             //Animation IDs
             var animCount = bin.ReadInt32();
             int OFF_AnimID = bin.ReadInt32();
-            int animIdsReturnLoc = (int)bin.BaseStream.Position;
-            Animations = new Dictionary<int, Animation>();
+            bin.DoAt(OFF_AnimID, () =>
             {
-                bin.BaseStream.Seek(OFF_AnimID, SeekOrigin.Begin);
-
                 for (int i = 0; i < animCount; i++)
                 {
                     var animID = bin.ReadInt32();
@@ -204,17 +201,12 @@ namespace MeowDSIO.DataFiles
 
                     Animations.Add(animID, anim);
                 }
-
-                bin.BaseStream.Seek(animIdsReturnLoc, SeekOrigin.Begin);
-            }
+            });
 
             //Anim Groups
             int OFF_AnimGroups = bin.ReadInt32();
-            int animGroupsReturnLoc = (int)bin.BaseStream.Position;
-            AnimationGroups = new List<AnimationGroup>();
+            bin.DoAt(OFF_AnimGroups, () =>
             {
-                bin.BaseStream.Seek(OFF_AnimGroups, SeekOrigin.Begin);
-
                 int animGroupCount = bin.ReadInt32();
                 int actualAnimGroupsOffset = bin.ReadInt32();
 
@@ -229,9 +221,7 @@ namespace MeowDSIO.DataFiles
 
                     AnimationGroups.Add(nextAnimGroup);
                 }
-
-                bin.BaseStream.Seek(animGroupsReturnLoc, SeekOrigin.Begin);
-            }
+            });
 
             Header.Unk3 = bin.ReadBytes(4);
             //We already found the animation count and offsets from the anim ids earlier
