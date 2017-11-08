@@ -89,6 +89,7 @@ namespace MeowDSIO.DataTypes.TAE
         {
             _type = newEventType;
             Array.Resize(ref _parameters, GetParamCount(newEventType, -1));
+            _parameters = _parameters.Select(x => x ?? "0").ToArray();
         }
 
         private string[] _parameters;
