@@ -78,12 +78,12 @@ namespace MeowTAE
                 }
                 else if (action == "tae2json" || action == "json2tae")
                 {
-                    var inputFileName = args[1];
+                    var inputFileName = new FileInfo(args[1]).FullName;
                     var outputFileName = "";
 
                     if (args.Length >= 3)
                     {
-                        outputFileName = args[2];
+                        outputFileName = new FileInfo(args[2]).FullName;
                     }
                     else
                     {
