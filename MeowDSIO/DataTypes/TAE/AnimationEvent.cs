@@ -122,8 +122,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.Type5: return 2;
                 case AnimationEventType.Type8: return 14;
                 case AnimationEventType.Type16: return 4;
-                //case AnimationEventType.Type20: return 6;
-                //case AnimationEventType.Type21: return 6;
+                
                 case AnimationEventType.Type24: return 6;
                 case AnimationEventType.Type32: return 1;
                 case AnimationEventType.Type33: return 1;
@@ -132,12 +131,12 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.Type66: return 1;
                 case AnimationEventType.SpEffect: return 3;
                 case AnimationEventType.FootParticles: return 3;
-                //case AnimationEventType.Type99: return 5;
+                
                 case AnimationEventType.Particles: return 3;
                 case AnimationEventType.Type101: return 1;
-                //case AnimationEventType.Type102: return 6;
+                
                 case AnimationEventType.Type104: return 5;
-                //case AnimationEventType.Type108: return 6;
+
                 case AnimationEventType.ParticlesB: return 3;
                 case AnimationEventType.Type110: return 3;
                 case AnimationEventType.ParticlesLarge: return 2;
@@ -153,6 +152,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.Rotate: return 4;
                 case AnimationEventType.ScreenShake: return 3;
                 case AnimationEventType.ScreenShakeB: return 3;
+
                 case AnimationEventType.Invisibility: return 2;
                 case AnimationEventType.Type224: return 1;
                 case AnimationEventType.Type225: return 1;
@@ -171,6 +171,21 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.PlayerWeaponHitbox: return 5;
                 case AnimationEventType.Type308: return 1;
                 case AnimationEventType.Type401: return 1;
+
+                //case AnimationEventType.Type20: return 6;
+                //case AnimationEventType.Type21: return 6;
+                //case AnimationEventType.Type99: return 5;
+                //case AnimationEventType.Type102: return 6;
+                //case AnimationEventType.Type108: return 6;
+                //case AnimationEventType.Type108: return 6;
+                //case AnimationEventType.Type160: return 6;
+                ////case AnimationEventType.Type161: return ??;
+                //case AnimationEventType.Type162: return 6;
+                //case AnimationEventType.Type176: return 10;
+                //case AnimationEventType.Type180: return 6;
+                //case AnimationEventType.Type181: return 6;
+                //case AnimationEventType.Type182: return 6;
+                //case AnimationEventType.Type196: return ;
             }
             Console.Error.WriteLine($"[ANIM {animID_ForDebug}] Animation Event Type {type} does not have a param data " + 
                 $"array length specified in {nameof(AnimationEvent)}.{nameof(GetParamCount)}().");
