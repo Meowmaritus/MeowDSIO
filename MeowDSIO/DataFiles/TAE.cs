@@ -162,10 +162,27 @@ namespace MeowDSIO.DataFiles
                     $"(ASCII: '{Encoding.ASCII.GetString(fileSignature)}')");
             }
 
-            Header.Unk1 = bin.ReadInt32();
-            Header.Unk2 = bin.ReadInt32();
+            Header.UnknownB = bin.ReadInt32();
+            Header.UnknownC = bin.ReadInt32();
             var fileSize = bin.ReadInt32();
-            Header.MagicBytes = bin.ReadBytes(64);
+
+            Header.UnknownA00 = bin.ReadUInt32();
+            Header.UnknownA01 = bin.ReadUInt32();
+            Header.UnknownA02 = bin.ReadUInt32();
+            Header.UnknownA03 = bin.ReadUInt32();
+            Header.UnknownA04 = bin.ReadUInt32();
+            Header.UnknownA05 = bin.ReadUInt32();
+            Header.UnknownA06 = bin.ReadUInt32();
+            Header.UnknownA07 = bin.ReadUInt32();
+            Header.UnknownA08 = bin.ReadUInt32();
+            Header.UnknownA09 = bin.ReadUInt32();
+            Header.UnknownA10 = bin.ReadUInt32();
+            Header.UnknownA11 = bin.ReadUInt32();
+            Header.UnknownA12 = bin.ReadUInt32();
+            Header.UnknownA13 = bin.ReadUInt32();
+            Header.UnknownA14 = bin.ReadUInt32();
+            Header.UnknownA15 = bin.ReadUInt32();
+
             Header.ID = bin.ReadInt32();
             
             //Animation IDs
@@ -177,9 +194,7 @@ namespace MeowDSIO.DataFiles
                 {
                     var animID = bin.ReadInt32();
                     var animOffset = bin.ReadInt32();
-
                     var anim = LoadAnimationFromOffset(bin, animOffset, animID);
-
                     var animRef = new AnimationRef() { ID = animID, Anim = anim };
 
                     Animations.Add(animRef);
@@ -206,7 +221,7 @@ namespace MeowDSIO.DataFiles
                 }
             });
 
-            Header.Unk3 = bin.ReadBytes(4);
+            Header.UnknownD = bin.ReadInt32();
             //We already found the animation count and offsets from the anim ids earlier
             int _animCount = bin.ReadInt32();
             int _animOffset = bin.ReadInt32();
@@ -215,7 +230,16 @@ namespace MeowDSIO.DataFiles
                 throw new Exception($"Animation IDs count [{Animations.Count}] is different than Animations count [{_animCount}]!");
             }
 
-            Header.Unk4 = bin.ReadBytes(40);
+            Header.UnknownE00 = bin.ReadUInt32();
+            Header.UnknownE01 = bin.ReadUInt32();
+            Header.UnknownE02 = bin.ReadUInt32();
+            Header.UnknownE03 = bin.ReadUInt32();
+            Header.UnknownE04 = bin.ReadUInt32();
+            Header.UnknownE05 = bin.ReadUInt32();
+            Header.UnknownE06 = bin.ReadUInt32();
+            Header.UnknownE07 = bin.ReadUInt32();
+            Header.UnknownE08 = bin.ReadUInt32();
+            Header.UnknownE09 = bin.ReadUInt32();
 
             int filenamesOffset = bin.ReadInt32();
             bin.BaseStream.Seek(filenamesOffset, SeekOrigin.Begin);
@@ -460,18 +484,45 @@ namespace MeowDSIO.DataFiles
             bin.Seek(0, SeekOrigin.Begin);
 
             bin.Write(Header.Signature);
-            bin.Write(Header.Unk1);
-            bin.Write(Header.Unk2);
+            bin.Write(Header.UnknownB);
+            bin.Write(Header.UnknownC);
             bin.Write((int)bin.BaseStream.Length); //File length
-            bin.Write(Header.MagicBytes);
+
+            bin.Write(Header.UnknownA00);
+            bin.Write(Header.UnknownA01);
+            bin.Write(Header.UnknownA02);
+            bin.Write(Header.UnknownA03);
+            bin.Write(Header.UnknownA04);
+            bin.Write(Header.UnknownA05);
+            bin.Write(Header.UnknownA06);
+            bin.Write(Header.UnknownA07);
+            bin.Write(Header.UnknownA08);
+            bin.Write(Header.UnknownA09);
+            bin.Write(Header.UnknownA10);
+            bin.Write(Header.UnknownA11);
+            bin.Write(Header.UnknownA12);
+            bin.Write(Header.UnknownA13);
+            bin.Write(Header.UnknownA14);
+            bin.Write(Header.UnknownA15);
+
             bin.Write(Header.ID);
             bin.Write(Animations.Count); //Technically the animation ID count
             bin.Write(OFF_AnimationIDs);
             bin.Write(OFF_AnimationGroups);
-            bin.Write(Header.Unk3);
+            bin.Write(Header.UnknownD);
             bin.Write(Animations.Count); //Techically the animation count
             bin.Write(OFF_Animations);
-            bin.Write(Header.Unk4);
+
+            bin.Write(Header.UnknownE00);
+            bin.Write(Header.UnknownE01);
+            bin.Write(Header.UnknownE02);
+            bin.Write(Header.UnknownE03);
+            bin.Write(Header.UnknownE04);
+            bin.Write(Header.UnknownE05);
+            bin.Write(Header.UnknownE06);
+            bin.Write(Header.UnknownE07);
+            bin.Write(Header.UnknownE08);
+            bin.Write(Header.UnknownE09);
 
             //Here would be the value at the very beginning of this method!
 
