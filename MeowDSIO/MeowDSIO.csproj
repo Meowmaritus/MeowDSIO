@@ -53,6 +53,7 @@
     <Compile Include="DataTypes\TAE\Animation.cs" />
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
     <Compile Include="DataTypes\TAE\AnimationEventParameter.cs" />
+    <Compile Include="DataTypes\TAE\TAEHeader.cs" />
     <Compile Include="MultiDword.cs" />
     <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
     <Compile Include="DataTypes\TAE\AnimationRef.cs" />
