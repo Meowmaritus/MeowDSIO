@@ -1,0 +1,94 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MeowTaeEditorGui"
+        xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock" 
+        xmlns:customTheme="clr-namespace:Xceed.Wpf.AvalonDock.Themes;assembly=Xceed.Wpf.AvalonDock.Themes.Metro"
+        x:Class="MeowTaeEditorGui.MainWindow"
+        mc:Ignorable="d"
+        Title="Meow's Dark Souls TimeAct Event Editor GUI" Width="1000" Height="512"
+        Icon="Resources/AshenEstus.ico" Background="#FF444444">
+
+    <Window.Resources>
+        <BitmapImage x:Key="AutoCompleteField" UriSource="Resources/AutoComplete/FieldIcon.png"/>
+        <BitmapImage x:Key="AutoCompleteLua" UriSource="Resources/AutoComplete/LuaIcon.png"/>
+        <BitmapImage x:Key="AutoCompleteMethod" UriSource="Resources/AutoComplete/MethodIcon.png"/>
+        <BitmapImage x:Key="AutoCompleteType" UriSource="Resources/AutoComplete/TypeIcon.png"/>
+        <BitmapImage x:Key="AutoCompleteEstus" UriSource="Resources/AutoComplete/EstusIcon.png"/>
+        <BitmapImage x:Key="IconScriptRunning" UriSource="Resources/ScriptRunning.png"/>
+        <BitmapImage x:Key="IconScriptNotRunning" UriSource="Resources/ScriptNotRunning.png"/>
+    </Window.Resources>
+    <Grid x:Name="MainGrid">
+        <!--<TextBlock>
+            <RichTextBox>
+                <RichTextBox.for
+            </RichTextBox>
+        </TextBlock>-->
+        <!--<Label Content="TEST" Padding="0" />-->
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="gridRowMenuStrip" Height="24"/>
+            <RowDefinition x:Name="rowToolStrip" Height="32"/>
+            <RowDefinition x:Name="rowAvalonDockManager"/>
+            <RowDefinition x:Name="rowStatusStrip" Height="20"/>
+        </Grid.RowDefinitions>
+        <Menu x:Name="menuStrip" Grid.Row="0" Padding="0">
+            <MenuItem Header="File">
+                <MenuItem
+                    x:Name="MenuNew" 
+                    Header="New" 
+                    Click="MenuNew_Click"
+                    IsEnabled="True"
+                    />
+                <MenuItem 
+                    x:Name="MenuOpen" 
+                    Header="Open..." 
+                    Click="MenuOpen_Click"
+                    />
+                <Separator/>
+                <MenuItem 
+                    x:Name="MenuSave" 
+                    Header="Save" 
+                    Click="MenuSave_Click"
+                    />
+                <MenuItem 
+                    x:Name="MenuSaveAs" 
+                    Header="Save As..." 
+                    Click="MenuSaveAs_Click"
+                    />
+                <MenuItem 
+                    x:Name="MenuSaveAll" 
+                    Header="Save All" 
+                    Click="MenuSaveAll_Click"
+                    />
+                <Separator/>
+                <MenuItem 
+                    x:Name="MenuExit" 
+                    Header="Exit" 
+                    Click="MenuExit_Click"
+                    />
+            </MenuItem>
+            <MenuItem Header="Help" IsHitTestVisible="False" OpacityMask="#3F000000">
+
+            </MenuItem>
+        </Menu>
+        <local:SeToolbar x:Name="seToolbar" Grid.Row="1"/>
+        <!--<TabControl Name="NewTabs" Grid.Row="2">
+            <TabControl.Items>
+                <local:LuaScriptTabContainer 
+                            x:Name="MainLuaContainer"/>
+            </TabControl.Items>
+        </TabControl>-->
+        <local:SeTabControl x:Name="MainSeTabControl" Grid.Row="2" Style="{StaticResource StandardTabControl}"/>
+        <!--<avalonDock:DockingManager x:Name="dockingManager" Grid.Row="2">
+            <avalonDock:LayoutRoot>
+                <avalonDock:LayoutPanel x:Name="adMainLayoutPanel" Orientation="Vertical">
+                    <avalonDock:LayoutDocumentPaneGroup>
+                        
+                    </avalonDock:LayoutDocumentPaneGroup>
+                </avalonDock:LayoutPanel>
+            </avalonDock:LayoutRoot>
+        </avalonDock:DockingManager>-->
+    </Grid>
+</Window>

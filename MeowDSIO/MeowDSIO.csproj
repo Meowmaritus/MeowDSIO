@@ -37,6 +37,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,8 +52,11 @@
     <Compile Include="DataFiles\TAE.cs" />
     <Compile Include="DataTypes\TAE\Animation.cs" />
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
-    <Compile Include="DataTypes\TAE\AnimationEventParam.cs" />
+    <Compile Include="DataTypes\TAE\AnimationEventParameter.cs" />
+    <Compile Include="MultiDword.cs" />
     <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
+    <Compile Include="DataTypes\TAE\AnimationRef.cs" />
+    <Compile Include="DSBinaryExtensions.cs" />
     <Compile Include="DSBinaryReader.cs" />
     <Compile Include="DSBinaryWriter.cs" />
     <Compile Include="Json\StringArrayConverter.cs" />
@@ -67,5 +72,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

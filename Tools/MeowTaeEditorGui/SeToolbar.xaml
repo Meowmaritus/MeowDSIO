@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="MeowTaeEditorGui.SeToolbar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MeowTaeEditorGui"
+             mc:Ignorable="d" 
+             d:DesignHeight="32" d:DesignWidth="256"
+             UseLayoutRounding="True" Background="#FF1E1E1E">
+    <UserControl.Resources>
+        <BitmapImage x:Key="NewDocIcon" 
+                     UriSource="Resources/Toolbar/NewDocIcon.png"/>
+        <BitmapImage x:Key="OpenFileIcon" 
+                     UriSource="Resources/Toolbar/OpenFileIcon.png" />
+        <BitmapImage x:Key="SaveAllFilesIcon" 
+                     UriSource="Resources/Toolbar/SaveAllFilesIcon.png" />
+        <BitmapImage x:Key="SaveFileIcon" 
+                     UriSource="Resources/Toolbar/SaveFileIcon.png" />
+        <BitmapImage x:Key="NewDocIcon_Opacity" 
+                     UriSource="Resources/Toolbar/Opacity/NewDocIcon.png"/>
+        <BitmapImage x:Key="OpenFileIcon_Opacity" 
+                     UriSource="Resources/Toolbar/Opacity/OpenFileIcon.png" />
+        <BitmapImage x:Key="SaveAllFilesIcon_Opacity" 
+                     UriSource="Resources/Toolbar/Opacity/SaveAllFilesIcon.png" />
+        <BitmapImage x:Key="SaveFileIcon_Opacity" 
+                     UriSource="Resources/Toolbar/Opacity/SaveFileIcon.png" />
+        <BitmapImage x:Key="StartIcon_Opacity" 
+                     UriSource="Resources/Toolbar/Opacity/StartIcon.png" />
+        <BitmapImage x:Key="StopIcon_Opacity" 
+                     UriSource="Resources/Toolbar/Opacity/StopIcon.png" />
+    </UserControl.Resources>
+    <Grid x:Name="grid" Background="#FF1E1E1E">
+        <DockPanel LastChildFill="False">
+            <Button x:Name="ButtonNewDoc" Click="ButtonClick" Height="24" Width="24" Margin="2,2,2,2" BorderBrush="Transparent"
+                    ToolTip="New File">
+                <Button.Content>
+                    <Image Source="{StaticResource NewDocIcon}" Stretch="Fill" Width="16" Height="16"/>
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonOpenFile" Click="ButtonClick" Height="24" Width="24" Margin="2,2,2,2" BorderBrush="Transparent"
+                    ToolTip="Open File">
+                <Button.Content>
+                    <Image Source="{StaticResource OpenFileIcon}" Stretch="Fill" Width="16" Height="16" />
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonSaveFile" Click="ButtonClick" Height="24" Width="24" Margin="2,2,2,2" BorderBrush="Transparent"
+                    ToolTip="Save File">
+                <Button.Content>
+                    <Image Source="{StaticResource SaveFileIcon}" Stretch="Fill" Width="16" Height="16" />
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonSaveAllFiles" Click="ButtonClick" Height="24" Width="24" Margin="2,2,2,2" BorderBrush="Transparent"
+                    ToolTip="Save All Files">
+                <Button.Content>
+                    <Image Source="{StaticResource SaveAllFilesIcon}" Stretch="Fill" Height="16" Width="16" />
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonSaveAs" Click="ButtonClick" Height="24" Width="24" Margin="2,2,2,2" BorderBrush="Transparent"
+                    ToolTip="Save All Files" Visibility="Collapsed">
+                <Button.Content>
+                    <Image Source="{StaticResource SaveFileIcon}" Stretch="Fill" Height="16" Width="16" />
+                </Button.Content>
+            </Button>
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeowDSIO.DataTypes.TAE
+namespace MeowDSIO
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct AnimationEventParam
+    public struct MultiDword
     {
         [FieldOffset(0)]
         private float floatVal;
@@ -17,10 +17,10 @@ namespace MeowDSIO.DataTypes.TAE
         [FieldOffset(0)]
         private int intVal;
 
-        public static implicit operator AnimationEventParam(int a) => new AnimationEventParam() { Int = a };
-        public static implicit operator AnimationEventParam(float a) => new AnimationEventParam() { Float = a };
-        public static implicit operator int(AnimationEventParam a) => a.Int;
-        public static implicit operator float(AnimationEventParam a) => a.Float;
+        public static implicit operator MultiDword(int a) => new MultiDword() { Int = a };
+        public static implicit operator MultiDword(float a) => new MultiDword() { Float = a };
+        public static implicit operator int(MultiDword a) => a.Int;
+        public static implicit operator float(MultiDword a) => a.Float;
 
         public float Float
         {

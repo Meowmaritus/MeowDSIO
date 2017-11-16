@@ -11,7 +11,13 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public enum AnimationEventType
     {
-        PlayAnimation = 0, 
+        /*
+        int propertyType, int unk1, int unk2
+
+        Known parameter usages:
+        (8, 0, -1) = Invulnerability (used for rolls etc)
+         */
+        ApplySpecialProperty = 0,
         Hitbox   = 1, 
         Type2   = 2, 
         Type5   = 5,
@@ -23,8 +29,8 @@ namespace MeowDSIO.DataTypes.TAE
         Type33  = 33,
         Type64 = 64,
         Type65 = 65,
-        Type66  = 66,
-        SpEffect = 67,
+        SpEffect  = 66, //int spEffectID
+        SpEffectB = 67,
         FootParticles  = 96,
         Particles = 100,
         Type101 = 101,
@@ -44,7 +50,7 @@ namespace MeowDSIO.DataTypes.TAE
         Rotate = 130,
         ScreenShake = 144,
         ScreenShakeB = 145,
-        Invisibility = 193,
+        FadeOpacity = 193, //float targetOpacity, float fadeDuration
         Type224 = 224,
         Type225 = 225,
         Type226 = 226,
@@ -66,6 +72,10 @@ namespace MeowDSIO.DataTypes.TAE
 
     public class AnimationEvent : Data
     {
+        [JsonIgnore]
+        public int DisplayIndex { get; set; }
+
+
         public float StartTime { get; set; } = 0;
         public float EndTime { get; set; } = 0;
         private AnimationEventType _type;
@@ -89,16 +99,43 @@ namespace MeowDSIO.DataTypes.TAE
         {
             _type = newEventType;
             Array.Resize(ref _parameters, GetParamCount(newEventType, -1));
-            _parameters = _parameters.Select(x => x ?? "0").ToArray();
+            _parameters = _parameters.Select(x => new AnimationEventParameter() { Value = x?.Value ?? "0", Name = x?.Name ?? "?TaeParamName?" }).ToArray();
         }
 
-        private string[] _parameters;
+        private AnimationEventParameter[] _parameters;
 
         [JsonProperty(Order = -2)]
         [JsonConverter(typeof(Json.StringArrayConverter))]
-        public string[] Parameters { get => _parameters; private set => _parameters = value; }
+        public IList<AnimationEventParameter> Parameters { get => _parameters; set => _parameters = value.ToArray(); }
 
-        public static bool CheckIfParamIsUnlikelyToBeFloat(AnimationEventParam paramVal)
+        public string Parameters_SingleString
+        {
+            get
+            {
+                return string.Join(",", Parameters.Select(x => x.Value));
+            }
+            set
+            {
+                var splitParams = value.Split(',');
+                for (int i = 0; i < Parameters.Count; i++)
+                {
+                    if (i < splitParams.Length)
+                    {
+                        Parameters[i].Value = splitParams[i];
+                    }
+                }
+            }
+        }
+
+        public string TypeString
+        {
+            get => Type.ToString();
+            set => Type = (AnimationEventType)Enum.Parse(typeof(AnimationEventType), value);
+        }
+
+        public int ParamCount => Parameters.Count;
+
+        public static bool CheckIfParamIsUnlikelyToBeFloat(MultiDword paramVal)
         {
             return (float.IsInfinity(paramVal.Float) 
                 || float.IsNaN(paramVal.Float)
@@ -106,17 +143,28 @@ namespace MeowDSIO.DataTypes.TAE
                 || paramVal.Float < 0.00001);
         }
 
-        public AnimationEvent(AnimationEventType type, int animID_ForDebug)
+        public AnimationEvent(int dispIndex, AnimationEventType type, int animID_ForDebug)
         {
+            DisplayIndex = dispIndex;
             _type = type;
-            Parameters = new string[GetParamCount(type, animID_ForDebug)];
+            _parameters = new AnimationEventParameter[GetParamCount(type, animID_ForDebug)];
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                Parameters[i] = new AnimationEventParameter();
+            }
+        }
+
+        public AnimationEvent()
+            : this(0, AnimationEventType.ApplySpecialProperty, 0)
+        {
+
         }
 
         private static int GetParamCount(AnimationEventType type, int animID_ForDebug)
         {
             switch (type)
             {
-                case AnimationEventType.PlayAnimation: return 3;
+                case AnimationEventType.ApplySpecialProperty: return 3;
                 case AnimationEventType.Hitbox: return 3;
                 case AnimationEventType.Type2: return 4;
                 case AnimationEventType.Type5: return 2;
@@ -128,8 +176,8 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.Type33: return 1;
                 case AnimationEventType.Type64: return 4;
                 case AnimationEventType.Type65: return 2;
-                case AnimationEventType.Type66: return 1;
-                case AnimationEventType.SpEffect: return 3;
+                case AnimationEventType.SpEffect: return 1;
+                case AnimationEventType.SpEffectB: return 3;
                 case AnimationEventType.FootParticles: return 3;
                 
                 case AnimationEventType.Particles: return 3;
@@ -153,7 +201,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.ScreenShake: return 3;
                 case AnimationEventType.ScreenShakeB: return 3;
 
-                case AnimationEventType.Invisibility: return 2;
+                case AnimationEventType.FadeOpacity: return 2;
                 case AnimationEventType.Type224: return 1;
                 case AnimationEventType.Type225: return 1;
                 case AnimationEventType.Type226: return 1;

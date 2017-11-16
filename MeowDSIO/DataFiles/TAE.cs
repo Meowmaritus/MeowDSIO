@@ -59,17 +59,26 @@ namespace MeowDSIO.DataFiles
             public int ID { get; set; } = 204100;
         }
 
+        public IEnumerable<int> AnimationIDs => Animations.Select(x => x.ID);
+
+        public void UpdateAnimGroupIndices()
+        {
+            for (int i = 0; i < AnimationGroups.Count; i++)
+            {
+                AnimationGroups[i].DisplayIndex = i + 1;
+            }
+        }
+
         public TAEHeader Header { get; set; }
         public string SkeletonName { get; set; }
         public string SibName { get; set; }
-        public Dictionary<int, Animation> Animations { get; set; } = new Dictionary<int, Animation>();
+        public List<AnimationRef> Animations { get; set; } = new List<AnimationRef>();
         public List<AnimationGroup> AnimationGroups { get; set; } = new List<AnimationGroup>();
 
         private Animation LoadAnimationFromOffset(DSBinaryReader bin, int offset, int animID_ForDebug)
         {
             int oldOffset = (int)bin.BaseStream.Position;
             bin.BaseStream.Seek(offset, SeekOrigin.Begin);
-
             var anim = new Animation();
 
             try
@@ -98,23 +107,23 @@ namespace MeowDSIO.DataFiles
                     bin.BaseStream.Seek(eventParamOffset, SeekOrigin.Begin);
 
                     AnimationEventType eventType = (AnimationEventType)eventTypeValue;
-                    var nextEvent = new AnimationEvent((AnimationEventType)eventType, animID_ForDebug);
+                    var nextEvent = new AnimationEvent(i + 1, eventType, animID_ForDebug);
 
                     nextEvent.StartTime = startTime;
                     nextEvent.EndTime = endTime;
 
-                    for (int j = 0; j < nextEvent.Parameters.Length; j++)
+                    for (int j = 0; j < nextEvent.Parameters.Count; j++)
                     {
-                        var nextParamVal = new AnimationEventParam() { Int = bin.ReadInt32() };
+                        var nextParamVal = new MultiDword() { Int = bin.ReadInt32() };
 
                         if (AnimationEvent.CheckIfParamIsUnlikelyToBeFloat(nextParamVal))
                         {
-                            nextEvent.Parameters[j] = nextParamVal.Int.ToString();
+                            nextEvent.Parameters[j].Value = nextParamVal.Int.ToString();
                         }
                         else
                         {
                             string convStr = nextParamVal.Float.ToString();
-                            nextEvent.Parameters[j] = convStr + (convStr.Contains(".") ? "" : ".0");
+                            nextEvent.Parameters[j].Value = convStr + (convStr.Contains(".") ? "" : ".0");
                         }
                     }
 
@@ -217,7 +226,9 @@ namespace MeowDSIO.DataFiles
 
                     var anim = LoadAnimationFromOffset(bin, animOffset, animID);
 
-                    Animations.Add(animID, anim);
+                    var animRef = new AnimationRef() { ID = animID, Anim = anim };
+
+                    Animations.Add(animRef);
                 }
             });
 
@@ -232,7 +243,7 @@ namespace MeowDSIO.DataFiles
 
                 for (int i = 0; i < animGroupCount; i++)
                 {
-                    var nextAnimGroup = new AnimationGroup();
+                    var nextAnimGroup = new AnimationGroup(i + 1);
                     nextAnimGroup.FirstID = bin.ReadInt32();
                     nextAnimGroup.LastID = bin.ReadInt32();
                     var _firstIdOffset = bin.ReadInt32();
@@ -292,8 +303,8 @@ namespace MeowDSIO.DataFiles
             var animationIdOffsets = new Dictionary<int, int>(); //<animation ID, offset>
             foreach (var anim in Animations)
             {
-                animationIdOffsets.Add(anim.Key, (int)bin.BaseStream.Position);
-                bin.Write(anim.Key);
+                animationIdOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
+                bin.Write(anim.ID);
                 bin.Write(0xDEADD00D); //Pointer to animation will be inserted here.
             }
 
@@ -309,7 +320,7 @@ namespace MeowDSIO.DataFiles
 
                 if (!animationIdOffsets.ContainsKey(g.FirstID))
                     throw new Exception($"Animation group begins on an animation ID that isn't " + 
-                        $"present in {nameof(TAE)}.{nameof(Animations)} dictionary.");
+                        $"present in the list of animations.");
 
                 bin.Write(animationIdOffsets[g.FirstID]);
             }
@@ -320,22 +331,22 @@ namespace MeowDSIO.DataFiles
             var animationTimeConstantLists = new Dictionary<int, List<float>>(); //<animation ID, List<time constant>>
             foreach (var anim in Animations)
             {
-                animationOffsets.Add(anim.Key, (int)bin.BaseStream.Position);
-                bin.Write(anim.Value.Events.Count);
+                animationOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
+                bin.Write(anim.Anim.Events.Count);
                 bin.Write(0xDEADD00D); //PLACEHOLDER: animation event headers offset
                 //Println($"Wrote Anim{anim.Key} event header offset placeholder value (0xDEADD00D) at address {(bin.BaseStream.Position-4):X8}");
                 bin.Write(0); //Null 1
                 bin.Write(0); //Null 2
-                animationTimeConstantLists.Add(anim.Key, new List<float>());
+                animationTimeConstantLists.Add(anim.ID, new List<float>());
                 //Populate all of the time constants used:
-                foreach (var e in anim.Value.Events)
+                foreach (var e in anim.Anim.Events)
                 {
-                    if (!animationTimeConstantLists[anim.Key].Contains(e.StartTime))
-                        animationTimeConstantLists[anim.Key].Add(e.StartTime);
-                    if (!animationTimeConstantLists[anim.Key].Contains(e.EndTime))
-                        animationTimeConstantLists[anim.Key].Add(e.EndTime);
+                    if (!animationTimeConstantLists[anim.ID].Contains(e.StartTime))
+                        animationTimeConstantLists[anim.ID].Add(e.StartTime);
+                    if (!animationTimeConstantLists[anim.ID].Contains(e.EndTime))
+                        animationTimeConstantLists[anim.ID].Add(e.EndTime);
                 }
-                bin.Write(animationTimeConstantLists[anim.Key].Count); //# time constants in this anim
+                bin.Write(animationTimeConstantLists[anim.ID].Count); //# time constants in this anim
                 bin.Write(0xDEADD00D); //PLACEHOLDER: Time Constants offset
                 //Println($"Wrote Anim{anim.Key} time constant offset placeholder value (0xDEADD00D) at address {(bin.BaseStream.Position-4):X8}");
                 bin.Write(0xDEADD00D); //PLACEHOLDER: Animation file struct offset
@@ -353,7 +364,7 @@ namespace MeowDSIO.DataFiles
                     bin.Jump(4);
 
                     //Write pointer to animation into this animation ID.
-                    bin.Write(animationOffsets[anim.Key]);
+                    bin.Write(animationOffsets[anim.ID]);
                 }
             });
 
@@ -375,18 +386,18 @@ namespace MeowDSIO.DataFiles
                     //ANIMATION FILE:
                     {
                         //Write anim file struct:
-                        animationFileOffsets.Add(anim.Key, (int)bin.BaseStream.Position);
-                        if (anim.Value.FileName != null)
+                        animationFileOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
+                        if (anim.Anim.FileName != null)
                         {
-                            lastNamedAnimation = anim.Key; //Set last named animation ID value for the unnamed ones to reference.
+                            lastNamedAnimation = anim.ID; //Set last named animation ID value for the unnamed ones to reference.
                             bin.Write(0x00000000); //type 0 - named
                             bin.Write((int)(bin.BaseStream.Position + 0x04)); //offset pointing to next dword for some reason.
                             bin.Write((int)(bin.BaseStream.Position + 0x10)); //offset pointing to name start
-                            bin.Write(anim.Value.Unk1); //Unknown
-                            bin.Write(anim.Value.Unk2); //Unknown
+                            bin.Write(anim.Anim.Unk1); //Unknown
+                            bin.Write(anim.Anim.Unk2); //Unknown
                             bin.Write(0x00000000); //Null
                             //name start:
-                            bin.Write(Encoding.Unicode.GetBytes(anim.Value.FileName));
+                            bin.Write(Encoding.Unicode.GetBytes(anim.Anim.FileName));
                             bin.Write((short)0); //string terminator
                         }
                         else
@@ -400,28 +411,28 @@ namespace MeowDSIO.DataFiles
                             bin.Write(0x00000000); //Null 3
                         }
                     }
-                    animTimeConstantStartOffsets.Add(anim.Key, (int)bin.BaseStream.Position);
+                    animTimeConstantStartOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
                     //Write the time constants and record their offsets:
-                    animTimeConstantOffsets.Add(anim.Key, new Dictionary<float, int>());
-                    foreach (var tc in animationTimeConstantLists[anim.Key])
+                    animTimeConstantOffsets.Add(anim.ID, new Dictionary<float, int>());
+                    foreach (var tc in animationTimeConstantLists[anim.ID])
                     {
-                        animTimeConstantOffsets[anim.Key].Add(tc, (int)bin.BaseStream.Position);
+                        animTimeConstantOffsets[anim.ID].Add(tc, (int)bin.BaseStream.Position);
                         bin.Write(tc);
                     }
 
                     
                     //Event headers (note: all event headers are 0xC long):
-                    eventHeaderStartOffsets.Add(anim.Key, (int)bin.BaseStream.Position);
-                    foreach (var e in anim.Value.Events)
+                    eventHeaderStartOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
+                    foreach (var e in anim.Anim.Events)
                     {
-                        bin.Write((int)animTimeConstantOffsets[anim.Key][e.StartTime]); //offset of start time in time constants.
-                        bin.Write((int)animTimeConstantOffsets[anim.Key][e.EndTime]); //offset of end time in time constants.
+                        bin.Write((int)animTimeConstantOffsets[anim.ID][e.StartTime]); //offset of start time in time constants.
+                        bin.Write((int)animTimeConstantOffsets[anim.ID][e.EndTime]); //offset of end time in time constants.
                         bin.Write(0xDEADD00D); //PLACEHOLDER: Event body
                     }
 
                     //Event bodies
                     var eventBodyOffsets = new Dictionary<AnimationEvent, int>();
-                    foreach (var e in anim.Value.Events)
+                    foreach (var e in anim.Anim.Events)
                     {
                         eventBodyOffsets.Add(e, (int)bin.BaseStream.Position);
 
@@ -431,23 +442,24 @@ namespace MeowDSIO.DataFiles
                         //Note: the logic for the length of a particular event param array is handled 
                         //      in the read function as well as in the AnimationEvent class itself.
 
-                        foreach (var p in e.Parameters.Select(x => x.ToUpper()))
+                        foreach (var p in e.Parameters)
                         {
-                            if (p.EndsWith("F") || p.Contains(".") || p.Contains(","))
+                            var paramVal = p.Value.ToUpper();
+                            if (paramVal.EndsWith("F") || paramVal.Contains(".") || paramVal.Contains(","))
                             {
-                                bin.Write(float.Parse(p.Replace("F", "")));
+                                bin.Write(float.Parse(paramVal.Replace("F", "")));
                             }
                             else
                             {
-                                bin.Write(int.Parse(p));
+                                bin.Write(int.Parse(paramVal));
                             }
                         }
                     }
 
                     //Event headers pass 2:
-                    bin.DoAt(eventHeaderStartOffsets[anim.Key], () =>
+                    bin.DoAt(eventHeaderStartOffsets[anim.ID], () =>
                     {
-                        foreach (var e in anim.Value.Events)
+                        foreach (var e in anim.Anim.Events)
                         {
                             //skip to event body offset field:
                             bin.Seek(8, SeekOrigin.Current);
@@ -465,18 +477,18 @@ namespace MeowDSIO.DataFiles
             {
                 foreach (var anim in Animations)
                 {
-                    bin.Seek(animationOffsets[anim.Key] + 4, SeekOrigin.Begin);
+                    bin.Seek(animationOffsets[anim.ID] + 4, SeekOrigin.Begin);
                     //event header start offset:
-                    if (anim.Value.Events.Count > 0)
-                        bin.Write(eventHeaderStartOffsets[anim.Key]);
+                    if (anim.Anim.Events.Count > 0)
+                        bin.Write(eventHeaderStartOffsets[anim.ID]);
                     else
                         bin.Write(0x00000000);
                     //Println($"Wrote Anim{anim.Key} event header offset value 0x{eventHeaderStartOffsets[anim.Key]:X8} at address {(bin.BaseStream.Position-4):X8}");
                     bin.Seek(0xC, SeekOrigin.Current);
                     //time constants offset (writing offset of the *first constant listed*):
-                    if (animationTimeConstantLists[anim.Key].Count > 0)
+                    if (animationTimeConstantLists[anim.ID].Count > 0)
                     {
-                        bin.Write(animTimeConstantStartOffsets[anim.Key]);
+                        bin.Write(animTimeConstantStartOffsets[anim.ID]);
                         //Println($"Wrote Anim{anim.Key} time constants offset value 0x{animTimeConstantStartOffsets[anim.Key]:X8} at address {(bin.BaseStream.Position-4):X8}");
                     }
                     else
@@ -485,7 +497,7 @@ namespace MeowDSIO.DataFiles
                         //Println($"Wrote Anim{anim.Key} time constants offset value NULL at address {(bin.BaseStream.Position-4):X8}");
                     }
                     //anim file struct offset:
-                    bin.Write((int)animationFileOffsets[anim.Key]);
+                    bin.Write((int)animationFileOffsets[anim.ID]);
                     //Println($"Wrote Anim{anim.Key} anim file offset value 0x{((int)animationFileOffsets[anim.Key]):X8} at address {(bin.BaseStream.Position-4):X8}");
                 }
             });
@@ -499,11 +511,11 @@ namespace MeowDSIO.DataFiles
             bin.Write((int)bin.BaseStream.Length); //File length
             bin.Write(Header.MagicBytes);
             bin.Write(Header.ID);
-            bin.Write(Animations.Keys.Count); //Technically the animation ID count
+            bin.Write(Animations.Count); //Technically the animation ID count
             bin.Write(OFF_AnimationIDs);
             bin.Write(OFF_AnimationGroups);
             bin.Write(Header.Unk3);
-            bin.Write(Animations.Values.Count); //Techically the animation count
+            bin.Write(Animations.Count); //Techically the animation count
             bin.Write(OFF_Animations);
             bin.Write(Header.Unk4);
 

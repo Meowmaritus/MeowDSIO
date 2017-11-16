@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeowDSIO", "MeowDSIO\MeowDS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeowTAE", "Tools\MeowTAE\MeowTAE.csproj", "{4303DC10-0FE8-4A2E-B39B-0C737D8C7FD9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeowTaeEditorGui", "Tools\MeowTaeEditorGui\MeowTaeEditorGui.csproj", "{66472AE2-2A90-455C-AB96-9A15D1040699}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{66209C16-F117-4136-80AE-2096EC11D013}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MeowTaeEditorGui", "MeowTaeEditorGui", "{F285DE18-96D1-44FA-94BA-324301154128}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +27,18 @@ Global
 		{4303DC10-0FE8-4A2E-B39B-0C737D8C7FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4303DC10-0FE8-4A2E-B39B-0C737D8C7FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4303DC10-0FE8-4A2E-B39B-0C737D8C7FD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66472AE2-2A90-455C-AB96-9A15D1040699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66472AE2-2A90-455C-AB96-9A15D1040699}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66472AE2-2A90-455C-AB96-9A15D1040699}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66472AE2-2A90-455C-AB96-9A15D1040699}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4303DC10-0FE8-4A2E-B39B-0C737D8C7FD9} = {66209C16-F117-4136-80AE-2096EC11D013}
+		{66472AE2-2A90-455C-AB96-9A15D1040699} = {F285DE18-96D1-44FA-94BA-324301154128}
+		{F285DE18-96D1-44FA-94BA-324301154128} = {66209C16-F117-4136-80AE-2096EC11D013}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D9A6F40C-F4FE-4EF2-8975-DA85D513ECE6}
