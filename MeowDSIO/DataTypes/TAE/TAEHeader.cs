@@ -13,45 +13,54 @@ namespace MeowDSIO.DataTypes.TAE
         [JsonConverter(typeof(Json.ByteArrayConverter))]
         public byte[] Signature { get; set; } = { 0x54, 0x41, 0x45, 0x20 };
 
-        //////////////////////
-        // Data Block Start //
-        //////////////////////
-        public uint UnknownA00 { get; set; } = 0x00000040u;
-        public uint UnknownA01 { get; set; } = 0x00000001u;
-        public uint UnknownA02 { get; set; } = 0x00000050u;
-        public uint UnknownA03 { get; set; } = 0x00000070u;
-        public uint UnknownA04 { get; set; } = 0x00010002u;
-        public uint UnknownA05 { get; set; } = 0x00000000u;
-        public uint UnknownA06 { get; set; } = 0x00000000u;
-        public uint UnknownA07 { get; set; } = 0x00000000u;
-        public uint UnknownA08 { get; set; } = 0x00000000u;
-        public uint UnknownA09 { get; set; } = 0x00000000u;
-        public uint UnknownA10 { get; set; } = 0x00000000u;
-        public uint UnknownA11 { get; set; } = 0x00000000u;
-        public uint UnknownA12 { get; set; } = 0x02010001u;
-        public uint UnknownA13 { get; set; } = 0x01010002u;
-        public uint UnknownA14 { get; set; } = 0x00000001u;
-        public uint UnknownA15 { get; set; } = 0x00000000u;
-        //////////////////////
-        //  Data Block End  //
-        //////////////////////
+        public bool IsBigEndian { get; set; } = false;
 
-        //Value samples below taken from Artorias (c4100.tae)
-        public int UnknownB { get; set; } = 0;
-        public int UnknownC { get; set; } = 65547;
-        public int UnknownD { get; set; } = 0x00000090;
+        //3 Null bytes
 
-        public uint UnknownE00 = 0x00000000u;
-        public uint UnknownE01 = 0x00000001u;
-        public uint UnknownE02 = 0x00000080u;
-        public uint UnknownE03 = 0x00000000u;
-        public uint UnknownE04 = 0x00000000u;
-        public uint UnknownE05 = 0x00031D44u;
-        public uint UnknownE06 = 0x00031D44u;
+        public ushort VersionMajor { get; set; } = 11;
+        public ushort VersionMinor { get; set; } = 1;
+
+        //(uint FileLength)
+
+        public uint UnknownB00 { get; set; } = 64; //0x00000040
+        public uint UnknownB01 { get; set; } = 1; //0x00000001
+        public uint UnknownB02 { get; set; } = 80; //0x00000050
+        public uint UnknownB03 { get; set; } = 112; //0x00000070
+
+        public const int UnknownFlagsLength = 0x30;
+
+        public byte[] UnknownFlags { get; set; } = new byte[UnknownFlagsLength]
+        {
+            0x00, 0x01, 0x00, 0x02,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x02, 0x01, 0x00, 0x01,
+            0x02, 0x01, 0x00, 0x02,
+            0x00, 0x00, 0x00, 0x01,
+            0x00, 0x00, 0x00, 0x00,
+        };
+
+        public int FileID { get; set; } = 204100;
+        public int UnknownC { get; set; } = 0x00000090;
+
+        public uint UnknownE00 = 0;
+        public uint UnknownE01 = 1;
+        public uint UnknownE02 = 128;
+        public uint UnknownE03 = 0;
+        public uint UnknownE04 = 0;
+
+        public int FileID2 = 204100;
+        public int FileID3 = 204100;
+
         public uint UnknownE07 = 0x00000050u;
         public uint UnknownE08 = 0x00000000u;
         public uint UnknownE09 = 0x00000000u;
 
-        public int ID { get; set; } = 204100;
+        
     }
 }

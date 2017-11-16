@@ -29,6 +29,19 @@ namespace MeowDSIO.DataFiles
         public List<AnimationRef> Animations { get; set; } = new List<AnimationRef>();
         public List<AnimationGroup> AnimationGroups { get; set; } = new List<AnimationGroup>();
 
+        public int EventHeaderSize
+        {
+            get
+            {
+                if (Header.VersionMajor == 11 && Header.VersionMinor == 1)
+                    return 0x0C;
+                else if (Header.VersionMajor == 1 && Header.VersionMinor == 0)
+                    return 0x10;
+                else
+                    throw new NotImplementedException($"Don't know event header size of TAE Version {Header.VersionMajor}.{Header.VersionMinor}");
+            }
+        }
+
         private Animation LoadAnimationFromOffset(DSBinaryReader bin, int offset, int animID_ForDebug)
         {
             int oldOffset = (int)bin.BaseStream.Position;
@@ -45,7 +58,7 @@ namespace MeowDSIO.DataFiles
                 for (int i = 0; i < eventCount; i++)
                 {
                     //lazily seek to the start of each event manually.
-                    bin.BaseStream.Seek(eventHeadersOffset + (0xC * i), SeekOrigin.Begin);
+                    bin.BaseStream.Seek(eventHeadersOffset + (EventHeaderSize * i), SeekOrigin.Begin);
 
                     int startTimeOffset = bin.ReadInt32();
                     int endTimeOffset = bin.ReadInt32();
@@ -162,28 +175,24 @@ namespace MeowDSIO.DataFiles
                     $"(ASCII: '{Encoding.ASCII.GetString(fileSignature)}')");
             }
 
-            Header.UnknownB = bin.ReadInt32();
-            Header.UnknownC = bin.ReadInt32();
+            Header.IsBigEndian = bin.ReadBoolean();
+
+            bin.BigEndian = Header.IsBigEndian;
+            bin.ReadBytes(3); //3 null bytes after big endian flag
+
+            Header.VersionMajor = bin.ReadUInt16();
+            Header.VersionMinor = bin.ReadUInt16();
+
             var fileSize = bin.ReadInt32();
 
-            Header.UnknownA00 = bin.ReadUInt32();
-            Header.UnknownA01 = bin.ReadUInt32();
-            Header.UnknownA02 = bin.ReadUInt32();
-            Header.UnknownA03 = bin.ReadUInt32();
-            Header.UnknownA04 = bin.ReadUInt32();
-            Header.UnknownA05 = bin.ReadUInt32();
-            Header.UnknownA06 = bin.ReadUInt32();
-            Header.UnknownA07 = bin.ReadUInt32();
-            Header.UnknownA08 = bin.ReadUInt32();
-            Header.UnknownA09 = bin.ReadUInt32();
-            Header.UnknownA10 = bin.ReadUInt32();
-            Header.UnknownA11 = bin.ReadUInt32();
-            Header.UnknownA12 = bin.ReadUInt32();
-            Header.UnknownA13 = bin.ReadUInt32();
-            Header.UnknownA14 = bin.ReadUInt32();
-            Header.UnknownA15 = bin.ReadUInt32();
+            Header.UnknownB00 = bin.ReadUInt32();
+            Header.UnknownB01 = bin.ReadUInt32();
+            Header.UnknownB02 = bin.ReadUInt32();
+            Header.UnknownB03 = bin.ReadUInt32();
 
-            Header.ID = bin.ReadInt32();
+            Header.UnknownFlags = bin.ReadBytes(TAEHeader.UnknownFlagsLength);
+
+            Header.FileID = bin.ReadInt32();
             
             //Animation IDs
             var animCount = bin.ReadInt32();
@@ -221,7 +230,7 @@ namespace MeowDSIO.DataFiles
                 }
             });
 
-            Header.UnknownD = bin.ReadInt32();
+            Header.UnknownC = bin.ReadInt32();
             //We already found the animation count and offsets from the anim ids earlier
             int _animCount = bin.ReadInt32();
             int _animOffset = bin.ReadInt32();
@@ -235,8 +244,8 @@ namespace MeowDSIO.DataFiles
             Header.UnknownE02 = bin.ReadUInt32();
             Header.UnknownE03 = bin.ReadUInt32();
             Header.UnknownE04 = bin.ReadUInt32();
-            Header.UnknownE05 = bin.ReadUInt32();
-            Header.UnknownE06 = bin.ReadUInt32();
+            Header.FileID2 = bin.ReadInt32();
+            Header.FileID3 = bin.ReadInt32();
             Header.UnknownE07 = bin.ReadUInt32();
             Header.UnknownE08 = bin.ReadUInt32();
             Header.UnknownE09 = bin.ReadUInt32();
@@ -398,14 +407,20 @@ namespace MeowDSIO.DataFiles
                         bin.Write(tc);
                     }
 
-                    
-                    //Event headers (note: all event headers are 0xC long):
+
+                    //Event headers (note: all event headers are (EventHeaderSize) long):
                     eventHeaderStartOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
                     foreach (var e in anim.Anim.Events)
                     {
+                        long currentEventHeaderStart = bin.Position;
                         bin.Write((int)animTimeConstantOffsets[anim.ID][e.StartTime]); //offset of start time in time constants.
                         bin.Write((int)animTimeConstantOffsets[anim.ID][e.EndTime]); //offset of end time in time constants.
                         bin.Write(0xDEADD00D); //PLACEHOLDER: Event body
+                        long currentEventHeaderLength = bin.Position - currentEventHeaderStart;
+                        while (currentEventHeaderLength < EventHeaderSize)
+                        {
+                            bin.Write((byte)0);
+                        }
                     }
 
                     //Event bodies
@@ -484,32 +499,28 @@ namespace MeowDSIO.DataFiles
             bin.Seek(0, SeekOrigin.Begin);
 
             bin.Write(Header.Signature);
-            bin.Write(Header.UnknownB);
-            bin.Write(Header.UnknownC);
+
+            bin.Write(Header.IsBigEndian);
+            bin.BigEndian = Header.IsBigEndian;
+            bin.Write(new byte[] { 0, 0, 0 }); //3 null bytes after big endian flag.
+
+            bin.Write(Header.VersionMajor);
+            bin.Write(Header.VersionMinor);
+
             bin.Write((int)bin.BaseStream.Length); //File length
 
-            bin.Write(Header.UnknownA00);
-            bin.Write(Header.UnknownA01);
-            bin.Write(Header.UnknownA02);
-            bin.Write(Header.UnknownA03);
-            bin.Write(Header.UnknownA04);
-            bin.Write(Header.UnknownA05);
-            bin.Write(Header.UnknownA06);
-            bin.Write(Header.UnknownA07);
-            bin.Write(Header.UnknownA08);
-            bin.Write(Header.UnknownA09);
-            bin.Write(Header.UnknownA10);
-            bin.Write(Header.UnknownA11);
-            bin.Write(Header.UnknownA12);
-            bin.Write(Header.UnknownA13);
-            bin.Write(Header.UnknownA14);
-            bin.Write(Header.UnknownA15);
+            bin.Write(Header.UnknownB00);
+            bin.Write(Header.UnknownB01);
+            bin.Write(Header.UnknownB02);
+            bin.Write(Header.UnknownB03);
 
-            bin.Write(Header.ID);
+            bin.Write(Header.UnknownFlags);
+
+            bin.Write(Header.FileID);
             bin.Write(Animations.Count); //Technically the animation ID count
             bin.Write(OFF_AnimationIDs);
             bin.Write(OFF_AnimationGroups);
-            bin.Write(Header.UnknownD);
+            bin.Write(Header.UnknownC);
             bin.Write(Animations.Count); //Techically the animation count
             bin.Write(OFF_Animations);
 
@@ -518,8 +529,8 @@ namespace MeowDSIO.DataFiles
             bin.Write(Header.UnknownE02);
             bin.Write(Header.UnknownE03);
             bin.Write(Header.UnknownE04);
-            bin.Write(Header.UnknownE05);
-            bin.Write(Header.UnknownE06);
+            bin.Write(Header.FileID2);
+            bin.Write(Header.FileID3);
             bin.Write(Header.UnknownE07);
             bin.Write(Header.UnknownE08);
             bin.Write(Header.UnknownE09);

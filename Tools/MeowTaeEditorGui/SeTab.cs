@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DISABLE_ERR_MSG
+
+using System;
 using System.IO;
 using System.Windows;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -252,8 +254,10 @@ namespace MeowTaeEditorGui
 
             Application.Current.Dispatcher.Invoke(() =>
             {
+#if !DISABLE_ERR_MSG
                 try
                 {
+#endif
                     foreach (var g in CurrentTae.AnimationGroups)
                     {
                         if (!CurrentTae.Animations.Any(x => x.ID == g.FirstID))
@@ -265,7 +269,8 @@ namespace MeowTaeEditorGui
 
                     DataFile.SaveToFile(CurrentTae, CurrentTaeName);
                     IsModified = false;
-                }
+#if !DISABLE_ERR_MSG
+            }
                 catch (Exception e)
                 {
                     MessageBox.Show("Unable to save TAE due to an error: \n\n" + e.Message + "\n\n>> NOTE: Your data has NOT been saved! <<\n"+
@@ -273,6 +278,7 @@ namespace MeowTaeEditorGui
                         "For now, please try to fix any issues mentioned in the above message and attempt to save again.", 
                         "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+#endif
             });
             
             loading(false);
@@ -288,21 +294,20 @@ namespace MeowTaeEditorGui
 
             Application.Current.Dispatcher.Invoke(() =>
             {
+#if !DISABLE_ERR_MSG
                 try
                 {
+#endif
                     CurrentTae = DataFile.LoadFromFile<TAE>(CurrentTaeName);
                     IsModified = false;
-                }
+#if !DISABLE_ERR_MSG
+            }
                 catch (Exception e)
                 {
                     MessageBox.Show("Unable to load TAE due to an error: \n\n" + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 }
-
-
-                
-
-                
+#endif
             });
 
             loading(false);
