@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -204,6 +205,65 @@ namespace MeowDSIO
             }
 
             return ShiftJISEncoding.GetString(shiftJisData.ToArray());
+        }
+
+        public string ReadStringShiftJIS(int specificLength)
+        {
+            return ShiftJISEncoding.GetString(ReadBytes(specificLength).ToArray());
+        }
+
+
+        public void Pad(int align)
+        {
+            var off = Position % align;
+            if (off > 0)
+            {
+                ReadBytes((int)(align - off));
+            }
+        }
+
+        public byte ReadDelimiter()
+        {
+            byte result = ReadByte();
+            Pad(4);
+            return result;
+        }
+
+        public Vector2 ReadVector2()
+        {
+            float x = ReadSingle();
+            float y = ReadSingle();
+            return new Vector2(x, y);
+        }
+
+        public Vector3 ReadVector3()
+        {
+            float x = ReadSingle();
+            float y = ReadSingle();
+            float z = ReadSingle();
+            return new Vector3(x, y, z);
+        }
+
+        public Vector4 ReadVector4()
+        {
+            float w = ReadSingle();
+            float x = ReadSingle();
+            float y = ReadSingle();
+            float z = ReadSingle();
+            return new Vector4(w, x, y, z);
+        }
+
+        public string ReadMtdName(out byte delim)
+        {
+            int valLength = ReadInt32();
+            string result = ReadStringShiftJIS(valLength);
+            delim = ReadDelimiter();
+            return result;
+        }
+
+        public string ReadMtdName()
+        {
+            return ReadMtdName(out _);
         }
     }
 }

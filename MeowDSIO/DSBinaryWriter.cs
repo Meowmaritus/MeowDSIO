@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace MeowDSIO
         private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
 
         public DSBinaryWriter(Stream output) : base(output) { }
-        public long Position => BaseStream.Position;
+        public long Position { get => BaseStream.Position; set => BaseStream.Position = value; }
         public long Length => BaseStream.Length;
         public void Goto(long absoluteOffset) => BaseStream.Seek(absoluteOffset, SeekOrigin.Begin);
         public void Jump(long relativeOffset) => BaseStream.Seek(relativeOffset, SeekOrigin.Current);
@@ -189,6 +190,33 @@ namespace MeowDSIO
             WritePreparedBytes(BitConverter.GetBytes(value));
         }
 
+        public void Write(Vector2 value)
+        {
+            Write(value.X);
+            Write(value.Y);
+        }
+
+        public void Write(Vector3 value)
+        {
+            Write(value.X);
+            Write(value.Y);
+            Write(value.Z);
+        }
+
+        public void Write(Vector4 value)
+        {
+            Write(value.W);
+            Write(value.X);
+            Write(value.Y);
+            Write(value.Z);
+        }
+
+        public void Write(byte[] value, int specificLength)
+        {
+            Array.Resize(ref value, specificLength);
+            Write(value);
+        }
+
         /// <summary>
         /// Writes an ASCII string directly without padding or truncating it.
         /// </summary>
@@ -213,6 +241,34 @@ namespace MeowDSIO
                 Array.Resize(ref b, b.Length + 1);
 
             Write(b);
+        }
+
+        public void Pad(int align)
+        {
+            var off = Position % align;
+            if (off > 0)
+            {
+                var correct = align - off;
+                while (correct-- > 0)
+                    Write((Byte)0);
+            }
+        }
+
+        public void WriteDelimiter(byte val)
+        {
+            Write(val);
+            Pad(4);
+        }
+
+        public void WriteMtdName(string name, byte delim)
+        {
+            byte[] shift_jis = ShiftJISEncoding.GetBytes(name);
+
+            Write(shift_jis.Length);
+
+            Write(shift_jis);
+
+            WriteDelimiter(delim);
         }
 
         #endregion
