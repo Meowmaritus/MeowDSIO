@@ -41,6 +41,11 @@ namespace MeowDSIO.DataTypes.BND3
             return Data;
         }
 
+        public void SetBytes(byte[] newBytes)
+        {
+            Data = newBytes;
+        }
+
         public void Dispose()
         {
             Data = null;
