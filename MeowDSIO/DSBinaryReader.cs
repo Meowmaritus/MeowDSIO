@@ -13,7 +13,7 @@ namespace MeowDSIO
         private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
 
         public DSBinaryReader(Stream input) : base(input) { }
-        public long Position => BaseStream.Position;
+        public long Position { get => BaseStream.Position; set => BaseStream.Position = value; }
         public long Length => BaseStream.Length;
         public void Goto(long absoluteOffset) => BaseStream.Seek(absoluteOffset, SeekOrigin.Begin);
         public void Jump(long relativeOffset) => BaseStream.Seek(relativeOffset, SeekOrigin.Current);
@@ -264,6 +264,16 @@ namespace MeowDSIO
         public string ReadMtdName()
         {
             return ReadMtdName(out _);
+        }
+
+        public byte ReadByte(string valName, params byte[] checkValues)
+        {
+            byte val = ReadByte();
+            if (!checkValues.Contains(val))
+            {
+                throw new Exception($"Unexpected value found for {valName}: {val}");
+            }
+            return val;
         }
     }
 }
