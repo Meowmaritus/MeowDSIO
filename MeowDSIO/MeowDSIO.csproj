@@ -49,7 +49,15 @@
   <ItemGroup>
     <Compile Include="Data.cs" />
     <Compile Include="DataFile.cs" />
+    <Compile Include="DataFiles\BND3.cs" />
+    <Compile Include="DataFiles\MTD.cs" />
     <Compile Include="DataFiles\TAE.cs" />
+    <Compile Include="DataTypes\BND3\BND3Entry.cs" />
+    <Compile Include="DataTypes\BND3\BND3EntryHeaderBuffer.cs" />
+    <Compile Include="DataTypes\BND3\BND3Header.cs" />
+    <Compile Include="DataTypes\MTD\ExternalParam.cs" />
+    <Compile Include="DataTypes\MTD\InternalParam.cs" />
+    <Compile Include="DataTypes\MTD\MTDEnums.cs" />
     <Compile Include="DataTypes\TAE\Animation.cs" />
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
     <Compile Include="DataTypes\TAE\AnimationEventParameter.cs" />
