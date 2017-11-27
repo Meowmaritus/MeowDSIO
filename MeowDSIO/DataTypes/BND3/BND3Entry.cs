@@ -14,7 +14,7 @@ namespace MeowDSIO.DataTypes.BND3
         public int? Unknown1 = null;
         private byte[] Data;
 
-        public BND3Entry(int ID, string Name, int? Unknown1, ref byte[] FileBytes)
+        public BND3Entry(int ID, string Name, int? Unknown1, byte[] FileBytes)
         {
             this.ID = ID;
             this.Name = Name;

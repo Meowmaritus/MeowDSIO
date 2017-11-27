@@ -14,6 +14,70 @@ namespace MeowDSIO.DataFiles
         public List<BND3Entry> Entries = new List<BND3Entry>();
         public BND3Header Header { get; set; } = new BND3Header();
 
+        public void AddEntry(int id, string name, byte[] data, int? unknown1 = null)
+        {
+            Entries.Add(new BND3Entry(id, name, unknown1, data));
+        }
+
+        public BND3Entry GetFirstEntryWithIDAndName(int id, string name, bool ignoreCase = false)
+        {
+            try
+            {
+                return Entries.First(x => x.ID == id && 
+                    (ignoreCase ? x.Name.ToUpper() : x.Name) == (ignoreCase ? name.ToUpper() : name));
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<BND3Entry> GetAllEntriesWithIDAndName(int id, string name, bool ignoreCase = false)
+        {
+            return Entries.Where(x => x.ID == id && 
+                (ignoreCase ? x.Name.ToUpper() : x.Name) == (ignoreCase ? name.ToUpper() : name));
+        }
+
+        public BND3Entry GetFirstEntryWithName(string name, bool ignoreCase = false)
+        {
+            try
+            {
+                return Entries.First(x => (ignoreCase ? x.Name.ToUpper() : x.Name) == (ignoreCase ? name.ToUpper() : name));
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<BND3Entry> GetAllEntriesWithName(string name, bool ignoreCase = false)
+        {
+            return Entries.Where(x => (ignoreCase ? x.Name.ToUpper() : x.Name) == (ignoreCase ? name.ToUpper() : name));
+        }
+
+        public BND3Entry GetFirstEntryWithID(int id)
+        {
+            try
+            {
+                return Entries.First(x => x.ID == id);
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+        }
+        
+        public IEnumerable<BND3Entry> GetAllEntriesWithID(int id)
+        {
+            return Entries.Where(x => x.ID == id);
+        }
+
+        public IEnumerable<BND3Entry> GetAllEntriesWithinIDRange(int? minID, int? maxID)
+        {
+            return Entries.Where(x => x.ID >= (minID ?? int.MinValue) && x.ID <= (maxID ?? int.MaxValue));
+        }
+
+
         protected override void Read(DSBinaryReader bin)
         {
             byte[] versionBytes = bin.ReadBytes(BND3Header.Version_ByteLength);

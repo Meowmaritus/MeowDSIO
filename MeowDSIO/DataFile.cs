@@ -58,12 +58,14 @@ namespace MeowDSIO
         {
             using (var tempStream = new MemoryStream())
             {
+                tempStream.Position = 0;
                 tempStream.SetLength(0);
 
                 using (var binaryWriter = new DSBinaryWriter(tempStream))
                 {
                     data.Write(binaryWriter);
-                    return tempStream.ToArray();
+                    var result = tempStream.ToArray();
+                    return result;
                 }
             }
         }

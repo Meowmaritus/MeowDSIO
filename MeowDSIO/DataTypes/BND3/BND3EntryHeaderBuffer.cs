@@ -40,7 +40,7 @@ namespace MeowDSIO.DataTypes.BND3
                 bin.StepOut();
             }
 
-            return new BND3Entry(FileID, fileName, Unknown1, ref bytes);
+            return new BND3Entry(FileID, fileName, Unknown1, bytes);
         }
     }
 }

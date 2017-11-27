@@ -51,6 +51,8 @@
     <Compile Include="DataFile.cs" />
     <Compile Include="DataFiles\BND3.cs" />
     <Compile Include="DataFiles\ESD.cs" />
+    <Compile Include="DataFiles\LUAGNL.cs" />
+    <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MTD.cs" />
     <Compile Include="DataFiles\TAE.cs" />
     <Compile Include="DataTypes\BND3\BND3Entry.cs" />
@@ -59,6 +61,10 @@
     <Compile Include="DataTypes\ESD\EzCondition.cs" />
     <Compile Include="DataTypes\ESD\EzFunc.cs" />
     <Compile Include="DataTypes\ESD\EzState.cs" />
+    <Compile Include="DataTypes\LUAINFO\Goal.cs" />
+    <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
+    <Compile Include="DataTypes\LUAINFO\ScriptRef.cs" />
+    <Compile Include="DataTypes\LUAGNL\StringRef.cs" />
     <Compile Include="DataTypes\MTD\ExternalParam.cs" />
     <Compile Include="DataTypes\MTD\InternalParam.cs" />
     <Compile Include="DataTypes\MTD\MTDEnums.cs" />

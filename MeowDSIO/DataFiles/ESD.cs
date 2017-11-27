@@ -9,7 +9,6 @@ namespace MeowDSIO.DataFiles
     public class ESD : DataFile
     {
 
-
         protected override void Read(DSBinaryReader bin)
         {
             throw new NotImplementedException();
