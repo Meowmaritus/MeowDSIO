@@ -31,17 +31,17 @@ namespace MeowDSIO.DataTypes.TAE
         Type65 = 65,
         SpEffect  = 66, //int spEffectID
         SpEffectB = 67,
-        FootParticles  = 96,
-        Particles = 100,
+        PartsSFX  = 96,
+        PartsSFX2 = 100,
         Type101 = 101,
         Type104 = 104,
-        ParticlesB = 109,
+        PartsSFX3 = 109,
         Type110 = 110,
-        ParticlesLarge = 112,
+        PartsSFX4 = 112,
         Type114 = 114,
         Type115 = 115,
         Type116 = 116,
-        WeaponTrail = 118,
+        PartsSFX5 = 118,
         Type119 = 119,
         Type120 = 120,
         Type121 = 121,
@@ -178,20 +178,20 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.Type65: return 2;
                 case AnimationEventType.SpEffect: return 1;
                 case AnimationEventType.SpEffectB: return 3;
-                case AnimationEventType.FootParticles: return 3;
+                case AnimationEventType.PartsSFX: return 3;
                 
-                case AnimationEventType.Particles: return 3;
+                case AnimationEventType.PartsSFX2: return 3;
                 case AnimationEventType.Type101: return 1;
                 
                 case AnimationEventType.Type104: return 5;
 
-                case AnimationEventType.ParticlesB: return 3;
+                case AnimationEventType.PartsSFX3: return 3;
                 case AnimationEventType.Type110: return 3;
-                case AnimationEventType.ParticlesLarge: return 2;
+                case AnimationEventType.PartsSFX4: return 2;
                 case AnimationEventType.Type114: return 5;
                 case AnimationEventType.Type115: return 5;
                 case AnimationEventType.Type116: return 4;
-                case AnimationEventType.WeaponTrail: return 3;
+                case AnimationEventType.PartsSFX5: return 3;
                 case AnimationEventType.Type119: return 5;
                 case AnimationEventType.Type120: return 8;
                 case AnimationEventType.Type121: return 4;
