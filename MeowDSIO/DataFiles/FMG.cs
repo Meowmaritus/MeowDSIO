@@ -9,10 +9,42 @@ using System.Collections;
 
 namespace MeowDSIO.DataFiles
 {
-    public class FMG : DataFile, IList<FMGChunk>
+    public class FMG : DataFile, IList<FMGEntryRef>
     {
         public FMGHeader Header { get; set; } = new FMGHeader();
-        public ObservableCollection<FMGChunk> Chunks { get; set; } = new ObservableCollection<FMGChunk>();
+        public ObservableCollection<FMGEntryRef> Entries { get; set; } = new ObservableCollection<FMGEntryRef>();
+
+        private List<FMGChunk> CalculateChunks()
+        {
+            var chunks = new List<FMGChunk>();
+
+            int startIndex = -1;
+            int startID = -1;
+
+            for (int i = 0; i < Entries.Count; i++)
+            {
+                if (startIndex < 0)
+                {
+                    startIndex = i;
+                    startID = Entries[i].ID;
+                    continue;
+                }
+                else if ((Entries[i].ID - Entries[i - 1].ID) > 1)
+                {
+                    chunks.Add(new FMGChunk(startIndex, startID, Entries[i - 1].ID));
+                    startIndex = i;
+                    startID = Entries[i].ID;
+
+                    if (i == Entries.Count - 1) //Last entry.
+                    {
+                        chunks.Add(new FMGChunk(startIndex, startID, Entries[i].ID));
+                    }
+                }
+
+            }
+
+            return chunks;
+        }
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
@@ -37,7 +69,7 @@ namespace MeowDSIO.DataFiles
             //Pad
             bin.ReadUInt32();
 
-            Chunks.Clear();
+            Entries.Clear();
             FMGChunkHeaderBuffer chunk = new FMGChunkHeaderBuffer(stringOffsetsBegin);
             for (int i = 0; i < chunkCount; i++)
             {
@@ -45,12 +77,14 @@ namespace MeowDSIO.DataFiles
                 chunk.FirstStringID = bin.ReadInt32();
                 chunk.LastStringID = bin.ReadInt32();
 
-                Chunks.Add(chunk.ReadChunk(bin));
+                chunk.ReadEntries(bin, Entries);
             }
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
+            var Chunks = CalculateChunks();
+
             bin.BigEndian = Header.IsBigEndian;
 
             bin.Write((ushort)0);
@@ -71,17 +105,7 @@ namespace MeowDSIO.DataFiles
 
             bin.Write(Chunks.Count);
 
-            int stringsCount = 0;
-
-            foreach (var c in Chunks)
-            {
-                foreach (var str in c)
-                {
-                    stringsCount++;
-                }
-            }
-
-            bin.Write(stringsCount);
+            bin.Write(Entries.Count);
 
             bin.Placeholder("StringsBeginPointer");
 
@@ -89,33 +113,31 @@ namespace MeowDSIO.DataFiles
 
             bin.Label("ChunksBeginOffset");
 
-            //SKIP Chunks for now
-            bin.Position += (Chunks.Count * 0x0C/*Length of chunk*/);
+            foreach (var chunk in Chunks)
+            {
+                bin.Write(chunk.StartIndex);
+                bin.Write(chunk.StartID);
+                bin.Write(chunk.EndID);
+            }
 
             bin.PointToHere("StringsBeginPointer");
 
             bin.Label("StringsBeginOffset");
 
-            bin.Position += (stringsCount * 4);
+            bin.Position += (Entries.Count * 4);
 
             var stringOffsetList = new List<int>();
-            var chunkStartIndexList = new List<int>();
 
-            for (int i = 0; i < Chunks.Count; i++)
+            for (int i = 0; i < Entries.Count; i++)
             {
-                chunkStartIndexList.Add(stringOffsetList.Count/*Doubles as the string index!*/);
-
-                foreach (var str in Chunks[i])
+                if (Entries[i].Value != null)
                 {
-                    if (str != null)
-                    {
-                        stringOffsetList.Add((int)bin.Position);
-                        bin.WriteStringUnicode(str, terminate: true);
-                    }
-                    else
-                    {
-                        stringOffsetList.Add(0);
-                    }
+                    stringOffsetList.Add((int)bin.Position);
+                    bin.WriteStringUnicode(Entries[i].Value, terminate: true);
+                }
+                else
+                {
+                    stringOffsetList.Add(0);
                 }
             }
 
@@ -124,15 +146,6 @@ namespace MeowDSIO.DataFiles
 
             //Since we reached max length, might as well go fill in the file size:
             bin.Replace("FileSize", (int)bin.Length);
-
-            bin.Goto("ChunksBeginOffset");
-
-            for (int i = 0; i < Chunks.Count; i++)
-            {
-                bin.Write(chunkStartIndexList[i]);
-                bin.Write(Chunks[i].StartID);
-                bin.Write(Chunks[i].StartID + (Chunks[i].Count - 1));
-            }
 
             bin.Goto("StringsBeginOffset");
 
@@ -145,63 +158,61 @@ namespace MeowDSIO.DataFiles
         }
 
         #region IList
-
-        public int IndexOf(FMGChunk item)
+        public int IndexOf(FMGEntryRef item)
         {
-            return ((IList<FMGChunk>)Chunks).IndexOf(item);
+            return ((IList<FMGEntryRef>)Entries).IndexOf(item);
         }
 
-        public void Insert(int index, FMGChunk item)
+        public void Insert(int index, FMGEntryRef item)
         {
-            ((IList<FMGChunk>)Chunks).Insert(index, item);
+            ((IList<FMGEntryRef>)Entries).Insert(index, item);
         }
 
         public void RemoveAt(int index)
         {
-            ((IList<FMGChunk>)Chunks).RemoveAt(index);
+            ((IList<FMGEntryRef>)Entries).RemoveAt(index);
         }
 
-        public FMGChunk this[int index] { get => ((IList<FMGChunk>)Chunks)[index]; set => ((IList<FMGChunk>)Chunks)[index] = value; }
+        public FMGEntryRef this[int index] { get => ((IList<FMGEntryRef>)Entries)[index]; set => ((IList<FMGEntryRef>)Entries)[index] = value; }
 
-        public void Add(FMGChunk item)
+        public void Add(FMGEntryRef item)
         {
-            ((IList<FMGChunk>)Chunks).Add(item);
+            ((IList<FMGEntryRef>)Entries).Add(item);
         }
 
         public void Clear()
         {
-            ((IList<FMGChunk>)Chunks).Clear();
+            ((IList<FMGEntryRef>)Entries).Clear();
         }
 
-        public bool Contains(FMGChunk item)
+        public bool Contains(FMGEntryRef item)
         {
-            return ((IList<FMGChunk>)Chunks).Contains(item);
+            return ((IList<FMGEntryRef>)Entries).Contains(item);
         }
 
-        public void CopyTo(FMGChunk[] array, int arrayIndex)
+        public void CopyTo(FMGEntryRef[] array, int arrayIndex)
         {
-            ((IList<FMGChunk>)Chunks).CopyTo(array, arrayIndex);
+            ((IList<FMGEntryRef>)Entries).CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(FMGChunk item)
+        public bool Remove(FMGEntryRef item)
         {
-            return ((IList<FMGChunk>)Chunks).Remove(item);
+            return ((IList<FMGEntryRef>)Entries).Remove(item);
         }
 
-        public int Count => ((IList<FMGChunk>)Chunks).Count;
+        public int Count => ((IList<FMGEntryRef>)Entries).Count;
 
-        public bool IsReadOnly => ((IList<FMGChunk>)Chunks).IsReadOnly;
+        public bool IsReadOnly => ((IList<FMGEntryRef>)Entries).IsReadOnly;
 
-        public IEnumerator<FMGChunk> GetEnumerator()
+        public IEnumerator<FMGEntryRef> GetEnumerator()
         {
-            return ((IList<FMGChunk>)Chunks).GetEnumerator();
+            return ((IList<FMGEntryRef>)Entries).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IList<FMGChunk>)Chunks).GetEnumerator();
+            return ((IList<FMGEntryRef>)Entries).GetEnumerator();
         }
-
         #endregion
     }
 }

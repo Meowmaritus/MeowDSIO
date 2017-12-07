@@ -33,7 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,6 +66,7 @@
     <Compile Include="DataTypes\ESD\EzState.cs" />
     <Compile Include="DataTypes\FMG\FMGChunk.cs" />
     <Compile Include="DataTypes\FMG\FMGChunkHeaderBuffer.cs" />
+    <Compile Include="DataTypes\FMG\FMGEntryRef.cs" />
     <Compile Include="DataTypes\FMG\FMGHeader.cs" />
     <Compile Include="DataTypes\LUAINFO\Goal.cs" />
     <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
@@ -119,10 +120,10 @@
     <Content Include="EmbeddedResource\TAE\AnimationEventParamDefs.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="Exceptions\DSWrite\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Exceptions\DSWrite\" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

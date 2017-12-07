@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,12 +29,8 @@ namespace MeowDSIO.DataTypes.FMG
             buffer = new int[64];
         }
 
-        public FMGChunk ReadChunk(DSBinaryReader bin)
+        public void ReadEntries(DSBinaryReader bin, ObservableCollection<FMGEntryRef> entries)
         {
-            var newChunk = new FMGChunk();
-
-            newChunk.StartID = FirstStringID;
-
             count = (LastStringID - FirstStringID) + 1;
 
             if (count > buffer.Length)
@@ -53,17 +50,15 @@ namespace MeowDSIO.DataTypes.FMG
                     if (buffer[i] > 0)
                     {
                         bin.Position = buffer[i];
-                        newChunk.Add(bin.ReadStringUnicode(length: null));
+                        entries.Add(new FMGEntryRef(FirstStringID + i, bin.ReadStringUnicode(length: null)));
                     }
                     else
                     {
-                        newChunk.Add(null);
+                        entries.Add(new FMGEntryRef(FirstStringID + i, null));
                     }
                 }
             }
             bin.StepOut();
-
-            return newChunk;
         }
     }
 }
