@@ -164,8 +164,11 @@ namespace MeowDSIO.DataFiles
             return sb.ToString();
         }
 
-        protected override void Read(DSBinaryReader bin)
+        //TODO: Measure real progress.
+        protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
+            prog?.Report((0, 1)); //PLACEHOLDER
+
             Header = new TAEHeader();
             var fileSignature = bin.ReadBytes(4);
             if (fileSignature.Where((x, i) => x != Header.Signature[i]).Any())
@@ -263,6 +266,8 @@ namespace MeowDSIO.DataFiles
             bin.BaseStream.Seek(sibNameOffset, SeekOrigin.Begin);
 
             SibName = ReadUnicodeString(bin);
+
+            prog?.Report((1, 1)); //PLACEHOLDER
         }
 
         private void Println(string txt)
@@ -270,8 +275,11 @@ namespace MeowDSIO.DataFiles
             Console.WriteLine(txt);
         }
 
-        protected override void Write(DSBinaryWriter bin)
+        //TODO: Measure real progress.
+        protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
+            prog?.Report((0, 1)); //PLACEHOLDER
+
             //SkeletonName, SibName:
             bin.Seek(0x94, SeekOrigin.Begin);
             bin.Write(0x00000098);
@@ -539,6 +547,8 @@ namespace MeowDSIO.DataFiles
 
             //Go to end and pretend like this was a totally normal file write and not the shitshow it was.
             bin.Seek(0, SeekOrigin.End);
+
+            prog?.Report((1, 1)); //PLACEHOLDER
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MeowDSIO.DataFiles
         public List<Goal> Goals = new List<Goal>();
         public LUAINFOHeader Header = new LUAINFOHeader();
 
-        protected override void Read(DSBinaryReader bin)
+        protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             Header.Signature = bin.ReadBytes(LUAINFOHeader.Signature_Length);
 
@@ -73,9 +73,11 @@ namespace MeowDSIO.DataFiles
                 }
             }
 
+            //TODO: Add real progress.
+            prog.Report((1, 1)); //PLACEHOLDER
         }
 
-        protected override void Write(DSBinaryWriter bin)
+        protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             bin.Write(Header.Signature, LUAINFOHeader.Signature_Length);
             bin.Write(Header.UnknownA, LUAINFOHeader.UnknownA_Length);
@@ -131,6 +133,9 @@ namespace MeowDSIO.DataFiles
             bin.Position = OFF_AfterStrings;
 
             bin.Pad(0x10);
+
+            //TODO: Add real progress.
+            prog.Report((1, 1)); //PLACEHOLDER
         }
     }
 }

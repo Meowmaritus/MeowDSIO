@@ -54,6 +54,8 @@
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MTD.cs" />
+    <Compile Include="DataFiles\PARAM.cs" />
+    <Compile Include="DataFiles\PARAMDEF.cs" />
     <Compile Include="DataFiles\TAE.cs" />
     <Compile Include="DataTypes\BND3\BND3Entry.cs" />
     <Compile Include="DataTypes\BND3\BND3EntryHeaderBuffer.cs" />
@@ -68,10 +70,27 @@
     <Compile Include="DataTypes\MTD\ExternalParam.cs" />
     <Compile Include="DataTypes\MTD\InternalParam.cs" />
     <Compile Include="DataTypes\MTD\MTDEnums.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ATK_PARAM_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\EQUIP_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ITEMLOT_CUMULATE_RESET.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ITEMLOT_ENABLE_LUCK.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\MAGIC_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\NPC_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ON_OFF.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\SP_EFFECT_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\ParamDefEntry.cs" />
+    <Compile Include="DataTypes\PARAMDEF\ParamTypeDef.cs" />
+    <Compile Include="DataTypes\PARAM\ParamRow.cs" />
+    <Compile Include="DataTypes\PARAM\ParamCellValueRef.cs" />
     <Compile Include="DataTypes\TAE\Animation.cs" />
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
     <Compile Include="DataTypes\TAE\AnimationEventParameter.cs" />
     <Compile Include="DataTypes\TAE\TAEHeader.cs" />
+    <Compile Include="Exceptions\DSIOException.cs" />
+    <Compile Include="Exceptions\DSIOExceptionType.cs" />
+    <Compile Include="Exceptions\DSReadException.cs" />
+    <Compile Include="Exceptions\DSRead\ConsumeValueCheckFailedException.cs" />
+    <Compile Include="Exceptions\DSWriteException.cs" />
     <Compile Include="MultiDword.cs" />
     <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
     <Compile Include="DataTypes\TAE\AnimationRef.cs" />
@@ -82,8 +101,11 @@
     <Compile Include="Json\ByteArrayConverter.cs" />
     <Compile Include="LoadAbortedException.cs" />
     <Compile Include="MiscUtil.cs" />
+    <Compile Include="PaddedRegion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EmbResMan.cs" />
+    <Compile Include="WrapperData.cs" />
+    <Compile Include="WrapperDataTypes\ExcelParamSheet.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="EmbeddedResource\TAE\AnimationEventParamDefs.h" />
@@ -91,6 +113,8 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Exceptions\DSWrite\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

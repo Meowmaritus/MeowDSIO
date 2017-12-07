@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeowDSIO.Exceptions.DSRead;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,14 +11,34 @@ namespace MeowDSIO
 {
     public class DSBinaryReader : BinaryReader
     {
+        public string FileName { get; private set; }
+
+        public DSBinaryReader(string fileName, Stream input)
+            : base(input)
+        {
+            FileName = fileName;
+        }
+
+        public DSBinaryReader(string fileName, Stream input, Encoding encoding)
+            : base(input, encoding)
+        {
+            FileName = fileName;
+        }
+
+        public DSBinaryReader(string fileName, Stream input, Encoding encoding, bool leaveOpen)
+            : base(input, encoding, leaveOpen)
+        {
+            FileName = fileName;
+        }
+
         private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
 
-        public DSBinaryReader(Stream input) : base(input) { }
         public long Position { get => BaseStream.Position; set => BaseStream.Position = value; }
         public long Length => BaseStream.Length;
         public void Goto(long absoluteOffset) => BaseStream.Seek(absoluteOffset, SeekOrigin.Begin);
         public void Jump(long relativeOffset) => BaseStream.Seek(relativeOffset, SeekOrigin.Current);
         private Stack<long> StepStack = new Stack<long>();
+        private Stack<PaddedRegion> PaddedRegionStack = new Stack<PaddedRegion>();
 
         public bool BigEndian = false;
 
@@ -29,7 +50,33 @@ namespace MeowDSIO
 
         public void StepOut()
         {
+            if (StepStack.Count == 0)
+                throw new InvalidOperationException("You cannot step out unless StepIn() was previously called on an offset.");
+
             Goto(StepStack.Pop());
+        }
+
+        public void StepIntoPaddedRegion(long length, byte? padding)
+        {
+            PaddedRegionStack.Push(new PaddedRegion(Position, length, padding));
+        }
+
+        public void StepOutOfPaddedRegion()
+        {
+            if (PaddedRegionStack.Count == 0)
+                throw new InvalidOperationException("You cannot step out of padded region unless inside of one.");
+
+            var deepestPaddedRegion = PaddedRegionStack.Pop();
+            deepestPaddedRegion.AdvanceReaderToEnd(this);
+        }
+
+        public void StepOutOfPaddedRegion(out byte foundPadding)
+        {
+            if (PaddedRegionStack.Count == 0)
+                throw new InvalidOperationException("You cannot step out of padded region unless inside of one.");
+
+            var deepestPaddedRegion = PaddedRegionStack.Pop();
+            deepestPaddedRegion.AdvanceReaderToEnd(this, out foundPadding);
         }
 
         public void DoAt(long offset, Action doAction)
@@ -188,20 +235,23 @@ namespace MeowDSIO
         /// Reads a Shift-JIS string.
         /// </summary>
         /// <returns>A Shift-JIS string.</returns>
-        public string ReadStringShiftJIS()
+        public string ReadStringShiftJIS(int specificLength = -1, bool stopOnTerminator = true)
         {
+            if (!stopOnTerminator)
+                return ShiftJISEncoding.GetString(ReadBytes(specificLength).ToArray());
+
             List<byte> shiftJisData = new List<byte>();
 
             byte nextByte = 0;
 
-            while (true)
+            while (specificLength < 0 || shiftJisData.Count < specificLength)
             {
                 nextByte = ReadByte();
 
-                if (nextByte > 0)
-                    shiftJisData.Add(nextByte);
-                else
+                if (stopOnTerminator && nextByte == 0)
                     break;
+
+                shiftJisData.Add(nextByte);
             }
 
             return ShiftJISEncoding.GetString(shiftJisData.ToArray());
@@ -209,7 +259,7 @@ namespace MeowDSIO
 
         public string ReadStringShiftJIS(int specificLength)
         {
-            return ShiftJISEncoding.GetString(ReadBytes(specificLength).ToArray());
+            return ReadStringShiftJIS(specificLength, false);
         }
 
 
@@ -274,6 +324,54 @@ namespace MeowDSIO
                 throw new Exception($"Unexpected value found for {valName}: {val}");
             }
             return val;
+        }
+
+        public TVal CheckConsumeValue<TVal>(
+            string ValueNameStr,
+            Func<TVal> ReadFunction, 
+            TVal ExpectedValue)
+            where TVal : IEquatable<TVal>
+        {
+            TVal ConsumedValue = ReadFunction();
+            
+            if (!((IEquatable<TVal>)ConsumedValue).Equals(ExpectedValue))
+            {
+                throw new ConsumeValueCheckFailedException<TVal>(this, ValueNameStr, ExpectedValue, ConsumedValue);
+            }
+
+            return ConsumedValue;
+        }
+
+        public string ReadPaddedStringShiftJIS(int paddedRegionLength, byte? padding)
+        {
+            byte[] data = ReadBytes(paddedRegionLength);
+            int strEndIndex = -1;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] == 0)
+                {
+                    strEndIndex = i;
+                    break;
+                }
+            }
+
+            // String has null-terminator in it
+            if (strEndIndex > 0)
+            {
+                return ShiftJISEncoding.GetString(data, 0, strEndIndex);
+            }
+            // String begins with null-terminator
+            else if (strEndIndex == 0)
+            {
+                // If string ends on very first byte, there's no real point to 
+                // running it through the encoding and all that.
+                return string.Empty;
+            }
+            // String has no null-terminator
+            else
+            {
+                return ShiftJISEncoding.GetString(data);
+            }
         }
     }
 }

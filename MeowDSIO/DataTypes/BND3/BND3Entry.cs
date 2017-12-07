@@ -22,16 +22,16 @@ namespace MeowDSIO.DataTypes.BND3
             Data = FileBytes;
         }
 
-        public T ReadDataAs<T>()
+        public T ReadDataAs<T>(IProgress<(int, int)> prog)
             where T : DataFile, new()
         {
-            return DataFile.LoadFromBytes<T>(Data);
+            return DataFile.LoadFromBytes<T>(Data, Name, prog);
         }
 
-        public void ReplaceData<T>(T data)
+        public void ReplaceData<T>(T data, IProgress<(int, int)> prog)
             where T : DataFile, new()
         {
-            Data = DataFile.SaveAsBytes(data);
+            Data = DataFile.SaveAsBytes(data, Name, prog);
         }
 
         public int Size => (Data?.Length ?? 0);

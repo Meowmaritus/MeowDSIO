@@ -10,14 +10,34 @@ namespace MeowDSIO
 {
     public class DSBinaryWriter : BinaryWriter
     {
+        public string FileName { get; private set; }
+
+        public DSBinaryWriter(string fileName, Stream output)
+            : base(output)
+        {
+            FileName = fileName;
+        }
+
+        public DSBinaryWriter(string fileName, Stream output, Encoding encoding)
+            : base(output, encoding)
+        {
+            FileName = fileName;
+        }
+
+        public DSBinaryWriter(string fileName, Stream output, Encoding encoding, bool leaveOpen)
+            : base(output, encoding, leaveOpen)
+        {
+            FileName = fileName;
+        }
+
         private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
 
-        public DSBinaryWriter(Stream output) : base(output) { }
         public long Position { get => BaseStream.Position; set => BaseStream.Position = value; }
         public long Length => BaseStream.Length;
         public void Goto(long absoluteOffset) => BaseStream.Seek(absoluteOffset, SeekOrigin.Begin);
         public void Jump(long relativeOffset) => BaseStream.Seek(relativeOffset, SeekOrigin.Current);
         private Stack<long> StepStack = new Stack<long>();
+        private Stack<PaddedRegion> PaddedRegionStack = new Stack<PaddedRegion>();
 
         public bool BigEndian = false;
 
@@ -31,7 +51,51 @@ namespace MeowDSIO
 
         public void StepOut()
         {
+            if (StepStack.Count == 0)
+                throw new InvalidOperationException("You cannot step out unless StepIn() was previously called on an offset.");
+
             Goto(StepStack.Pop());
+        }
+
+        public void StepIntoPaddedRegion(long length, byte padding)
+        {
+            PaddedRegionStack.Push(new PaddedRegion(Position, length, padding));
+        }
+
+        public void StepOutOfPaddedRegion()
+        {
+            if (PaddedRegionStack.Count == 0)
+                throw new InvalidOperationException("You cannot step out of padded region unless inside of one " + 
+                    $"as a result of previously calling {nameof(StepIntoPaddedRegion)}().");
+
+            var deepestPaddedRegion = PaddedRegionStack.Pop();
+            deepestPaddedRegion.AdvanceWriterToEnd(this);
+        }
+
+
+        public void WritePaddedStringShiftJIS(string str, int paddedRegionLength, byte? padding, bool forceTerminateAtMaxLength = false)
+        {
+            byte[] jis = ShiftJISEncoding.GetBytes(str);
+            int origSize = jis.Length;
+            Array.Resize(ref jis, paddedRegionLength);
+
+            if (paddedRegionLength > origSize)
+            {
+                if (padding.HasValue)
+                {
+                    // Start at [origSize + 1] because [origSize] is the null-terminator
+                    for (int i = origSize + 1; i < paddedRegionLength; i++)
+                    {
+                        jis[i] = padding.Value;
+                    }
+                }
+            }
+            else if (paddedRegionLength < origSize && forceTerminateAtMaxLength)
+            {
+                jis[jis.Length - 1] = 0;
+            }
+
+            Write(jis);
         }
 
         public void DoAt(long offset, Action doAction)

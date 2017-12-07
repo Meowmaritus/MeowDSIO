@@ -25,6 +25,11 @@ namespace MeowDSIO.DataTypes.BND3
 
         public BND3Entry GetEntry(DSBinaryReader bin)
         {
+            if (FileOffset < 0 || FileOffset > bin.Length)
+            {
+                throw new Exception("Invalid BND3 Entry File Offset.");
+            }
+
             bin.StepIn(FileOffset);
             var bytes = bin.ReadBytes(FileSize);
             bin.StepOut();

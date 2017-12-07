@@ -11,7 +11,7 @@ namespace MeowDSIO.DataFiles
     {
         public List<StringRef> GlobalVariableNames = new List<StringRef>();
 
-        protected override void Read(DSBinaryReader bin)
+        protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             var offsetList = new List<int>();
 
@@ -44,9 +44,11 @@ namespace MeowDSIO.DataFiles
                 GlobalVariableNames.Add(nextString);
             }
 
+            //TODO: Add real progress.
+            prog.Report((1, 1)); //PLACEHOLDER
         }
 
-        protected override void Write(DSBinaryWriter bin)
+        protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             // Move to the offset where the actual strings begin.
             // Each offset is 4 bytes long, then there's a four byte separator value of 00 00 00 00.
@@ -72,6 +74,9 @@ namespace MeowDSIO.DataFiles
             bin.Position = bin.Length;
 
             bin.Pad(0x10);
+
+            //TODO: Add real progress.
+            prog.Report((1, 1)); //PLACEHOLDER
         }
     }
 }

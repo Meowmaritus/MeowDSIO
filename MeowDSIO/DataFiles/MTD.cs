@@ -79,7 +79,7 @@ namespace MeowDSIO.DataFiles
             return InternalParams.Any(x => x.Name == internalParamName);
         }
 
-        protected override void Read(DSBinaryReader bin)
+        protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             UnknownA = bin.ReadInt32();
             bin.ReadInt32(); //File Size
@@ -145,9 +145,12 @@ namespace MeowDSIO.DataFiles
             UnknownI04 = bin.ReadInt32();
             UnknownI05 = bin.ReadInt32();
             UnknownI06 = bin.ReadInt32();
+
+            //TODO: Add real progress.
+            prog.Report((1, 1)); //PLACEHOLDER
         }
 
-        protected override void Write(DSBinaryWriter bin)
+        protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             bin.Write(UnknownA);
 
@@ -215,6 +218,9 @@ namespace MeowDSIO.DataFiles
 
             bin.Position = LOC_DataSize;
             bin.Write(fileSize - 0x44);
+
+            //TODO: Add real progress.
+            prog.Report((1, 1)); //PLACEHOLDER
         }
 
         public static IList<Type> ParamTypes = new List<Type>

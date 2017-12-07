@@ -78,7 +78,7 @@ namespace MeowDSIO.DataFiles
         }
 
 
-        protected override void Read(DSBinaryReader bin)
+        protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             byte[] versionBytes = bin.ReadBytes(BND3Header.Version_ByteLength);
             Header.Version = Encoding.ASCII.GetString(versionBytes);
@@ -108,6 +108,9 @@ namespace MeowDSIO.DataFiles
 
             Entries.Clear();
 
+            int prog_currentbyte = 0;
+            int prog_numbytes = (int)bin.Length;
+
             for (int i = 0; i < fileCount; i++)
             {
                 e.Reset();
@@ -129,10 +132,13 @@ namespace MeowDSIO.DataFiles
                 bin.ReadInt32(); //Entry padding
 
                 Entries.Add(e.GetEntry(bin));
+
+                prog_currentbyte += e.FileSize;
+                prog?.Report((prog_currentbyte, prog_numbytes));
             }
         }
 
-        protected override void Write(DSBinaryWriter bin)
+        protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             byte[] versionBytes = Encoding.ASCII.GetBytes(Header.Version);
             bin.Write(versionBytes, BND3Header.Version_ByteLength);
@@ -154,6 +160,23 @@ namespace MeowDSIO.DataFiles
             bin.Write(Header.UnknownBytes01, BND3Header.UnknownBytes01_Length);
 
             var OFF_EntryHeaders = bin.Position;
+
+            const int ProgEst_Name = 0x20;
+            const int ProgEst_Header = 0x14;
+
+            int prog_cur = 0;
+            //Rough estimation of the size of the headers (for both passes)
+            int prog_max = Entries.Count * (ProgEst_Header * 2);
+
+            //Rough estimation of name size (only for formats with names)
+            if (Header.Format != 0x00)
+            {
+                prog_max += (Entries.Count + ProgEst_Name);
+            }
+
+            //Add the actual data size
+            foreach (var e in Entries)
+            prog_max += e.Size;
 
             for (int i = 0; i < Entries.Count; i++)
             {
@@ -182,6 +205,9 @@ namespace MeowDSIO.DataFiles
                         bin.Write(0x02000000);
                     }
                 }
+
+                prog_cur += ProgEst_Header;
+                prog?.Report((prog_cur, prog_max));
             }
 
             var OFF_Names = bin.Position;
@@ -193,6 +219,9 @@ namespace MeowDSIO.DataFiles
                 {
                     nameOffsets.Add((int)bin.Position);
                     bin.WriteStringShiftJIS(Entries[i].Name, true);
+
+                    prog_cur += ProgEst_Name;
+                    prog?.Report((prog_cur, prog_max));
                 }
             }
 
@@ -209,6 +238,8 @@ namespace MeowDSIO.DataFiles
                 {
                     bin.Pad(0x10);
                 }
+                prog_cur += Entries[i].Size;
+                prog?.Report((prog_cur, prog_max));
             }
 
             bin.Position = OFF_EntryHeaders;
@@ -229,10 +260,15 @@ namespace MeowDSIO.DataFiles
                 }
 
                 bin.Position += 4; //Padding
+
+                prog_cur += ProgEst_Header;
+                prog?.Report((prog_cur, prog_max));
             }
 
             bin.Position = OFF_NameEndOffset;
             bin.Write((int)OFF_AfterNames);
+
+            bin.Position = bin.Length;
         }
 
         #region IList
