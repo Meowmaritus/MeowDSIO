@@ -1,19 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MeowDSIO
 {
-    public abstract class DataFile
+    public abstract class DataFile : INotifyPropertyChanged
     {
+        public event EventHandler IsModifiedChanged;
+
+        protected virtual void OnIsModifiedChanged()
+        {
+            IsModifiedChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        //TODO: Make use of IsModified on every type of DataFile.
+        private bool _isModified = false;
+        public bool IsModified
+        {
+            get => _isModified;
+            set
+            {
+                if (_isModified != value)
+                {
+                    _isModified = value;
+                    RaisePropertyChanged();
+                    OnIsModifiedChanged();
+                }
+                
+            }
+        }
+
         protected abstract void Read(DSBinaryReader bin, IProgress<(int, int)> prog);
         protected abstract void Write(DSBinaryWriter bin, IProgress<(int, int)> prog);
 
-        public string FilePath { get; private set; } = null;
-        public string VirtualUri { get; private set; } = null;
+        private string _filePath = null;
+        public string FilePath
+        {
+            get => _filePath;
+            set
+            {
+                _filePath = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(FileBackupPath));
+            }
+        }
+
+        private string _virtualUri = null;
+        public string VirtualUri
+        {
+            get => _virtualUri;
+            set
+            {
+                _virtualUri = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string FileBackupPath
         {
@@ -102,6 +148,7 @@ namespace MeowDSIO
                 using (var binaryReader = new DSBinaryReader(data.FilePath, fileStream))
                 {
                     data.Read(binaryReader, prog);
+                    data.IsModified = false;
                 }
             }
         }
@@ -121,6 +168,7 @@ namespace MeowDSIO
                 using (var binaryWriter = new DSBinaryWriter(data.FilePath, fileStream))
                 {
                     data.Write(binaryWriter, prog);
+                    data.IsModified = false;
                 }
             }
         }
@@ -135,6 +183,7 @@ namespace MeowDSIO
                     T result = new T();
                     result.FilePath = filePath;
                     result.Read(binaryReader, prog);
+                    result.IsModified = false;
                     return result;
                 }
             }
@@ -151,6 +200,7 @@ namespace MeowDSIO
                 {
                     data.FilePath = filePath;
                     data.Write(binaryWriter, prog);
+                    data.IsModified = false;
                 }
             }
         }
@@ -165,6 +215,7 @@ namespace MeowDSIO
                     T result = new T();
                     result.VirtualUri = virtualUri;
                     result.Read(binaryReader, prog);
+                    result.IsModified = false;
                     return result;
                 }
             }
@@ -183,6 +234,7 @@ namespace MeowDSIO
                     data.VirtualUri = virtualUri;
                     data.Write(binaryWriter, prog);
                     var result = tempStream.ToArray();
+                    data.IsModified = false;
                     return result;
                 }
             }
@@ -196,8 +248,17 @@ namespace MeowDSIO
                 T result = new T();
                 result.VirtualUri = virtualUri;
                 result.Read(binaryReader, prog);
+                result.IsModified = false;
                 return result;
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void RaisePropertyChanged([CallerMemberName] string caller = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
         }
     }
 }

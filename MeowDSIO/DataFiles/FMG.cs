@@ -6,13 +6,65 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MeowDSIO.DataFiles
 {
     public class FMG : DataFile, IList<FMGEntryRef>
     {
-        public FMGHeader Header { get; set; } = new FMGHeader();
-        public ObservableCollection<FMGEntryRef> Entries { get; set; } = new ObservableCollection<FMGEntryRef>();
+        public const string NullString = "<null>";
+        public const string EmptyString = "<empty>";
+
+        private FMGHeader _header = new FMGHeader();
+        public FMGHeader Header
+        {
+            get => _header;
+            set
+            {
+                _header = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<FMGEntryRef> _entries = new ObservableCollection<FMGEntryRef>();
+        public ObservableCollection<FMGEntryRef> Entries
+        {
+            get => _entries;
+            set
+            {
+                _entries = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public FMG()
+        {
+            Entries.CollectionChanged += Entries_CollectionChanged;
+        }
+
+        private void entryValueModified(object sender, FMGEntryRefValueModifiedEventArgs e)
+        {
+            IsModified = true;
+        }
+
+        private void Entries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                foreach (var newItem in e.NewItems)
+                {
+                    ((FMGEntryRef)newItem).ValueModified += entryValueModified;
+                }
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var newItem in e.OldItems)
+                {
+                    ((FMGEntryRef)newItem).ValueModified -= entryValueModified;
+                }
+            }
+        }
 
         private List<FMGChunk> CalculateChunks()
         {
@@ -34,13 +86,14 @@ namespace MeowDSIO.DataFiles
                     chunks.Add(new FMGChunk(startIndex, startID, Entries[i - 1].ID));
                     startIndex = i;
                     startID = Entries[i].ID;
-
-                    if (i == Entries.Count - 1) //Last entry.
-                    {
-                        chunks.Add(new FMGChunk(startIndex, startID, Entries[i].ID));
-                    }
                 }
 
+            }
+
+            // If there's an unfinished chunk, finish it
+            if (chunks.Count > 0 && startIndex > chunks[chunks.Count - 1].StartIndex)
+            {
+                chunks.Add(new FMGChunk(startIndex, startID, Entries[Entries.Count - 1].ID));
             }
 
             return chunks;
@@ -79,6 +132,8 @@ namespace MeowDSIO.DataFiles
 
                 chunk.ReadEntries(bin, Entries);
             }
+
+            IsModified = false;
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
@@ -130,15 +185,24 @@ namespace MeowDSIO.DataFiles
 
             for (int i = 0; i < Entries.Count; i++)
             {
-                if (Entries[i].Value != null)
-                {
-                    stringOffsetList.Add((int)bin.Position);
-                    bin.WriteStringUnicode(Entries[i].Value, terminate: true);
-                }
-                else
+                string entryStringCheck = Entries[i].Value.Trim();
+
+                if (entryStringCheck == NullString)
                 {
                     stringOffsetList.Add(0);
                 }
+                else
+                {
+                    stringOffsetList.Add((int)bin.Position);
+
+                    if (entryStringCheck == EmptyString)
+                        bin.WriteStringUnicode(string.Empty, terminate: true);
+                    else
+                        bin.WriteStringUnicode(Entries[i].Value, terminate: true);
+
+                }
+
+                Entries[i].IsModified = false;
             }
 
             //At the very end of all the strings, place the file end padding:
