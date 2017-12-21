@@ -68,6 +68,7 @@
     <Compile Include="DataTypes\FMG\FMGChunkHeaderBuffer.cs" />
     <Compile Include="DataTypes\FMG\FMGEntryRef.cs" />
     <Compile Include="DataTypes\FMG\FMGHeader.cs" />
+    <Compile Include="DataTypes\FMG\VanillaFMG.cs" />
     <Compile Include="DataTypes\LUAINFO\Goal.cs" />
     <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
     <Compile Include="DataTypes\LUAINFO\ScriptRef.cs" />

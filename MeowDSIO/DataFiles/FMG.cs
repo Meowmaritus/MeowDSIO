@@ -43,25 +43,110 @@ namespace MeowDSIO.DataFiles
             Entries.CollectionChanged += Entries_CollectionChanged;
         }
 
+        private bool? _isMarkedForExport = false;
+        public bool? IsMarkedForExport
+        {
+            get => _isMarkedForExport;
+            set
+            {
+                _isMarkedForExport = value;
+
+                if (_isMarkedForExport == true)
+                {
+                    foreach (var entry in Entries)
+                    {
+                        entry._isMarkedForExport = true;
+                        entry.RaisePropertyChanged(nameof(entry.IsMarkedForExport));
+                    }
+                }
+                else if (_isMarkedForExport == false)
+                {
+                    foreach (var entry in Entries)
+                    {
+                        entry._isMarkedForExport = false;
+                        entry.RaisePropertyChanged(nameof(entry.IsMarkedForExport));
+                    }
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
         private void entryValueModified(object sender, FMGEntryRefValueModifiedEventArgs e)
         {
             IsModified = true;
+        }
+
+        private void entryIsMarkedForExportChanged(object sender, FMGEntryRefIsMarkedForExportChangedEventArgs e)
+        {
+            RecalculateIsMarkedForExport();
+        }
+
+        public void RecalculateIsMarkedForExport()
+        {
+            bool allOff = true;
+            bool allOn = true;
+
+            foreach (var entry in Entries)
+            {
+                if (entry.IsMarkedForExport)
+                {
+                    allOff = false;
+                }
+                else
+                {
+                    allOn = false;
+                }
+
+                if (!(allOn || allOff))
+                {
+                    break;
+                }
+            }
+
+            if (allOn)
+            {
+                _isMarkedForExport = true;
+            }
+            else if (allOff)
+            {
+                _isMarkedForExport = false;
+            }
+            else
+            {
+                _isMarkedForExport = null;
+            }
+
+            RaisePropertyChanged(nameof(IsMarkedForExport));
+        }
+
+        public void InvertEntriesMarkedForExport()
+        {
+            foreach (var e in Entries)
+            {
+                e._isMarkedForExport = !e._isMarkedForExport;
+                e.RaisePropertyChanged(nameof(e.IsMarkedForExport));
+            }
+
+            RecalculateIsMarkedForExport();
         }
 
         private void Entries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                foreach (var newItem in e.NewItems)
+                foreach (var newItem in e.NewItems.Cast<FMGEntryRef>())
                 {
-                    ((FMGEntryRef)newItem).ValueModified += entryValueModified;
+                    newItem.ValueModified += entryValueModified;
+                    newItem.IsMarkedForExportChanged += entryIsMarkedForExportChanged;
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
-                foreach (var newItem in e.OldItems)
+                foreach (var newItem in e.OldItems.Cast<FMGEntryRef>())
                 {
-                    ((FMGEntryRef)newItem).ValueModified -= entryValueModified;
+                    newItem.ValueModified -= entryValueModified;
+                    newItem.IsMarkedForExportChanged -= entryIsMarkedForExportChanged;
                 }
             }
         }
@@ -220,6 +305,69 @@ namespace MeowDSIO.DataFiles
 
             bin.Position = bin.Length;
         }
+
+        public static readonly IReadOnlyDictionary<string, VanillaFMG> VanillaFMGLookup = new Dictionary<string, VanillaFMG>
+        {
+            ["防具うんちく.fmg"] = VanillaFMG.ArmourDescriptions,
+            ["防具うんちくパッチ.fmg"] = VanillaFMG.ArmourDescriptions_Patch,
+            ["防具名.fmg"] = VanillaFMG.ArmourNames,
+            ["防具名パッチ.fmg"] = VanillaFMG.ArmourNames_Patch,
+            ["防具説明.fmg"] = VanillaFMG.ArmourSummaries,
+            ["防具説明パッチ.fmg"] = VanillaFMG.ArmourSummaries_Patch,
+            ["血文字.fmg"] = VanillaFMG.BloodMessages,
+            ["血文字パッチ.fmg"] = VanillaFMG.BloodMessages_Patch,
+            ["項目ヘルプ.fmg"] = VanillaFMG.ContextualHelp,
+            ["会話.fmg"] = VanillaFMG.Conversations,
+            ["会話パッチ.fmg"] = VanillaFMG.Conversations_Patch,
+            ["機種別タグ_win32.fmg"] = VanillaFMG.DebugTags_Win32,
+            ["イベントテキスト.fmg"] = VanillaFMG.EventTexts,
+            ["イベントテキストパッチ.fmg"] = VanillaFMG.EventTexts_Patch,
+            ["特徴うんちく.fmg"] = VanillaFMG.FeatureDescriptions,
+            ["特徴名.fmg"] = VanillaFMG.FeatureNames,
+            ["特徴説明.fmg"] = VanillaFMG.FeatureSummaries,
+            ["インゲームメニュー.fmg"] = VanillaFMG.IngameMenus,
+            ["アイテムうんちく.fmg"] = VanillaFMG.ItemDescriptions,
+            ["アイテムうんちくパッチ.fmg"] = VanillaFMG.ItemDescriptions_Patch,
+            ["アイテム名.fmg"] = VanillaFMG.ItemNames,
+            ["アイテム名パッチ.fmg"] = VanillaFMG.ItemNames_Patch,
+            ["アイテム説明.fmg"] = VanillaFMG.ItemSummaries,
+            ["アイテム説明パッチ.fmg"] = VanillaFMG.ItemSummaries_Patch,
+            ["キーガイド.fmg"] = VanillaFMG.KeyGuide,
+            ["キーガイドパッチ.fmg"] = VanillaFMG.KeyGuide_Patch,
+            ["ダイアログ.fmg"] = VanillaFMG.MenuDialogs,
+            ["ダイアログパッチ.fmg"] = VanillaFMG.MenuDialogs_Patch,
+            ["一行ヘルプ.fmg"] = VanillaFMG.MenuHelpSnippets,
+            ["一行ヘルプパッチ.fmg"] = VanillaFMG.MenuHelpSnippets_Patch,
+            ["メニュー共通テキスト.fmg"] = VanillaFMG.MenuText_Common,
+            ["メニュー共通テキストパッチ.fmg"] = VanillaFMG.MenuText_Common_Patch,
+            ["メニューその他.fmg"] = VanillaFMG.MenuText_Other,
+            ["メニューその他パッチ.fmg"] = VanillaFMG.MenuText_Other_Patch,
+            ["ムービー字幕.fmg"] = VanillaFMG.MovieSubtitles,
+            ["NPC名.fmg"] = VanillaFMG.NPCNames,
+            ["NPC名パッチ.fmg"] = VanillaFMG.NPCNames_Patch,
+            ["地名.fmg"] = VanillaFMG.PlaceNames,
+            ["地名パッチ.fmg"] = VanillaFMG.PlaceNames_Patch,
+            ["アクセサリうんちく.fmg"] = VanillaFMG.RingDescriptions,
+            ["アクセサリうんちくパッチ.fmg"] = VanillaFMG.RingDescriptions_Patch,
+            ["アクセサリ名.fmg"] = VanillaFMG.RingNames,
+            ["アクセサリ名パッチ.fmg"] = VanillaFMG.RingNames_Patch,
+            ["アクセサリ説明.fmg"] = VanillaFMG.RingSummaries,
+            ["アクセサリ説明パッチ.fmg"] = VanillaFMG.RingSummaries_Patch,
+            ["魔法うんちく.fmg"] = VanillaFMG.SpellDescriptions,
+            ["魔法うんちくパッチ.fmg"] = VanillaFMG.SpellDescriptions_Patch,
+            ["魔法名.fmg"] = VanillaFMG.SpellNames,
+            ["魔法名パッチ.fmg"] = VanillaFMG.SpellNames_Patch,
+            ["魔法説明.fmg"] = VanillaFMG.SpellSummaries,
+            ["システムメッセージ_win32.fmg"] = VanillaFMG.SystemMessages_Win32,
+            ["システムメッセージ_win32パッチ.fmg"] = VanillaFMG.SystemMessages_Win32_Patch,
+            ["テキスト表示用タグ一覧.fmg"] = VanillaFMG.TextTagPlaceholders,
+            ["武器うんちく.fmg"] = VanillaFMG.WeaponDescriptions,
+            ["武器うんちくパッチ.fmg"] = VanillaFMG.WeaponDescriptions_Patch,
+            ["武器名.fmg"] = VanillaFMG.WeaponNames,
+            ["武器名パッチ.fmg"] = VanillaFMG.WeaponNames_Patch,
+            ["武器説明.fmg"] = VanillaFMG.WeaponSummaries,
+            ["武器説明パッチ.fmg"] = VanillaFMG.WeaponSummaries_Patch,
+        };
 
         #region IList
         public int IndexOf(FMGEntryRef item)

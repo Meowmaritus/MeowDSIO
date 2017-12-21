@@ -17,6 +17,13 @@ namespace MeowDSIO.DataTypes.FMG
             handler?.Invoke(this, args);
         }
 
+        public event EventHandler<FMGEntryRefIsMarkedForExportChangedEventArgs> IsMarkedForExportChanged;
+        protected virtual void OnIsMarkedForExportChanged(FMGEntryRefIsMarkedForExportChangedEventArgs args)
+        {
+            var handler = IsMarkedForExportChanged;
+            handler?.Invoke(this, args);
+        }
+
         private int _id = 0;
         public int ID
         {
@@ -43,7 +50,25 @@ namespace MeowDSIO.DataTypes.FMG
                     IsModified = true;
 
                     OnValueModified(new FMGEntryRefValueModifiedEventArgs(oldValue, Value));
+
+                    RaisePropertyChanged(nameof(ValuePreview));
                 }
+            }
+        }
+
+        public string ValuePreview
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Value))
+                    return Value;
+
+                var lines = Value.Split('\n');
+
+                if (lines.Length == 1)
+                    return lines[0];
+
+                return lines.Where(x => !string.IsNullOrWhiteSpace(x)).First() + "...";
             }
         }
 
@@ -55,6 +80,23 @@ namespace MeowDSIO.DataTypes.FMG
             {
                 _isModified = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        internal bool _isMarkedForExport = false;
+        public bool IsMarkedForExport
+        {
+            get => _isMarkedForExport;
+            set
+            {
+                var oldValue = _isMarkedForExport;
+                _isMarkedForExport = value;
+                RaisePropertyChanged();
+
+                if (value != oldValue)
+                {
+                    OnIsMarkedForExportChanged(new FMGEntryRefIsMarkedForExportChangedEventArgs(value));
+                }
             }
         }
 
@@ -84,6 +126,15 @@ namespace MeowDSIO.DataTypes.FMG
         {
             this.OldValue = OldValue;
             this.NewValue = NewValue;
+        }
+    }
+
+    public class FMGEntryRefIsMarkedForExportChangedEventArgs : EventArgs
+    {
+        public bool Value { get; set; }
+        public FMGEntryRefIsMarkedForExportChangedEventArgs(bool Value)
+        {
+            this.Value = Value;
         }
     }
 }
