@@ -32,13 +32,14 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\MeowDSIO_Test\MeowDSIO_Test\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,21 +50,53 @@
   <ItemGroup>
     <Compile Include="Data.cs" />
     <Compile Include="DataFile.cs" />
-    <Compile Include="DataFiles\BND3.cs" />
+    <Compile Include="DataFiles\ANIBND.cs" />
+    <Compile Include="DataFiles\BND.cs" />
+    <Compile Include="DataFiles\EntityBND.cs" />
     <Compile Include="DataFiles\ESD.cs" />
+    <Compile Include="DataFiles\FLVER.cs" />
     <Compile Include="DataFiles\FMG.cs" />
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MTD.cs" />
+    <Compile Include="DataFiles\MtdBND.cs" />
     <Compile Include="DataFiles\PARAM.cs" />
+    <Compile Include="DataFiles\PARAMBND.cs" />
     <Compile Include="DataFiles\PARAMDEF.cs" />
+    <Compile Include="DataFiles\PARAMDEFBND.cs" />
     <Compile Include="DataFiles\TAE.cs" />
-    <Compile Include="DataTypes\BND3\BND3Entry.cs" />
-    <Compile Include="DataTypes\BND3\BND3EntryHeaderBuffer.cs" />
-    <Compile Include="DataTypes\BND3\BND3Header.cs" />
+    <Compile Include="DataFiles\TPF.cs" />
+    <Compile Include="DataTypes\BND\BNDEntry.cs" />
+    <Compile Include="DataTypes\BND\BNDEntryHeaderBuffer.cs" />
+    <Compile Include="DataTypes\BND\BNDHeader.cs" />
+    <Compile Include="DataTypes\BND\BndVersion.cs" />
+    <Compile Include="DataTypes\EntityBND\EntityModel.cs" />
     <Compile Include="DataTypes\ESD\EzCondition.cs" />
     <Compile Include="DataTypes\ESD\EzFunc.cs" />
     <Compile Include="DataTypes\ESD\EzState.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverVector3.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverVertexColor.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverPackedVector4.cs" />
+    <Compile Include="DataTypes\FLVER\FlverWriteFunc_MaterialInfo.cs" />
+    <Compile Include="DataTypes\FLVER\FlverWriteFunc_SubmeshInfo.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverBoneIndices.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverBoneWeights.cs" />
+    <Compile Include="DataTypes\FLVER\FlverBone.cs" />
+    <Compile Include="DataTypes\FLVER\FlverFaceSet.cs" />
+    <Compile Include="DataTypes\FLVER\FlverFaceSetFlags.cs" />
+    <Compile Include="DataTypes\FLVER\FlverHeader.cs" />
+    <Compile Include="DataTypes\FLVER\FlverDummy.cs" />
+    <Compile Include="DataTypes\FLVER\FlverMaterial.cs" />
+    <Compile Include="DataTypes\FLVER\FlverMaterialParameter.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverUV.cs" />
+    <Compile Include="DataTypes\FLVER\FlverSubmesh.cs" />
+    <Compile Include="DataTypes\FLVER\FlverVertex.cs" />
+    <Compile Include="DataTypes\FLVER\FlverVertexGroup.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructLayout.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructLayoutCheck.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMemberSemantic.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMemberValueType.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMember.cs" />
     <Compile Include="DataTypes\FMG\FMGChunk.cs" />
     <Compile Include="DataTypes\FMG\FMGChunkHeaderBuffer.cs" />
     <Compile Include="DataTypes\FMG\FMGEntryRef.cs" />
@@ -76,6 +109,8 @@
     <Compile Include="DataTypes\MTD\ExternalParam.cs" />
     <Compile Include="DataTypes\MTD\InternalParam.cs" />
     <Compile Include="DataTypes\MTD\MTDEnums.cs" />
+    <Compile Include="DataTypes\PARAMBND\PARAMBNDEntry.cs" />
+    <Compile Include="DataTypes\PARAMDEFBND\PARAMDEFBNDEntry.cs" />
     <Compile Include="DataTypes\PARAMDEF\Enums\ATK_PARAM_BOOL.cs" />
     <Compile Include="DataTypes\PARAMDEF\Enums\EQUIP_BOOL.cs" />
     <Compile Include="DataTypes\PARAMDEF\Enums\ITEMLOT_CUMULATE_RESET.cs" />
@@ -92,6 +127,8 @@
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
     <Compile Include="DataTypes\TAE\AnimationEventParameter.cs" />
     <Compile Include="DataTypes\TAE\TAEHeader.cs" />
+    <Compile Include="DataTypes\TPF\TPFEntry.cs" />
+    <Compile Include="DataTypes\TPF\TPFEntryReadBuffer.cs" />
     <Compile Include="DSBinaryReader.Endianness.cs" />
     <Compile Include="DSBinaryReader.Utils.cs" />
     <Compile Include="DSBinaryWriter.Endianness.cs" />
@@ -101,6 +138,7 @@
     <Compile Include="Exceptions\DSReadException.cs" />
     <Compile Include="Exceptions\DSRead\ConsumeValueCheckFailedException.cs" />
     <Compile Include="Exceptions\DSWriteException.cs" />
+    <Compile Include="Exceptions\DSWrite\FlverVertexStructDataNullException.cs" />
     <Compile Include="MultiDword.cs" />
     <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
     <Compile Include="DataTypes\TAE\AnimationRef.cs" />
@@ -120,9 +158,7 @@
   <ItemGroup>
     <Content Include="EmbeddedResource\TAE\AnimationEventParamDefs.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exceptions\DSWrite\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

@@ -173,7 +173,23 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null)
+        public static T LoadFromFile<T>(string filePath)
+            where T : DataFile, new()
+        {
+            using (var fileStream = File.Open(filePath, FileMode.Open))
+            {
+                using (var binaryReader = new DSBinaryReader(filePath, fileStream))
+                {
+                    T result = new T();
+                    result.FilePath = filePath;
+                    result.Read(binaryReader, null);
+                    result.IsModified = false;
+                    return result;
+                }
+            }
+        }
+
+        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.Open))
@@ -189,7 +205,23 @@ namespace MeowDSIO
             }
         }
 
-        public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
+        public static void SaveToFile<T>(T data, string filePath)
+            where T : DataFile, new()
+        {
+            using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))
+            {
+                fileStream.Position = 0;
+                fileStream.SetLength(0);
+                using (var binaryWriter = new DSBinaryWriter(filePath, fileStream))
+                {
+                    data.FilePath = filePath;
+                    data.Write(binaryWriter, null);
+                    data.IsModified = false;
+                }
+            }
+        }
+
+        public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))

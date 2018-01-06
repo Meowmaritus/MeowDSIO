@@ -5,16 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeowDSIO.DataTypes.BND3
+namespace MeowDSIO.DataTypes.BND
 {
-    public class BND3Entry : IDisposable
+    public class BNDEntry : IDisposable
     {
         public int ID { get; set; }
         public string Name { get; set; }
         public int? Unknown1 = null;
+        public int? BND4_Unknown2 = null;
+        public int? BND4_Unknown3 = null;
+        public int? BND4_Unknown4 = null;
+        public int? BND4_Unknown5 = null;
+        public int? BND4_Unknown6 = null;
+        public int? BND4_Unknown7 = null;
         private byte[] Data;
 
-        public BND3Entry(int ID, string Name, int? Unknown1, byte[] FileBytes)
+        public BNDEntry(int ID, string Name, int? Unknown1, byte[] FileBytes)
         {
             this.ID = ID;
             this.Name = Name;
@@ -22,10 +28,22 @@ namespace MeowDSIO.DataTypes.BND3
             Data = FileBytes;
         }
 
+        public T ReadDataAs<T>()
+            where T : DataFile, new()
+        {
+            return DataFile.LoadFromBytes<T>(Data, Name, null);
+        }
+
         public T ReadDataAs<T>(IProgress<(int, int)> prog)
             where T : DataFile, new()
         {
             return DataFile.LoadFromBytes<T>(Data, Name, prog);
+        }
+
+        public void ReplaceData<T>(T data)
+            where T : DataFile, new()
+        {
+            Data = DataFile.SaveAsBytes(data, Name, null);
         }
 
         public void ReplaceData<T>(T data, IProgress<(int, int)> prog)

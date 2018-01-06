@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeowDSIO.DataTypes.BND3
+namespace MeowDSIO.DataTypes.BND
 {
-    public struct BND3EntryHeaderBuffer
+    public struct BNDEntryHeaderBuffer
     {
         public int FileSize;
         public int FileOffset;
@@ -23,7 +23,7 @@ namespace MeowDSIO.DataTypes.BND3
             Unknown1 = null;
         }
 
-        public BND3Entry GetEntry(DSBinaryReader bin)
+        public BNDEntry GetEntry(DSBinaryReader bin)
         {
             if (FileOffset < 0 || FileOffset > bin.Length)
             {
@@ -45,7 +45,7 @@ namespace MeowDSIO.DataTypes.BND3
                 bin.StepOut();
             }
 
-            return new BND3Entry(FileID, fileName, Unknown1, bytes);
+            return new BNDEntry(FileID, fileName, Unknown1, bytes);
         }
     }
 }

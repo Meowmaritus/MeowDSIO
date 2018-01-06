@@ -79,10 +79,7 @@ namespace MeowDSIO
 
             if (markerName != null)
             {
-                if (MarkerDict.ContainsKey(markerName))
-                    MarkerDict[markerName] = labelOffset;
-                else
-                    MarkerDict.Add(markerName, labelOffset);
+                MarkerDict.Add(markerName, labelOffset);
             }
 
             return labelOffset;
@@ -104,25 +101,9 @@ namespace MeowDSIO
             }
         }
 
-        public void StepIn(string markerName)
-        {
-            if (markerName == null)
-                throw new ArgumentNullException(nameof(markerName));
-
-            if (MarkerDict.ContainsKey(markerName))
-            {
-                StepIn(MarkerDict[markerName]);
-            }
-            else
-            {
-                throw new ArgumentException("No DSBinaryWriter Marker was registered " +
-                    $"with the name '{markerName}'.", nameof(markerName));
-            }
-        }
-
         public void Replace(string markerName, int replaceMarkerVal)
         {
-            StepIn(markerName);
+            StepIn(MarkerDict[markerName]);
             Write(replaceMarkerVal);
             StepOut();
         }

@@ -1,9 +1,12 @@
-﻿using MeowDSIO.Exceptions.DSRead;
+﻿using MeowDSIO.DataFiles;
+using MeowDSIO.DataTypes.FLVER;
+using MeowDSIO.Exceptions.DSRead;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -166,6 +169,33 @@ namespace MeowDSIO
             return new Vector3(x, y, z);
         }
 
+        
+
+        public Vector3? ReadFlverNullableVector3(byte[] compare)
+        {
+            byte[] valueBytes = ReadBytes(compare.Length);
+
+            bool isNull = true;
+            for (int i = 0; i < valueBytes.Length; i++)
+            {
+                if (valueBytes[i] != compare[i])
+                {
+                    isNull = false;
+                    break;
+                }
+            }
+
+            if (isNull)
+                return null;
+
+            Position -= compare.Length;
+
+            float x = ReadSingle();
+            float y = ReadSingle();
+            float z = ReadSingle();
+            return new Vector3(x, y, z);
+        }
+
         public Vector4 ReadVector4()
         {
             float w = ReadSingle();
@@ -173,6 +203,48 @@ namespace MeowDSIO
             float y = ReadSingle();
             float z = ReadSingle();
             return new Vector4(w, x, y, z);
+        }
+
+        public FlverVertexColor ReadFlverVertexColor()
+        {
+            return new FlverVertexColor()
+            {
+                R = ReadByte(),
+                G = ReadByte(),
+                B = ReadByte(),
+                A = ReadByte(),
+            };
+        }
+
+        public FlverUV ReadFlverUV()
+        {
+            ushort u = ReadUInt16();
+            ushort v = ReadUInt16();
+            return new FlverUV(u, v);
+        }
+
+        public float ReadFlver8BitFloat()
+        {
+            return (ReadByte() - 127) / 127f;
+        }
+
+        public FlverPackedVector4 ReadFlverPackedVector4()
+        {
+            return new FlverPackedVector4()
+            {
+                X = (sbyte)(ReadByte() - 127),
+                Y = (sbyte)(ReadByte() - 127),
+                Z = (sbyte)(ReadByte() - 127),
+                W = (sbyte)(ReadByte() - 127),
+            };
+        }
+
+        public double ReadFlverVersion()
+        {
+            short upper = ReadInt16();
+            short lower = ReadInt16();
+
+            return double.Parse($"{upper}.{lower}");
         }
 
         public string ReadMtdName(out byte delim)
@@ -246,7 +318,17 @@ namespace MeowDSIO
             }
         }
 
+        public TData ReadAsDataFile<TData>(string virtualUri = null, int dataSizeInBytes = -1)
+            where TData: DataFile, new()
+        {
+            byte[] data = ReadBytes((dataSizeInBytes < 0) ? (int)Length : dataSizeInBytes);
+            return DataFile.LoadFromBytes<TData>(data, virtualUri ?? FileName);
+        }
 
+        public byte[] ReadAllBytes()
+        {
+            return ReadBytes((int)BaseStream.Length);
+        }
 
 
     }
