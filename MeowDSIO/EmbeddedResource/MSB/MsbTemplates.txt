@@ -1,0 +1,119 @@
+﻿$Model
+	int* Name
+	int Type
+	int Index
+	int* SibName
+	int InstanceCount
+	int Unknown1
+	int Unknown2
+	int Unknown3
+	string Name
+	string SibName
+
+$Event0
+	int* Name
+	int EventIndex
+	int Type
+	int Index
+	int BaseDataOffset
+	int TypeDataOffset
+	int Unknown1
+	string Name
+	int PartIndex1
+	int PointIndex1
+	int EventEntityID
+	int Unknown2
+	int Unknown3
+
+$Event1
+	int* Name
+	int EventIndex
+	int Type
+	int Index
+	int BaseDataOffset
+	int TypeDataOffset
+	int Unknown1
+	string Name
+	int PartIndex1
+	int PointIndex1
+	int EventEntityID
+	int Unknown2
+
+	int Unknown3
+	int Unknown4
+
+$Event2:
+	int* Name
+	int EventIndex
+	int Type
+	int Index
+	int BaseDataOffset
+	int TypeDataOffset
+	int Unknown1
+	string Name
+	int PartIndex1
+	int PointIndex1
+	int EventEntityID
+	int Unknown2
+
+	int ParticleEffectId
+
+$Event3
+	int* Name
+	int EventIndex
+	int Type
+	int Index
+	int BaseDataOffset
+	int TypeDataOffset
+	int Unknown1
+	string Name
+	int PartIndex1
+	int PointIndex1
+	int EventEntityID
+	int Unknown2
+
+	int Unknown3
+	int Unknown4
+	int Unknown5
+	int Unknown6
+	int Unknown7
+	int Unknown8
+	int Unknown9
+	int Unknown10
+	int Unknown11
+	int Unknown12
+	int Unknown13
+	int Unknown14
+	int Unknown15
+	int Unknown16
+	int Unknown17
+	int Unknown18
+
+$Event4
+	int* Name
+	int EventIndex
+	int Type
+	int Index
+	int BaseDataOffset
+	int TypeDataOffset
+	int Unknown1
+	string Name
+	int PartIndex1
+	int PointIndex1
+	int EventEntityID
+	int Unknown2
+
+	int Unknown3
+	int PartIndex2
+	int Unknown4
+	int Unknown5
+	int Unknown6
+	int Unknown7
+	int Unknown8
+	int Unknown9
+	int Unknown10
+	int Unknown11
+	int Unknown12
+	int Unknown13
+	int Unknown14
+

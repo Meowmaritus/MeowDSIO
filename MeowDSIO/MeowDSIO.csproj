@@ -11,6 +11,7 @@
     <AssemblyName>MeowDSIO</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,10 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\MeowDSIO_Test\MeowDSIO_Test\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,12 +53,14 @@
     <Compile Include="DataFile.cs" />
     <Compile Include="DataFiles\ANIBND.cs" />
     <Compile Include="DataFiles\BND.cs" />
+    <Compile Include="DataFiles\DCX.cs" />
     <Compile Include="DataFiles\EntityBND.cs" />
     <Compile Include="DataFiles\ESD.cs" />
     <Compile Include="DataFiles\FLVER.cs" />
     <Compile Include="DataFiles\FMG.cs" />
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
+    <Compile Include="DataFiles\MSB.cs" />
     <Compile Include="DataFiles\MTD.cs" />
     <Compile Include="DataFiles\MtdBND.cs" />
     <Compile Include="DataFiles\PARAM.cs" />
@@ -106,6 +109,10 @@
     <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
     <Compile Include="DataTypes\LUAINFO\ScriptRef.cs" />
     <Compile Include="DataTypes\LUAGNL\StringRef.cs" />
+    <Compile Include="DataTypes\MSB\MsbDataTemplate.cs" />
+    <Compile Include="DataTypes\MSB\MsbDataTemplateEntry.cs" />
+    <Compile Include="DataTypes\MSB\MsbEnums.cs" />
+    <Compile Include="DataTypes\MSB\MsbParamEntry.cs" />
     <Compile Include="DataTypes\MTD\ExternalParam.cs" />
     <Compile Include="DataTypes\MTD\InternalParam.cs" />
     <Compile Include="DataTypes\MTD\MTDEnums.cs" />
@@ -156,6 +163,7 @@
     <Compile Include="WrapperDataTypes\ExcelParamSheet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EmbeddedResource\MSB\MsbTemplates.txt" />
     <Content Include="EmbeddedResource\TAE\AnimationEventParamDefs.h" />
   </ItemGroup>
   <ItemGroup />

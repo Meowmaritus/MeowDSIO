@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeowDSIO.DataFiles;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -134,6 +135,36 @@ namespace MeowDSIO
             }
         }
 
+        public static void ReloadDcx<T>(T data, IProgress<(int, int)> prog = null)
+            where T : DataFile, new()
+        {
+            if (data.FilePath == null)
+            {
+                throw new InvalidOperationException($"Data file cannot be reloaded unless it was " +
+                    $"previously saved to or loaded from a file and had its {nameof(FilePath)} property set.");
+            }
+
+            using (var fileStream = File.Open(data.FilePath, FileMode.Open))
+            {
+                using (var binaryReader = new DSBinaryReader(null, fileStream))
+                {
+                    DCX dcx = new DCX();
+                    dcx.VirtualUri = data.VirtualUri;
+                    dcx.Read(binaryReader, prog);
+
+                    using (var tempStream = new MemoryStream(dcx.Data))
+                    {
+                        using (var dcxBinaryReader = new DSBinaryReader(null, tempStream))
+                        {
+                            data.Read(dcxBinaryReader, prog);
+                            data.IsModified = false;
+                        }
+                    }
+
+                }
+            }
+        }
+
         public static void Reload<T>(T data, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
@@ -151,6 +182,13 @@ namespace MeowDSIO
                     data.IsModified = false;
                 }
             }
+        }
+
+        public static void ResaveDcx<T>(T data, IProgress<(int, int)> prog = null)
+            where T : DataFile, new()
+        {
+            var dcx = new DCX() { Data = SaveAsBytes<T>(data, data.FilePath ?? data.VirtualUri, prog) };
+            Resave<DCX>(dcx, prog);
         }
 
         public static void Resave<T>(T data, IProgress<(int, int)> prog = null)
@@ -173,23 +211,15 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromFile<T>(string filePath)
+        public static T LoadFromDcxFile<T>(string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
-            using (var fileStream = File.Open(filePath, FileMode.Open))
-            {
-                using (var binaryReader = new DSBinaryReader(filePath, fileStream))
-                {
-                    T result = new T();
-                    result.FilePath = filePath;
-                    result.Read(binaryReader, null);
-                    result.IsModified = false;
-                    return result;
-                }
-            }
+            var dcx = LoadFromFile<DCX>(filePath);
+            return LoadFromBytes<T>(dcx.Data, filePath, prog);
         }
 
-        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog)
+
+        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.Open))
@@ -205,23 +235,14 @@ namespace MeowDSIO
             }
         }
 
-        public static void SaveToFile<T>(T data, string filePath)
+        public static void SaveToDcxFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
-            using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))
-            {
-                fileStream.Position = 0;
-                fileStream.SetLength(0);
-                using (var binaryWriter = new DSBinaryWriter(filePath, fileStream))
-                {
-                    data.FilePath = filePath;
-                    data.Write(binaryWriter, null);
-                    data.IsModified = false;
-                }
-            }
+            var bytes = SaveAsBytes<T>(data, filePath, prog);
+            SaveToFile<DCX>(new DCX() { Data = bytes}, filePath, prog);
         }
 
-        public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog)
+        public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))
@@ -235,6 +256,13 @@ namespace MeowDSIO
                     data.IsModified = false;
                 }
             }
+        }
+
+        public static T LoadFromDcxBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog = null)
+            where T : DataFile, new()
+        {
+            var dcx = LoadFromBytes<DCX>(bytes, virtualUri, prog);
+            return LoadFromBytes<T>(dcx.Data, virtualUri, prog);
         }
 
         public static T LoadFromBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog = null)
@@ -251,6 +279,13 @@ namespace MeowDSIO
                     return result;
                 }
             }
+        }
+
+        public static byte[] SaveAsDcxBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog = null)
+            where T : DataFile, new()
+        {
+            var dcx = new DCX() { Data = SaveAsBytes<T>(data, virtualUri, prog) };
+            return SaveAsBytes<DCX>(dcx, virtualUri, prog);
         }
 
         public static byte[] SaveAsBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog = null)
@@ -270,6 +305,13 @@ namespace MeowDSIO
                     return result;
                 }
             }
+        }
+
+        public static T LoadFromDcxStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog = null)
+            where T : DataFile, new()
+        {
+            var dcx = LoadFromStream<DCX>(stream, virtualUri, prog);
+            return LoadFromBytes<T>(dcx.Data, virtualUri, prog);
         }
 
         public static T LoadFromStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog = null)

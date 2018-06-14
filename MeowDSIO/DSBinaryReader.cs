@@ -330,6 +330,60 @@ namespace MeowDSIO
             return ReadBytes((int)BaseStream.Length);
         }
 
+        //TKGP the MVP 
+        //TKGP the MVP 
+        //TKGP the MVP 
+        public void AssertByte(byte value)
+        {
+            byte b = ReadByte();
+            if (b != value)
+            {
+                throw new InvalidDataException(string.Format(
+                    "Read byte: 0x{0:X} | Expected byte: 0x{1:X}", b, value));
+            }
+        }
+
+        //TKGP the MVP 
+        //TKGP the MVP 
+        //TKGP the MVP 
+        public void AssertBytes(params byte[] values)
+        {
+            foreach (byte value in values)
+            {
+                byte b = ReadByte();
+                if (b != value)
+                {
+                    throw new InvalidDataException(string.Format(
+                        "Read byte: 0x{0:X} | Expected byte: 0x{1:X}", b, value));
+                }
+            }
+        }
+
+        //TKGP the MVP 
+        //TKGP the MVP 
+        //TKGP the MVP 
+        public void AssertInt32(int value)
+        {
+            int i = ReadInt32();
+            if (i != value)
+            {
+                throw new InvalidDataException(string.Format(
+                    "Read int: 0x{0:X} | Expected int: 0x{1:X}", i, value));
+            }
+        }
+
+        //TKGP the MVP 
+        //TKGP the MVP 
+        //TKGP the MVP 
+        public void AssertASCII(string value, int length)
+        {
+            string s = ReadStringAscii(length);
+            if (s != value)
+            {
+                throw new InvalidDataException(string.Format(
+                    "Read string: {0} | Expected string: {1}", s, value));
+            }
+        }
 
     }
 }
