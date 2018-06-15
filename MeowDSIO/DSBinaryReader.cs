@@ -329,10 +329,7 @@ namespace MeowDSIO
         {
             return ReadBytes((int)BaseStream.Length);
         }
-
-        //TKGP the MVP 
-        //TKGP the MVP 
-        //TKGP the MVP 
+        
         public void AssertByte(byte value)
         {
             byte b = ReadByte();
@@ -343,9 +340,6 @@ namespace MeowDSIO
             }
         }
 
-        //TKGP the MVP 
-        //TKGP the MVP 
-        //TKGP the MVP 
         public void AssertBytes(params byte[] values)
         {
             foreach (byte value in values)
@@ -359,9 +353,6 @@ namespace MeowDSIO
             }
         }
 
-        //TKGP the MVP 
-        //TKGP the MVP 
-        //TKGP the MVP 
         public void AssertInt32(int value)
         {
             int i = ReadInt32();
@@ -372,10 +363,7 @@ namespace MeowDSIO
             }
         }
 
-        //TKGP the MVP 
-        //TKGP the MVP 
-        //TKGP the MVP 
-        public void AssertASCII(string value, int length)
+        public void AssertStringAscii(string value, int length)
         {
             string s = ReadStringAscii(length);
             if (s != value)
