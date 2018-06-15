@@ -32,7 +32,7 @@ namespace MeowDSIO
                     RaisePropertyChanged();
                     OnIsModifiedChanged();
                 }
-                
+
             }
         }
 
@@ -149,6 +149,7 @@ namespace MeowDSIO
                 using (var binaryReader = new DSBinaryReader(null, fileStream))
                 {
                     DCX dcx = new DCX();
+                    dcx.FilePath = data.FilePath;
                     dcx.VirtualUri = data.VirtualUri;
                     dcx.Read(binaryReader, prog);
 
@@ -187,7 +188,12 @@ namespace MeowDSIO
         public static void ResaveDcx<T>(T data, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
-            var dcx = new DCX() { Data = SaveAsBytes<T>(data, data.FilePath ?? data.VirtualUri, prog) };
+            var dcx = new DCX()
+            {
+                Data = SaveAsBytes<T>(data, data.FilePath ?? data.VirtualUri, prog),
+                FilePath = data.FilePath,
+                VirtualUri = data.VirtualUri
+            };
             Resave<DCX>(dcx, prog);
         }
 
@@ -239,7 +245,12 @@ namespace MeowDSIO
             where T : DataFile, new()
         {
             var bytes = SaveAsBytes<T>(data, filePath, prog);
-            SaveToFile<DCX>(new DCX() { Data = bytes}, filePath, prog);
+            SaveToFile<DCX>(new DCX()
+            {
+                Data = bytes,
+                FilePath = data.FilePath,
+                VirtualUri = data.VirtualUri
+            }, filePath, prog);
         }
 
         public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
@@ -284,7 +295,12 @@ namespace MeowDSIO
         public static byte[] SaveAsDcxBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
-            var dcx = new DCX() { Data = SaveAsBytes<T>(data, virtualUri, prog) };
+            var dcx = new DCX()
+            {
+                Data = SaveAsBytes<T>(data, virtualUri, prog),
+                FilePath = data.FilePath,
+                VirtualUri = data.VirtualUri
+            };
             return SaveAsBytes<DCX>(dcx, virtualUri, prog);
         }
 

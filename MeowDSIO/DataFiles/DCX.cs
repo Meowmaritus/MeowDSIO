@@ -20,6 +20,8 @@ namespace MeowDSIO.DataFiles
         //TKGP the MVP 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
+            bin.BigEndian = true;
+
             //TKGP the MVP 
             //TKGP the MVP 
             //TKGP the MVP 
@@ -67,6 +69,8 @@ namespace MeowDSIO.DataFiles
         //TKGP the MVP 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
+            bin.BigEndian = true;
+
             //TKGP the MVP 
             //TKGP the MVP 
             //TKGP the MVP 
