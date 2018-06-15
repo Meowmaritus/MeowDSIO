@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
+using MeowDSIO.Exceptions;
 
 namespace MeowDSIO
 {
@@ -29,6 +30,44 @@ namespace MeowDSIO
             : base(output, encoding, leaveOpen)
         {
             FileName = fileName;
+        }
+
+        private long currentMsbStructOffset = -1;
+
+        public int MsbOffset
+        {
+            get
+            {
+                if (currentMsbStructOffset >= 0)
+                {
+                    return (int)(Position - currentMsbStructOffset);
+                }
+                else
+                {
+                    throw new DSWriteException(this, $"Attempted to read current MSB struct offset without running .{nameof(StartMsbStruct)}() first.");
+                }
+            }
+            set
+            {
+                if (currentMsbStructOffset >= 0)
+                {
+                    Position = (currentMsbStructOffset + value);
+                }
+                else
+                {
+                    throw new DSWriteException(this, $"Attempted to write current MSB struct offset without running .{nameof(StartMsbStruct)}() first.");
+                }
+            }
+        }
+
+        public void StartMsbStruct()
+        {
+            currentMsbStructOffset = Position;
+        }
+
+        public void EndMsbStruct()
+        {
+            currentMsbStructOffset = -1;
         }
 
         public void WritePaddedStringShiftJIS(string str, int paddedRegionLength, byte? padding, bool forceTerminateAtMaxLength = false)
@@ -224,5 +263,13 @@ namespace MeowDSIO
         //    else
         //        Write(FLVER.FlverNullableVector3_NullBytes);
         //}
+
+        public void WriteMsbString(string s)
+        {
+            if (s != null)
+            {
+                WriteStringShiftJIS(s, terminate: true);
+            }
+        }
     }
 }

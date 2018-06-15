@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeowDSIO.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,18 @@ namespace MeowDSIO
         public bool BigEndian = false;
 
         public char StrEscapeChar = (char)0;
+
+        public void StepInMSB(int offset)
+        {
+            if (currentMsbStructOffset >= 0)
+            {
+                StepIn(Position + offset);
+            }
+            else
+            {
+                throw new DSWriteException(this, $"Attempted to use .{nameof(StepInMSB)}() without running .{nameof(StartMsbStruct)}() first.");
+            }
+        }
 
         public void StepIn(long offset)
         {

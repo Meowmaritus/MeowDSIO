@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
+using MeowDSIO.Exceptions;
 
 namespace MeowDSIO
 {
@@ -31,7 +32,45 @@ namespace MeowDSIO
         {
             FileName = fileName;
         }
-        
+
+        private long currentMsbStructOffset = -1;
+
+        public int MsbOffset
+        {
+            get
+            {
+                if (currentMsbStructOffset >= 0)
+                {
+                    return (int)(Position - currentMsbStructOffset);
+                }
+                else
+                {
+                    throw new DSReadException(this, $"Attempted to read current MSB struct offset without running .{nameof(StartMsbStruct)}() first.");
+                }
+            }
+            set
+            {
+                if (currentMsbStructOffset >= 0)
+                {
+                    Position = (currentMsbStructOffset + value);
+                }
+                else
+                {
+                    throw new DSReadException(this, $"Attempted to write current MSB struct offset without running .{nameof(StartMsbStruct)}() first.");
+                }
+            }
+        }
+
+        public void StartMsbStruct()
+        {
+            currentMsbStructOffset = Position;
+        }
+
+        public void EndMsbStruct()
+        {
+            currentMsbStructOffset = -1;
+        }
+
         /// <summary>
         /// Reads an ASCII string.
         /// </summary>
@@ -373,5 +412,21 @@ namespace MeowDSIO
             }
         }
 
+        public string ReadMsbString()
+        {
+            string result = null;
+
+            int msbStringOffset = ReadInt32();
+            if (msbStringOffset > 0)
+            {
+                StepInMSB(msbStringOffset);
+                {
+                    result = ReadStringShiftJIS();
+                }
+                StepOut();
+            }
+
+            return result;
+        }
     }
 }
