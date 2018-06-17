@@ -31,5 +31,10 @@ namespace MeowDSIO.DataTypes.MSB
 
         //RUN bin.StartMsbStruct() FIRST
         protected abstract void InternalRead(DSBinaryReader bin);
+
+        public MsbStruct Clone()
+        {
+            return (MsbStruct)this.MemberwiseClone();
+        }
     }
 }

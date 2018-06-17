@@ -172,6 +172,17 @@ namespace MeowDSIO.DataTypes.MSB
 
             bin.Write(Ux60);
 
+            int nameByteCount = DSBinaryWriter.ShiftJISEncoding.GetByteCount(Name);
+            int placeholderModelByteCount = DSBinaryWriter.ShiftJISEncoding.GetByteCount(PlaceholderModel);
+
+            int blockSize = (nameByteCount + 1) + (placeholderModelByteCount + 1);
+
+            if (string.IsNullOrEmpty(PlaceholderModel))
+            {
+                blockSize += 5;
+            }
+
+            blockSize = (blockSize + 3) & (-0x4);
 
             bin.StartMSBStrings();
             {
@@ -181,10 +192,9 @@ namespace MeowDSIO.DataTypes.MSB
                 bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}", bin.MsbOffset);
                 bin.WriteMsbString(PlaceholderModel, terminate: true);
 
-                bin.Pad(align: 0x04);
+                //bin.Pad(align: 0x10);
             }
-            bin.EndMSBStrings(blockSize: 0x14);
-
+            bin.EndMSBStrings(blockSize);
 
             bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|(BASE DATA OFFSET)", bin.MsbOffset);
             bin.Write(EventEntityID);
