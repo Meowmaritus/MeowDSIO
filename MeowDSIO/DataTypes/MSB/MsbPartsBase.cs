@@ -191,8 +191,6 @@ namespace MeowDSIO.DataTypes.MSB
 
                 bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}", bin.MsbOffset);
                 bin.WriteMsbString(PlaceholderModel, terminate: true);
-
-                //bin.Pad(align: 0x10);
             }
             bin.EndMSBStrings(blockSize);
 
