@@ -66,10 +66,14 @@ namespace MeowDSIO.DataTypes.MSB
 
             bin.Write(Ux18);
 
-            bin.Replace($"EVENT_PARAM_ST|{Type}|Name", bin.MsbOffset);
-            bin.WriteMsbString(Name);
+            //bin.StartMSBStrings();
+            {
+                bin.Replace($"EVENT_PARAM_ST|{Type}|Name", bin.MsbOffset);
+                bin.WriteMsbString(Name);
 
-            bin.Pad(align: 0x04);
+                bin.Pad(align: 0x04);
+            }
+            //bin.EndMSBStrings(blockSize: 0x10);
 
             bin.Replace($"EVENT_PARAM_ST|{Type}|(BASE DATA OFFSET)", bin.MsbOffset);
             bin.Write(PartIndex1);

@@ -31,6 +31,31 @@ namespace MeowDSIO
 
         public char StrEscapeChar = (char)0;
 
+        private long msbStringStart = -1;
+
+        public void StartMSBStrings()
+        {
+            msbStringStart = Position;
+        }
+
+        public void EndMSBStrings(int blockSize)
+        {
+            if (msbStringStart < 0)
+            {
+                throw new DSWriteException(this, $"Tried to call .{nameof(EndMSBStrings)}() without calling .{nameof(StartMSBStrings)}() first.");
+            }
+
+            int currentBlockLength = (int)(Position - msbStringStart);
+
+            if (currentBlockLength < blockSize)
+            {
+                byte[] pad = new byte[blockSize - currentBlockLength];
+                Write(pad);
+            }
+
+            msbStringStart = -1;
+        }
+
         public void StepInMSB(int offset)
         {
             if (currentMsbStructOffset >= 0)

@@ -173,38 +173,17 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Write(Ux60);
 
 
-
-            bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(Name)}", bin.MsbOffset);
-            bin.WriteMsbString(Name, terminate: true);
-
-            bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}", bin.MsbOffset);
-            bin.WriteMsbString(PlaceholderModel, terminate: true);
-
-            bin.Pad(align: 0x04);
-
-            if (string.IsNullOrEmpty(PlaceholderModel))
+            bin.StartMSBStrings();
             {
-                int nameShiftJisLength = DSBinaryWriter.ShiftJISEncoding.GetByteCount(Name) + 1;
+                bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(Name)}", bin.MsbOffset);
+                bin.WriteMsbString(Name, terminate: true);
 
-                if (nameShiftJisLength < 0x08)
-                {
-                    bin.Write((int)0);
-                }
+                bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}", bin.MsbOffset);
+                bin.WriteMsbString(PlaceholderModel, terminate: true);
 
-                if (nameShiftJisLength < 0x0C)
-                {
-                    bin.Write((int)0);
-                }
-
-                if (nameShiftJisLength < 0x10)
-                {
-                    bin.Write((int)0);
-                }
-
-                //WHAT THE HELL IS THIS
-                //bin.Write((int)0);
-                //bin.Write((int)0);
+                bin.Pad(align: 0x04);
             }
+            bin.EndMSBStrings(blockSize: 0x14);
 
 
             bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|(BASE DATA OFFSET)", bin.MsbOffset);

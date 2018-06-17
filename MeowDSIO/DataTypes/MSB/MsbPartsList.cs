@@ -46,31 +46,31 @@ namespace MeowDSIO.DataTypes.MSB
         {
             List<MsbPartsBase> indexDict = new List<MsbPartsBase>();
 
-            foreach (var thing in Collisions)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in UnusedCollisions)
-                CheckIndexDictRegister(indexDict, thing);
-
             foreach (var thing in MapPieces)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Navimeshes)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in NPCs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in UnusedNPCs)
                 CheckIndexDictRegister(indexDict, thing);
 
             foreach (var thing in Objects)
                 CheckIndexDictRegister(indexDict, thing);
 
-            foreach (var thing in UnusedObjects)
+            foreach (var thing in NPCs)
                 CheckIndexDictRegister(indexDict, thing);
 
             foreach (var thing in Players)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in Collisions)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in Navimeshes)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in UnusedObjects)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in UnusedNPCs)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in UnusedCollisions)
                 CheckIndexDictRegister(indexDict, thing);
 
             //int currentIndex = -1;

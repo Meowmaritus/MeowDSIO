@@ -49,19 +49,31 @@ namespace MeowDSIO.DataTypes.MSB
         {
             Dictionary<int, MsbEventBase> indexDict = new Dictionary<int, MsbEventBase>();
 
-            foreach (var thing in BlackEyeOrbInvasion)
+            foreach (var thing in Lights)
                 CheckIndexDictRegister(indexDict, thing);
 
-            foreach (var thing in BloodMessages)
+            foreach (var thing in Sounds)
                 CheckIndexDictRegister(indexDict, thing);
 
-            foreach (var thing in EnvironmentEvents)
+            foreach (var thing in SFXs)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in WindSFXs)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in Treasures)
                 CheckIndexDictRegister(indexDict, thing);
 
             foreach (var thing in Generators)
                 CheckIndexDictRegister(indexDict, thing);
 
-            foreach (var thing in Lights)
+            foreach (var thing in BloodMessages)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in ObjActs)
+                CheckIndexDictRegister(indexDict, thing);
+
+            foreach (var thing in SpawnPoints)
                 CheckIndexDictRegister(indexDict, thing);
 
             foreach (var thing in MapOffsets)
@@ -70,22 +82,10 @@ namespace MeowDSIO.DataTypes.MSB
             foreach (var thing in Navimeshes)
                 CheckIndexDictRegister(indexDict, thing);
 
-            foreach (var thing in ObjActs)
+            foreach (var thing in EnvironmentEvents)
                 CheckIndexDictRegister(indexDict, thing);
 
-            foreach (var thing in SFXs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Sounds)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in SpawnPoints)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Treasures)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in WindSFXs)
+            foreach (var thing in BlackEyeOrbInvasion)
                 CheckIndexDictRegister(indexDict, thing);
 
             //int currentIndex = -1;

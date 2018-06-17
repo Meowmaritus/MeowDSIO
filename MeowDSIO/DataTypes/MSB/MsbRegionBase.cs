@@ -89,10 +89,14 @@ namespace MeowDSIO.DataTypes.MSB
             //PADDING?
             bin.Write((int)0);
 
-            bin.Replace($"POINT_PARAM_ST|{Type}|{nameof(Name)}", bin.MsbOffset);
-            bin.WriteMsbString(Name, terminate: true);
+            //bin.StartMSBStrings();
+            {
+                bin.Replace($"POINT_PARAM_ST|{Type}|{nameof(Name)}", bin.MsbOffset);
+                bin.WriteMsbString(Name, terminate: true);
 
-            bin.Pad(align: 0x04);
+                bin.Pad(align: 0x04);
+            }
+            //bin.EndMSBStrings(blockSize: 0x10);
 
             var msbOffset = bin.MsbOffset;
 

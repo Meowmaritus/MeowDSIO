@@ -270,6 +270,10 @@ namespace MeowDSIO
             {
                 WriteStringShiftJIS(s, terminate);
             }
+            else if (terminate)
+            {
+                Write((byte)0);
+            }
         }
     }
 }
