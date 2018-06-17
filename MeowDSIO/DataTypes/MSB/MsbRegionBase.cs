@@ -94,10 +94,6 @@ namespace MeowDSIO.DataTypes.MSB
 
             bin.Pad(align: 0x04);
 
-            //PADDING
-            bin.Write((int)0);
-            bin.Write((int)0);
-
             bin.Replace($"POINT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET 1)", 
                 bin.MsbOffset);
 
