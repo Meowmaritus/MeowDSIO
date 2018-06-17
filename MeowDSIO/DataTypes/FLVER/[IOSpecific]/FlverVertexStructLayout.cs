@@ -77,6 +77,7 @@ namespace MeowDSIO.DataTypes.FLVER
                     val.Members.Add(FlverVertexStructMember.Read(bin));
                 }
             }
+            //bin.StepOut(); TODO - CHECK IF THIS WAS CAUSING ANY ISSUES
 
             return val;
         }

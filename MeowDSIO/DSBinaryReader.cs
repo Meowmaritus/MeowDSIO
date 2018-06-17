@@ -168,6 +168,9 @@ namespace MeowDSIO
                 shiftJisData.Add(nextByte);
             }
 
+            if (shiftJisData.Count == 0)
+                return "";
+
             return ShiftJISEncoding.GetString(shiftJisData.ToArray());
         }
 
@@ -424,6 +427,10 @@ namespace MeowDSIO
                     result = ReadStringShiftJIS();
                 }
                 StepOut();
+            }
+            else
+            {
+                throw new DSReadException(this, "Read an MSB string offset of 0. I thought all MSB strings pointed somewhere, even if empty...?");
             }
 
             return result;

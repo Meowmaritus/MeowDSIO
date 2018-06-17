@@ -35,7 +35,7 @@ namespace MeowDSIO
         {
             if (currentMsbStructOffset >= 0)
             {
-                StepIn(Position + offset);
+                StepIn(currentMsbStructOffset + offset);
             }
             else
             {
@@ -86,13 +86,21 @@ namespace MeowDSIO
             return label;
         }
 
-        public long Label(string markerName = null)
+        public long Label(string markerName = null, bool allowOverride = true)
         {
             var labelOffset = Position;
 
             if (markerName != null)
             {
-                MarkerDict.Add(markerName, labelOffset);
+                if (MarkerDict.ContainsKey(markerName) && allowOverride)
+                {
+                    MarkerDict[markerName] = labelOffset;
+                }
+                else
+                {
+                    MarkerDict.Add(markerName, labelOffset);
+                }
+                
             }
 
             return labelOffset;

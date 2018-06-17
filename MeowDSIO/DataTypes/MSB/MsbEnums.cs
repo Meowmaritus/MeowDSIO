@@ -62,6 +62,16 @@ namespace MeowDSIO.DataTypes.MSB
         UnusedCollisions = 11,
     }
 
+    public enum ModelParamSubtype : int
+    {
+        MapPiece = 0,
+        Object = 1,
+        Character = 2,
+        Player = 4,
+        Collision = 5,
+        Navimesh = 6
+    }
+
     //Events
 
     public enum MsbSoundType : int

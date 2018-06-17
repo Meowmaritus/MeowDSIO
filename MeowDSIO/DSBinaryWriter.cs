@@ -264,11 +264,11 @@ namespace MeowDSIO
         //        Write(FLVER.FlverNullableVector3_NullBytes);
         //}
 
-        public void WriteMsbString(string s)
+        public void WriteMsbString(string s, bool terminate = true)
         {
             if (s != null)
             {
-                WriteStringShiftJIS(s, terminate: true);
+                WriteStringShiftJIS(s, terminate);
             }
         }
     }

@@ -9,6 +9,7 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
     public class MsbEventTreasure : MsbEventBase
     {
         public int SUx00 { get; set; } = 0;
+        public int SUx04 { get; set; } = 0;
         public int PartIndex2 { get; set; } = 0;
         public int ItemLot1 { get; set; } = 0;
         public int SUx0C { get; set; } = 0;
@@ -30,7 +31,7 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
         protected override void SubtypeRead(DSBinaryReader bin)
         {
             SUx00 = bin.ReadInt32();
-            SUx00 = bin.ReadInt32();
+            SUx04 = bin.ReadInt32();
             PartIndex2 = bin.ReadInt32();
             ItemLot1 = bin.ReadInt32();
             SUx0C = bin.ReadInt32();
@@ -48,6 +49,7 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
         protected override void SubtypeWrite(DSBinaryWriter bin)
         {
             bin.Write(SUx00);
+            bin.Write(SUx04);
             bin.Write(PartIndex2);
             bin.Write(ItemLot1);
             bin.Write(SUx0C);

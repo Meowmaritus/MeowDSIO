@@ -8,7 +8,7 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public abstract class MsbEventBase : MsbStruct
     {
-        public string Name { get; set; } = null;
+        public string Name { get; set; } = "";
         public int EventIndex { get; set; } = -1;
         public int Index { get; set; } = -1;
         public int Ux18 { get; set; } = 0;
@@ -56,9 +56,10 @@ namespace MeowDSIO.DataTypes.MSB
         {
             bin.Placeholder($"EVENT_PARAM_ST|{Type}|Name");
             bin.Write(EventIndex);
-            bin.Write(Index);
 
             bin.Write(Type);
+
+            bin.Write(Index);
 
             bin.Placeholder($"EVENT_PARAM_ST|{Type}|(BASE DATA OFFSET)");
             bin.Placeholder($"EVENT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET)");
@@ -68,13 +69,23 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Replace($"EVENT_PARAM_ST|{Type}|Name", bin.MsbOffset);
             bin.WriteMsbString(Name);
 
+            bin.Pad(align: 0x04);
+
             bin.Replace($"EVENT_PARAM_ST|{Type}|(BASE DATA OFFSET)", bin.MsbOffset);
             bin.Write(PartIndex1);
             bin.Write(RegionIndex1);
             bin.Write(EventEntityID);
 
+            //PADDING
+            bin.Write((int)0);
+
             bin.Replace($"EVENT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET)", bin.MsbOffset);
             SubtypeWrite(bin);
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

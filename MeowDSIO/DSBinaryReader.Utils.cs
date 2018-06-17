@@ -30,7 +30,7 @@ namespace MeowDSIO
         {
             if (currentMsbStructOffset >= 0)
             {
-                StepIn(Position + offset);
+                StepIn(currentMsbStructOffset + offset);
             }
             else
             {
