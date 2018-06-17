@@ -94,17 +94,19 @@ namespace MeowDSIO.DataTypes.MSB
 
             bin.Pad(align: 0x04);
 
-            bin.Replace($"POINT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET 1)", 
-                bin.MsbOffset);
+            var msbOffset = bin.MsbOffset;
+
+            bin.Replace($"POINT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET 1)",
+                msbOffset);
 
             bin.Replace($"POINT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET 2)", 
-                OffsetDeltas.Item1 >= 0 ? bin.MsbOffset + OffsetDeltas.Item1 : 0);
+                OffsetDeltas.Item1 >= 0 ? msbOffset + OffsetDeltas.Item1 : 0);
 
             bin.Replace($"POINT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET 3)", 
-                OffsetDeltas.Item2 >= 0 ? bin.MsbOffset + OffsetDeltas.Item2 : 0);
+                OffsetDeltas.Item2 >= 0 ? msbOffset + OffsetDeltas.Item2 : 0);
 
             bin.Replace($"POINT_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET 4)", 
-                OffsetDeltas.Item3 >= 0 ? bin.MsbOffset + OffsetDeltas.Item3 : 0);
+                OffsetDeltas.Item3 >= 0 ? msbOffset + OffsetDeltas.Item3 : 0);
 
             SubtypeWrite(bin);
         }

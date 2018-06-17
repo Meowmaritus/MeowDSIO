@@ -41,6 +41,9 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         public int UNK17 { get; set; } = 0;
         public int UNK18 { get; set; } = 0;
 
+        public int UNK19 { get; set; } = 0;
+        public int UNK20 { get; set; } = 0;
+
         public override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.Collisions;
@@ -80,6 +83,9 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
             UNK16 = bin.ReadInt32();
             UNK17 = bin.ReadInt32();
             UNK18 = bin.ReadInt32();
+
+            UNK19 = bin.ReadInt32();
+            UNK20 = bin.ReadInt32();
         }
 
         protected override void SubtypeWrite(DSBinaryWriter bin)
@@ -116,6 +122,9 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
             bin.Write(UNK16);
             bin.Write(UNK17);
             bin.Write(UNK18);
+
+            bin.Write(UNK19);
+            bin.Write(UNK20);
         }
     }
 }

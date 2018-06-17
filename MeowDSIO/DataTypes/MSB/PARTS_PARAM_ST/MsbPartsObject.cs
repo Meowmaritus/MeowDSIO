@@ -27,6 +27,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 
         protected override void SubtypeRead(DSBinaryReader bin)
         {
+            UNK1 = bin.ReadInt32();
             PartIndex = bin.ReadInt32();
             UNK2 = bin.ReadInt32();
 

@@ -136,14 +136,14 @@ namespace MeowDSIO.DataTypes.MSB
 
         protected override void InternalWrite(DSBinaryWriter bin)
         {
-            bin.Placeholder($"PARTS_PARAM_ST|{Type}|{nameof(Name)}");
+            bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(Name)}");
 
             bin.Write(Type);
 
             bin.Write(Index);
             bin.Write(ModelIndex);
 
-            bin.Placeholder($"PARTS_PARAM_ST|{Type}|{nameof(PlaceholderModel)}");
+            bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}");
 
             bin.Write(PosX);
             bin.Write(PosY);
@@ -167,30 +167,47 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Write(DispGroup3);
             bin.Write(DispGroup4);
 
-            bin.Placeholder($"PARTS_PARAM_ST|{Type}|(BASE DATA OFFSET)");
-            bin.Placeholder($"PARTS_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET)");
+            bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|(BASE DATA OFFSET)");
+            bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|(SUBTYPE DATA OFFSET)");
 
             bin.Write(Ux60);
 
 
 
-            bin.Replace($"PARTS_PARAM_ST|{Type}|{nameof(Name)}", bin.MsbOffset);
+            bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(Name)}", bin.MsbOffset);
             bin.WriteMsbString(Name, terminate: true);
 
-            bin.Replace($"PARTS_PARAM_ST|{Type}|{nameof(PlaceholderModel)}", bin.MsbOffset);
+            bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}", bin.MsbOffset);
             bin.WriteMsbString(PlaceholderModel, terminate: true);
 
             bin.Pad(align: 0x04);
 
             if (string.IsNullOrEmpty(PlaceholderModel))
             {
+                int nameShiftJisLength = DSBinaryWriter.ShiftJISEncoding.GetByteCount(Name) + 1;
+
+                if (nameShiftJisLength < 0x08)
+                {
+                    bin.Write((int)0);
+                }
+
+                if (nameShiftJisLength < 0x0C)
+                {
+                    bin.Write((int)0);
+                }
+
+                if (nameShiftJisLength < 0x10)
+                {
+                    bin.Write((int)0);
+                }
+
                 //WHAT THE HELL IS THIS
-                bin.Write((int)0);
+                //bin.Write((int)0);
                 //bin.Write((int)0);
             }
 
 
-            bin.Replace($"PARTS_PARAM_ST|{Type}|(BASE DATA OFFSET)", bin.MsbOffset);
+            bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|(BASE DATA OFFSET)", bin.MsbOffset);
             bin.Write(EventEntityID);
             bin.Write(LightID);
             bin.Write(FogID);
@@ -211,7 +228,7 @@ namespace MeowDSIO.DataTypes.MSB
             //bin.Write(BUx18);
 
 
-            bin.Replace($"PARTS_PARAM_ST|{Type}|(SUBTYPE DATA OFFSET)", bin.MsbOffset);
+            bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|(SUBTYPE DATA OFFSET)", bin.MsbOffset);
             SubtypeWrite(bin);
         }
 

@@ -10,7 +10,7 @@ namespace MeowDSIO
 {
     public partial class DSBinaryWriter : BinaryWriter
     {
-        private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
+        internal static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
 
         // Now with 100% less 0DD0ADDE
         public static readonly byte[] PLACEHOLDER_32BIT = new byte[] { 0xDE, 0xAD, 0xD0, 0x0D };
@@ -79,9 +79,9 @@ namespace MeowDSIO
             StepOut();
         }
 
-        public long Placeholder(string markerName = null)
+        public long Placeholder(string markerName = null, bool allowOverride = true)
         {
-            var label = Label(markerName);
+            var label = Label(markerName, allowOverride);
             Write(PLACEHOLDER_32BIT);
             return label;
         }
@@ -92,9 +92,12 @@ namespace MeowDSIO
 
             if (markerName != null)
             {
-                if (MarkerDict.ContainsKey(markerName) && allowOverride)
+                if (MarkerDict.ContainsKey(markerName))
                 {
-                    MarkerDict[markerName] = labelOffset;
+                    if (allowOverride)
+                        MarkerDict[markerName] = labelOffset;
+                    else
+                        throw new DSWriteException(this, $"{nameof(DSBinaryWriter)}.{nameof(Label)} - bool {nameof(allowOverride)} set to FALSE but a Label with the same name has already been added.");
                 }
                 else
                 {
