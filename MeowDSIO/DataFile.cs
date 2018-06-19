@@ -206,13 +206,16 @@ namespace MeowDSIO
                     $"previously saved to or loaded from a file and had its {nameof(FilePath)} property set.");
             }
 
+            //Should no longer save a file with 0 bytes in it if it gets an exception during write oops
+            var newBytes = DataFile.SaveAsBytes(data, data.FilePath, prog);
+
             using (var fileStream = File.Open(data.FilePath, FileMode.OpenOrCreate))
             {
+                fileStream.Position = 0;
                 fileStream.SetLength(0);
                 using (var binaryWriter = new DSBinaryWriter(data.FilePath, fileStream))
                 {
-                    data.Write(binaryWriter, prog);
-                    data.IsModified = false;
+                    binaryWriter.Write(newBytes);
                 }
             }
         }
@@ -256,15 +259,16 @@ namespace MeowDSIO
         public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
+            //Should no longer save a file with 0 bytes in it if it gets an exception during write oops
+            var newBytes = DataFile.SaveAsBytes(data, data.FilePath, prog);
+
             using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))
             {
                 fileStream.Position = 0;
                 fileStream.SetLength(0);
                 using (var binaryWriter = new DSBinaryWriter(filePath, fileStream))
                 {
-                    data.FilePath = filePath;
-                    data.Write(binaryWriter, prog);
-                    data.IsModified = false;
+                    binaryWriter.Write(newBytes);
                 }
             }
         }
