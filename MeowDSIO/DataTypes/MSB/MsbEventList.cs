@@ -45,60 +45,47 @@ namespace MeowDSIO.DataTypes.MSB
                 indexDict.Add(thing.EventIndex, thing);
         }
 
-        public List<MsbEventBase> GetAllEventsInOrder()
+        public IList<MsbEventBase> GlobalList => Lights.Cast<MsbEventBase>()
+            .Concat(Sounds)
+            .Concat(SFXs)
+            .Concat(WindSFXs)
+            .Concat(Treasures)
+            .Concat(Generators)
+            .Concat(BloodMessages)
+            .Concat(ObjActs)
+            .Concat(SpawnPoints)
+            .Concat(MapOffsets)
+            .Concat(Navimeshes)
+            .Concat(EnvironmentEvents)
+            .Concat(BlackEyeOrbInvasion)
+            .ToList();
+
+        public string NameOf(int index)
         {
-            Dictionary<int, MsbEventBase> indexDict = new Dictionary<int, MsbEventBase>();
+            if (index == -1)
+            {
+                return "";
+            }
+            return GlobalList[index].Name;
+        }
 
-            foreach (var thing in Lights)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Sounds)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in SFXs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in WindSFXs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Treasures)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Generators)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in BloodMessages)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in ObjActs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in SpawnPoints)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in MapOffsets)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Navimeshes)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in EnvironmentEvents)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in BlackEyeOrbInvasion)
-                CheckIndexDictRegister(indexDict, thing);
-
-            //int currentIndex = -1;
-
-            //foreach (var kvp in indexDict)
-            //{
-            //    if (kvp.Key != (currentIndex + 1))
-            //    {
-            //        throw new InvalidDataException($"MSB Event list {nameof(MsbEventBase.EventIndex)} value skips from {currentIndex} to {kvp.Key}!");
-            //    }
-            //}
-
-            return indexDict.Values.ToList();
+        public int IndexOf(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return -1;
+            }
+            var matches = GlobalList.Where(x => x.Name == name);
+            var matchCount = matches.Count();
+            if (matchCount == 0)
+            {
+                throw new Exception($"MSB Event \"{name}\" does not exist!");
+            }
+            else if (matchCount > 1)
+            {
+                throw new Exception($"More than one MSB Event found named \"{name}\"!");
+            }
+            return GlobalList.IndexOf(matches.First());
         }
     }
 }

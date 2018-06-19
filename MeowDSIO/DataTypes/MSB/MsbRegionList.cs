@@ -30,33 +30,38 @@ namespace MeowDSIO.DataTypes.MSB
                 indexDict.Add(thing.Index, thing);
         }
 
-        public List<MsbRegionBase> GetAllRegionsInOrder()
+        public string NameOf(int index)
         {
-            Dictionary<int, MsbRegionBase> indexDict = new Dictionary<int, MsbRegionBase>();
+            if (index == -1)
+            {
+                return "";
+            }
+            return GlobalList[index].Name;
+        }
 
-            foreach (var thing in Points)
-                CheckIndexDictRegister(indexDict, thing);
+        public IList<MsbRegionBase> GlobalList => Points.Cast<MsbRegionBase>()
+            .Concat(Spheres)
+            .Concat(Cylinders)
+            .Concat(Boxes)
+            .ToList();
 
-            foreach (var thing in Spheres)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Cylinders)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Boxes)
-                CheckIndexDictRegister(indexDict, thing);
-
-            //int currentIndex = -1;
-
-            //foreach (var kvp in indexDict)
-            //{
-            //    if (kvp.Key != (currentIndex + 1))
-            //    {
-            //        throw new InvalidDataException($"MSB Region list {nameof(MsbRegionBase.Index)} value skips from {currentIndex} to {kvp.Key}!");
-            //    }
-            //}
-
-            return indexDict.Values.ToList();
+        public int IndexOf(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return -1;
+            }
+            var matches = GlobalList.Where(x => x.Name == name);
+            var matchCount = matches.Count();
+            if (matchCount == 0)
+            {
+                throw new Exception($"MSB Region \"{name}\" does not exist!");
+            }
+            else if (matchCount > 1)
+            {
+                throw new Exception($"More than one MSB Region found named \"{name}\"!");
+            }
+            return GlobalList.IndexOf(matches.First());
         }
     }
 }

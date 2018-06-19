@@ -8,7 +8,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 {
     public class MsbPartsNPCUnused : MsbPartsNPC
     {
-        public override PartsParamSubtype GetSubtypeValue()
+        internal override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.UnusedNPCs;
         }

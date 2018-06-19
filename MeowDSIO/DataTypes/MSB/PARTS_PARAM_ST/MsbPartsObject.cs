@@ -10,7 +10,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
     {
         public int UNK1 { get; set; } = 0;
 
-        public int PartIndex { get; set; } = -1;
+        internal int PartIndex { get; set; } = 0;
+
+        public string CollisionName { get; set; } = "";
+
         public int UNK2 { get; set; } = 0;
 
         public short UNK3 { get; set; } = 0;
@@ -20,7 +23,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         public int UNK6 { get; set; } = 0;
 
 
-        public override PartsParamSubtype GetSubtypeValue()
+        internal override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.Objects;
         }

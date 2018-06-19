@@ -14,7 +14,10 @@ namespace MeowDSIO.DataTypes.MSB
         public int Ux18 { get; set; } = 0;
 
         //First Pointer
-        public int PartIndex1 { get; set; } = 0;
+        internal int PartIndex1 { get; set; } = 0;
+
+        public string CollisionName { get; set; } = "";
+
         public int RegionIndex1 { get; set; } = 0;
         public int EventEntityID { get; set; } = 0;
 
@@ -23,7 +26,7 @@ namespace MeowDSIO.DataTypes.MSB
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
         protected abstract EventParamSubtype GetSubtypeValue();
 
-        public int Type => (int)GetSubtypeValue();
+        internal int Type => (int)GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)
         {

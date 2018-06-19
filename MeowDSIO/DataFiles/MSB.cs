@@ -66,6 +66,34 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
 
          */
 
+        public int IndexOfModel(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return -1;
+            }
+            var matches = Models.Where(x => x.Name == name);
+            var matchCount = matches.Count();
+            if (matchCount == 0)
+            {
+                throw new Exception($"MSB Region \"{name}\" does not exist!");
+            }
+            else if (matchCount > 1)
+            {
+                throw new Exception($"More than one MSB Region found named \"{name}\"!");
+            }
+            return Models.IndexOf(matches.First());
+        }
+
+        public string NameOfModel(int index)
+        {
+            if (index == -1)
+            {
+                return "";
+            }
+            return Models[index].Name;
+        }
+
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             Unknown1 = bin.ReadInt32();
@@ -283,7 +311,7 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
 
                 if (currentSectorFormat == MsbSectorFormat.PARTS_PARAM_ST)
                 {
-                    return;
+                    break;
                 }
 
 
@@ -307,14 +335,54 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
             }
             while (true); //Maybe double check here so it doesnt keep reading on dumb files
 
+            foreach (var part in Parts.GlobalList)
+                part.ModelName = NameOfModel(part.ModelIndex);
 
+            foreach (var ev in Events.GlobalList)
+                ev.CollisionName = Parts.NameOf(ev.PartIndex1);
+
+            foreach (var thing in Parts.NPCs)
+                thing.CollisionName = Parts.NameOf(thing.PartIndex);
+
+            foreach (var thing in Parts.UnusedNPCs)
+                thing.CollisionName = Parts.NameOf(thing.PartIndex);
+
+            foreach (var thing in Parts.Objects)
+                thing.CollisionName = Parts.NameOf(thing.PartIndex);
+
+            foreach (var thing in Parts.UnusedObjects)
+                thing.CollisionName = Parts.NameOf(thing.PartIndex);
+
+            foreach (var thing in Events.ObjActs)
+                thing.PartName2 = Parts.NameOf(thing.PartIndex2);
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
-            var LIST_EVENT = Events.GetAllEventsInOrder();
-            var LIST_REGION = Regions.GetAllRegionsInOrder();
-            var LIST_PARTS = Parts.GetAllPartsInOrder();
+            var LIST_EVENT = Events.GlobalList;
+            var LIST_REGION = Regions.GlobalList;
+            var LIST_PARTS = Parts.GlobalList;
+
+            foreach (var part in Parts.GlobalList)
+                part.ModelIndex = IndexOfModel(part.ModelName);
+
+            foreach (var ev in Events.GlobalList)
+                ev.PartIndex1 = Parts.IndexOf(ev.CollisionName);
+
+            foreach (var thing in Parts.NPCs)
+                thing.PartIndex = Parts.IndexOf(thing.CollisionName);
+
+            foreach (var thing in Parts.UnusedNPCs)
+                thing.PartIndex = Parts.IndexOf(thing.CollisionName);
+
+            foreach (var thing in Parts.Objects)
+                thing.PartIndex = Parts.IndexOf(thing.CollisionName);
+
+            foreach (var thing in Parts.UnusedObjects)
+                thing.PartIndex = Parts.IndexOf(thing.CollisionName);
+
+            foreach (var thing in Events.ObjActs)
+                thing.PartIndex2 = Parts.IndexOf(thing.PartName2);
 
             bin.Write(Unknown1);
 

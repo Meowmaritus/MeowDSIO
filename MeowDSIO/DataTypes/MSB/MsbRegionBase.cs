@@ -20,7 +20,7 @@ namespace MeowDSIO.DataTypes.MSB
         public float RotY { get; set; } = 0;
         public float RotZ { get; set; } = 0;
 
-        public abstract (int, int, int) GetOffsetDeltas();
+        internal abstract (int, int, int) GetOffsetDeltas();
 
         /// <summary>
         /// -1 means that offset field is 0, otherwise its the amount added to the first of the four offsets.
@@ -29,11 +29,11 @@ namespace MeowDSIO.DataTypes.MSB
         ///          [80,   84,  88,  96] would be (4,  8, 16)
         ///          [112, 116, 120, 132] would be (4,  8, 20)
         /// </summary>
-        public (int, int, int) OffsetDeltas => GetOffsetDeltas();
+        internal (int, int, int) OffsetDeltas => GetOffsetDeltas();
         protected abstract void SubtypeRead(DSBinaryReader bin);
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
-        public abstract PointParamSubtype GetSubtypeValue();
-        public int Type => (int)GetSubtypeValue();
+        internal abstract PointParamSubtype GetSubtypeValue();
+        internal int Type => (int)GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)
         {

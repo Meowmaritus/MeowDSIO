@@ -9,7 +9,10 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
     public class MsbEventObjAct : MsbEventBase
     {
         public int ObjActEntityID { get; set; } = 0;
-        public int PartIndex2 { get; set; } = 0;
+
+        internal int PartIndex2 { get; set; } = 0;
+        public string PartName2 { get; set; } = "";
+
         public short ParameterID { get; set; } = 0;
         public short SUx0A { get; set; } = 0;
         public int EventFlagID { get; set; } = 0;

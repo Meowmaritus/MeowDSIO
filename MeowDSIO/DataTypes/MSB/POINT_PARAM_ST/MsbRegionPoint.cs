@@ -12,12 +12,12 @@ namespace MeowDSIO.DataTypes.MSB.POINT_PARAM_ST
         public int UNK2 { get; set; } = 0;
         public int EventEntityID { get; set; } = -1;
 
-        public override (int, int, int) GetOffsetDeltas()
+        internal override (int, int, int) GetOffsetDeltas()
         {
             return (4, -1, 8);
         }
 
-        public override PointParamSubtype GetSubtypeValue()
+        internal override PointParamSubtype GetSubtypeValue()
         {
             return PointParamSubtype.Points;
         }

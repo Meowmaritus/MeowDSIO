@@ -13,7 +13,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         public int UNK3 { get; set; } = 0;
         public int UNK4 { get; set; } = 0;
 
-        public override PartsParamSubtype GetSubtypeValue()
+        internal override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.Players;
         }

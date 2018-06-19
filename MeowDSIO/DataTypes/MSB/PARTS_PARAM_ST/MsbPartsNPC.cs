@@ -18,7 +18,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         public int UNK3 { get; set; } = 0;
 
         public int CharaInitID { get; set; } = 0;
-        public int PartIndex { get; set; } = 0;
+
+        internal int PartIndex { get; set; } = 0;
+
+        public string CollisionName { get; set; } = "";
 
         public int UNK4 { get; set; } = 0;
         public int UNK5 { get; set; } = 0;
@@ -37,7 +40,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 
 
 
-        public override PartsParamSubtype GetSubtypeValue()
+        internal override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.NPCs;
         }

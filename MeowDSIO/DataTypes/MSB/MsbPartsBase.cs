@@ -10,7 +10,11 @@ namespace MeowDSIO.DataTypes.MSB
     {
         public string Name { get; set; } = "";
         public int Index { get; set; } = 0;
-        public int ModelIndex { get; set; } = 0;
+
+        internal int ModelIndex { get; set; } = 0;
+
+        public string ModelName { get; set; }  = "";
+
         public string PlaceholderModel { get; set; } = "";
 
         public float PosX { get; set; } = 0;
@@ -60,9 +64,8 @@ namespace MeowDSIO.DataTypes.MSB
 
         protected abstract void SubtypeRead(DSBinaryReader bin);
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
-        public abstract PartsParamSubtype GetSubtypeValue();
-        public int Type => (int)GetSubtypeValue();
-
+        internal abstract PartsParamSubtype GetSubtypeValue();
+        internal int Type => (int)GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)
         {

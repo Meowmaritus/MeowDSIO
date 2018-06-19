@@ -42,48 +42,43 @@ namespace MeowDSIO.DataTypes.MSB
             indexDict.Add(thing);
         }
 
-        public List<MsbPartsBase> GetAllPartsInOrder()
+        public IList<MsbPartsBase> GlobalList => MapPieces.Cast<MsbPartsBase>()
+            .Concat(Objects)
+            .Concat(NPCs)
+            .Concat(Players)
+            .Concat(Collisions)
+            .Concat(Navimeshes)
+            .Concat(UnusedObjects)
+            .Concat(UnusedNPCs)
+            .Concat(UnusedCollisions)
+            .ToList();
+
+        public string NameOf(int index)
         {
-            List<MsbPartsBase> indexDict = new List<MsbPartsBase>();
+            if (index == -1)
+            {
+                return "";
+            }
+            return GlobalList[index].Name;
+        }
 
-            foreach (var thing in MapPieces)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Objects)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in NPCs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Players)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Collisions)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in Navimeshes)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in UnusedObjects)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in UnusedNPCs)
-                CheckIndexDictRegister(indexDict, thing);
-
-            foreach (var thing in UnusedCollisions)
-                CheckIndexDictRegister(indexDict, thing);
-
-            //int currentIndex = -1;
-
-            //foreach (var kvp in indexDict)
-            //{
-            //    if (kvp.Key != (currentIndex + 1))
-            //    {
-            //        throw new InvalidDataException($"MSB Parts list {nameof(MsbPartsBase.Index)} value skips from {currentIndex} to {kvp.Key}!");
-            //    }
-            //}
-
-            return indexDict;
+        public int IndexOf(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return -1;
+            }
+            var matches = GlobalList.Where(x => x.Name == name);
+            var matchCount = matches.Count();
+            if (matchCount == 0)
+            {
+                throw new Exception($"MSB Part \"{name}\" does not exist!");
+            }
+            else if (matchCount > 1)
+            {
+                throw new Exception($"More than one MSB Part found named \"{name}\"!");
+            }
+            return GlobalList.IndexOf(matches.First());
         }
     }
 }

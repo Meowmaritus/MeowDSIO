@@ -19,7 +19,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         public int UNK7 { get; set; } = 0;
         public int UNK8 { get; set; } = 0;
 
-        public override PartsParamSubtype GetSubtypeValue()
+        internal override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.UnusedCollisions;
         }
