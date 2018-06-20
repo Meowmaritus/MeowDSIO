@@ -1,5 +1,6 @@
 ﻿using MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MSB
 {
-    public class MsbPartsList
+    public class MsbPartsList : IList<MsbPartsBase>
     {
         public List<MsbPartsCollision> Collisions { get; set; }
             = new List<MsbPartsCollision>();
@@ -53,6 +54,12 @@ namespace MeowDSIO.DataTypes.MSB
             .Concat(UnusedCollisions)
             .ToList();
 
+        public int Count => GlobalList.Count;
+
+        public bool IsReadOnly => GlobalList.IsReadOnly;
+
+        public MsbPartsBase this[int index] { get => GlobalList[index]; set => GlobalList[index] = value; }
+
         public string NameOf(int index)
         {
             if (index == -1)
@@ -60,6 +67,19 @@ namespace MeowDSIO.DataTypes.MSB
                 return "";
             }
             return GlobalList[index].Name;
+        }
+
+        public int GetNextIndex(PartsParamSubtype type)
+        {
+            var partOfType = GlobalList.Where(x => x.Type == type).OrderBy(x => x.Index);
+            if (!partOfType.Any())
+            {
+                return 0;
+            }
+            else
+            {
+                return partOfType.Last().Index + 1;
+            }
         }
 
         public int IndexOf(string name)
@@ -79,6 +99,56 @@ namespace MeowDSIO.DataTypes.MSB
                 throw new Exception($"More than one MSB Part found named \"{name}\"!");
             }
             return GlobalList.IndexOf(matches.First());
+        }
+
+        public int IndexOf(MsbPartsBase item)
+        {
+            return GlobalList.IndexOf(item);
+        }
+
+        public void Insert(int index, MsbPartsBase item)
+        {
+            GlobalList.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            GlobalList.RemoveAt(index);
+        }
+
+        public void Add(MsbPartsBase item)
+        {
+            GlobalList.Add(item);
+        }
+
+        public void Clear()
+        {
+            GlobalList.Clear();
+        }
+
+        public bool Contains(MsbPartsBase item)
+        {
+            return GlobalList.Contains(item);
+        }
+
+        public void CopyTo(MsbPartsBase[] array, int arrayIndex)
+        {
+            GlobalList.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(MsbPartsBase item)
+        {
+            return GlobalList.Remove(item);
+        }
+
+        public IEnumerator<MsbPartsBase> GetEnumerator()
+        {
+            return GlobalList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GlobalList.GetEnumerator();
         }
     }
 }

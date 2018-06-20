@@ -76,17 +76,28 @@ namespace MeowDSIO.DataTypes.MSB
 
     public enum MsbSoundType : int
     {
-        Environment = 0, //a: 環境音
-        Character = 1, //c: キャラモーション
-        Menu = 2, //f: メニューSE
-        Object = 3, //o: オブジェクト
-        PolySinglePlay = 4, //p: ポリ劇専用SE
-        SFX = 5, //s: SFX
-        BGM = 6, //m: BGM
-        Voice = 7, //v: 音声
-        FloorMatDetermined = 8, //x: 床材質依存
-        ArmorMatDetermined = 9, //b: 鎧材質依存
-        Ghost = 10, //g: ゴースト
+        //a: 環境音
+        Environment = 0,
+        //c: キャラモーション
+        Character = 1,
+        //f: メニューSE
+        Menu = 2,
+        //o: オブジェクト
+        Object = 3,
+        //p: ポリ劇専用SE
+        PolySinglePlay = 4,
+        //s: SFX
+        SFX = 5,
+        //m: BGM
+        BGM = 6,
+        //v: 音声
+        Voice = 7,
+        //x: 床材質依存
+        FloorMatDetermined = 8,
+        //b: 鎧材質依存
+        ArmorMatDetermined = 9,
+        //g: ゴースト
+        Ghost = 10, 
 
     }
 }

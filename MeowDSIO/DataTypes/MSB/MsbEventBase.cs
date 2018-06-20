@@ -26,13 +26,13 @@ namespace MeowDSIO.DataTypes.MSB
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
         protected abstract EventParamSubtype GetSubtypeValue();
 
-        internal int Type => (int)GetSubtypeValue();
+        internal EventParamSubtype Type => GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)
         {
             Name = bin.ReadMsbString();
             EventIndex = bin.ReadInt32();
-            bin.AssertInt32(Type);
+            bin.AssertInt32((int)Type);
             Index = bin.ReadInt32();
 
             int baseDataOffset = bin.ReadInt32();
@@ -60,7 +60,7 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Placeholder($"EVENT_PARAM_ST|{Type}|Name");
             bin.Write(EventIndex);
 
-            bin.Write(Type);
+            bin.Write((int)Type);
 
             bin.Write(Index);
 

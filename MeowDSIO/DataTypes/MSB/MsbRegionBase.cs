@@ -33,14 +33,14 @@ namespace MeowDSIO.DataTypes.MSB
         protected abstract void SubtypeRead(DSBinaryReader bin);
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
         internal abstract PointParamSubtype GetSubtypeValue();
-        internal int Type => (int)GetSubtypeValue();
+        internal PointParamSubtype Type => GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)
         {
             Name = bin.ReadMsbString();
             Ux04 = bin.ReadInt32();
             Index = bin.ReadInt32();
-            bin.AssertInt32(Type);
+            bin.AssertInt32((int)Type);
 
             PosX = bin.ReadSingle();
             PosY = bin.ReadSingle();
@@ -71,7 +71,7 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Placeholder($"POINT_PARAM_ST|{Type}|{nameof(Name)}");
             bin.Write(Ux04);
             bin.Write(Index);
-            bin.Write(Type);
+            bin.Write((int)Type);
 
             bin.Write(PosX);
             bin.Write(PosY);

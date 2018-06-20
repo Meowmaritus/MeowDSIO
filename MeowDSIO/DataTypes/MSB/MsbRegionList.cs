@@ -1,5 +1,6 @@
 ﻿using MeowDSIO.DataTypes.MSB.POINT_PARAM_ST;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MSB
 {
-    public class MsbRegionList
+    public class MsbRegionList : IList<MsbRegionBase>
     {
         public List<MsbRegionPoint> Points { get; set; }
         = new List<MsbRegionPoint>();
@@ -45,6 +46,12 @@ namespace MeowDSIO.DataTypes.MSB
             .Concat(Boxes)
             .ToList();
 
+        public int Count => GlobalList.Count;
+
+        public bool IsReadOnly => GlobalList.IsReadOnly;
+
+        public MsbRegionBase this[int index] { get => GlobalList[index]; set => GlobalList[index] = value; }
+
         public int IndexOf(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -62,6 +69,79 @@ namespace MeowDSIO.DataTypes.MSB
                 throw new Exception($"More than one MSB Region found named \"{name}\"!");
             }
             return GlobalList.IndexOf(matches.First());
+        }
+
+        public int GetNextIndex()
+        {
+            var orderedRegions = GlobalList.OrderBy(x => x.Index);
+            if (!orderedRegions.Any())
+            {
+                return 0;
+            }
+            return orderedRegions.Last().Index + 1;
+        }
+
+        //public int GetNextIndex(PointParamSubtype type)
+        //{
+        //    var pointOfType = GlobalList.Where(x => x.Type == type).OrderBy(x => x.Index);
+        //    if (!pointOfType.Any())
+        //    {
+        //        return 0;
+        //    }
+        //    else
+        //    {
+        //        return pointOfType.Last().Index + 1;
+        //    }
+        //}
+
+        public int IndexOf(MsbRegionBase item)
+        {
+            return GlobalList.IndexOf(item);
+        }
+
+        public void Insert(int index, MsbRegionBase item)
+        {
+            GlobalList.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            GlobalList.RemoveAt(index);
+        }
+
+        public void Add(MsbRegionBase item)
+        {
+            GlobalList.Add(item);
+        }
+
+        public void Clear()
+        {
+            GlobalList.Clear();
+        }
+
+        public bool Contains(MsbRegionBase item)
+        {
+            return GlobalList.Contains(item);
+        }
+
+        public void CopyTo(MsbRegionBase[] array, int arrayIndex)
+        {
+            GlobalList.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(MsbRegionBase item)
+        {
+            return GlobalList.Remove(item);
+        }
+
+        public IEnumerator<MsbRegionBase> GetEnumerator()
+        {
+            return GlobalList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GlobalList.GetEnumerator();
         }
     }
 }

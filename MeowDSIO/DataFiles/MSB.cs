@@ -24,7 +24,7 @@ namespace MeowDSIO.DataFiles
     {
         public int Unknown1;
 
-        public List<MsbModel> Models;
+        public MsbModelList Models = new MsbModelList();
         public MsbEventList Events = new MsbEventList();
         public MsbRegionList Regions = new MsbRegionList();
         public MsbPartsList Parts = new MsbPartsList();
@@ -66,41 +66,13 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
 
          */
 
-        public int IndexOfModel(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return -1;
-            }
-            var matches = Models.Where(x => x.Name == name);
-            var matchCount = matches.Count();
-            if (matchCount == 0)
-            {
-                throw new Exception($"MSB Region \"{name}\" does not exist!");
-            }
-            else if (matchCount > 1)
-            {
-                throw new Exception($"More than one MSB Region found named \"{name}\"!");
-            }
-            return Models.IndexOf(matches.First());
-        }
-
-        public string NameOfModel(int index)
-        {
-            if (index == -1)
-            {
-                return "";
-            }
-            return Models[index].Name;
-        }
-
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             Unknown1 = bin.ReadInt32();
 
 
 
-            Models = new List<MsbModel>();
+            Models = new MsbModelList();
             Events = new MsbEventList();
             Regions = new MsbRegionList();
             Parts = new MsbPartsList();
@@ -132,9 +104,46 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
                         switch (currentSectorFormat)
                         {
                             case MsbSectorFormat.MODEL_PARAM_ST:
-                                var newModel = new MsbModel();
-                                newModel.Read(bin);
-                                Models.Add(newModel);
+                                var modelType = ModelParamSubtype.MapPiece;
+                                bin.StepIn(bin.Position + 0x04);
+                                {
+                                    modelType = (ModelParamSubtype)bin.ReadInt32();
+                                }
+                                bin.StepOut();
+
+                                switch (modelType)
+                                {
+                                    case ModelParamSubtype.Character:
+                                        var newMMCh = new MsbModelCharacter();
+                                        newMMCh.Read(bin);
+                                        Models.Characters.Add(newMMCh);
+                                        break;
+                                    case ModelParamSubtype.Collision:
+                                        var newMMCol = new MsbModelCollision();
+                                        newMMCol.Read(bin);
+                                        Models.Collisions.Add(newMMCol);
+                                        break;
+                                    case ModelParamSubtype.MapPiece:
+                                        var newMMMP = new MsbModelMapPiece();
+                                        newMMMP.Read(bin);
+                                        Models.MapPieces.Add(newMMMP);
+                                        break;
+                                    case ModelParamSubtype.Navimesh:
+                                        var newMMNVM = new MsbModelNavimesh();
+                                        newMMNVM.Read(bin);
+                                        Models.Navimeshes.Add(newMMNVM);
+                                        break;
+                                    case ModelParamSubtype.Object:
+                                        var newMMO = new MsbModelObject();
+                                        newMMO.Read(bin);
+                                        Models.Objects.Add(newMMO);
+                                        break;
+                                    case ModelParamSubtype.Player:
+                                        var newMMP = new MsbModelPlayer();
+                                        newMMP.Read(bin);
+                                        Models.Players.Add(newMMP);
+                                        break;
+                                }
                                 break;
                             case MsbSectorFormat.EVENT_PARAM_ST:
                                 var eventType = EventParamSubtype.Lights;
@@ -336,7 +345,7 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
             while (true); //Maybe double check here so it doesnt keep reading on dumb files
 
             foreach (var part in Parts.GlobalList)
-                part.ModelName = NameOfModel(part.ModelIndex);
+                part.ModelName = Models.NameOf(part.ModelIndex);
 
             foreach (var ev in Events.GlobalList)
                 ev.CollisionName = Parts.NameOf(ev.PartIndex1);
@@ -364,7 +373,7 @@ int[] PARTS_PARAM_Pointers[PARTS_PARAM_Count];
             var LIST_PARTS = Parts.GlobalList;
 
             foreach (var part in Parts.GlobalList)
-                part.ModelIndex = IndexOfModel(part.ModelName);
+                part.ModelIndex = Models.IndexOf(part.ModelName);
 
             foreach (var ev in Events.GlobalList)
                 ev.PartIndex1 = Parts.IndexOf(ev.CollisionName);

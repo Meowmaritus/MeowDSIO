@@ -1,5 +1,6 @@
 ﻿using MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MSB
 {
-    public class MsbEventList
+    public class MsbEventList : IList<MsbEventBase>
     {
         public List<MsbEventBlackEyeOrbInvasion> BlackEyeOrbInvasion { get; set; } 
             = new List<MsbEventBlackEyeOrbInvasion>();
@@ -60,6 +61,12 @@ namespace MeowDSIO.DataTypes.MSB
             .Concat(BlackEyeOrbInvasion)
             .ToList();
 
+        public int Count => GlobalList.Count;
+
+        public bool IsReadOnly => GlobalList.IsReadOnly;
+
+        public MsbEventBase this[int index] { get => GlobalList[index]; set => GlobalList[index] = value; }
+
         public string NameOf(int index)
         {
             if (index == -1)
@@ -67,6 +74,28 @@ namespace MeowDSIO.DataTypes.MSB
                 return "";
             }
             return GlobalList[index].Name;
+        }
+
+        public int GetNextIndex()
+        {
+            if (GlobalList.Count == 0)
+            {
+                return 0;
+            }
+            return GlobalList.OrderBy(x => x.EventIndex).Last().EventIndex + 1;
+        }
+
+        public int GetNextIndex(EventParamSubtype type)
+        {
+            var eventOfType = GlobalList.Where(x => x.Type == type).OrderBy(x => x.Index);
+            if (!eventOfType.Any())
+            {
+                return 0;
+            }
+            else
+            {
+                return eventOfType.Last().Index + 1;
+            }
         }
 
         public int IndexOf(string name)
@@ -86,6 +115,56 @@ namespace MeowDSIO.DataTypes.MSB
                 throw new Exception($"More than one MSB Event found named \"{name}\"!");
             }
             return GlobalList.IndexOf(matches.First());
+        }
+
+        public int IndexOf(MsbEventBase item)
+        {
+            return GlobalList.IndexOf(item);
+        }
+
+        public void Insert(int index, MsbEventBase item)
+        {
+            GlobalList.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            GlobalList.RemoveAt(index);
+        }
+
+        public void Add(MsbEventBase item)
+        {
+            GlobalList.Add(item);
+        }
+
+        public void Clear()
+        {
+            GlobalList.Clear();
+        }
+
+        public bool Contains(MsbEventBase item)
+        {
+            return GlobalList.Contains(item);
+        }
+
+        public void CopyTo(MsbEventBase[] array, int arrayIndex)
+        {
+            GlobalList.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(MsbEventBase item)
+        {
+            return GlobalList.Remove(item);
+        }
+
+        public IEnumerator<MsbEventBase> GetEnumerator()
+        {
+            return GlobalList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GlobalList.GetEnumerator();
         }
     }
 }

@@ -15,8 +15,6 @@ namespace MeowDSIO.DataFiles
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
-            bin.BigEndian = true;
-
             bin.AssertStringAscii("DCX\0", 4);
             bin.AssertInt32(0x10000);
             bin.AssertInt32(0x18);
@@ -54,8 +52,6 @@ namespace MeowDSIO.DataFiles
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
-            bin.BigEndian = true;
-
             using (MemoryStream cmpStream = new MemoryStream())
             using (MemoryStream dcmpStream = new MemoryStream(Data))
             {

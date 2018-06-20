@@ -65,13 +65,13 @@ namespace MeowDSIO.DataTypes.MSB
         protected abstract void SubtypeRead(DSBinaryReader bin);
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
         internal abstract PartsParamSubtype GetSubtypeValue();
-        internal int Type => (int)GetSubtypeValue();
+        internal PartsParamSubtype Type => GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)
         {
             Name = bin.ReadMsbString();
 
-            bin.AssertInt32(Type);
+            bin.AssertInt32((int)Type);
 
             Index = bin.ReadInt32();
             ModelIndex = bin.ReadInt32();
@@ -141,7 +141,7 @@ namespace MeowDSIO.DataTypes.MSB
         {
             bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(Name)}");
 
-            bin.Write(Type);
+            bin.Write((int)Type);
 
             bin.Write(Index);
             bin.Write(ModelIndex);
