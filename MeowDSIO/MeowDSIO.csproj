@@ -121,6 +121,14 @@
     <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventSpawnPoint.cs" />
     <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventTreasure.cs" />
     <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventWindSFX.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelCharacter.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelCollision.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelMapPiece.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelNavimesh.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelObject.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelPlayer.cs" />
+    <Compile Include="DataTypes\MSB\MsbModelBase.cs" />
+    <Compile Include="DataTypes\MSB\MsbModelList.cs" />
     <Compile Include="DataTypes\MSB\MsbPartsList.cs" />
     <Compile Include="DataTypes\MSB\MsbEventList.cs" />
     <Compile Include="DataTypes\MSB\MsbPartsBase.cs" />
