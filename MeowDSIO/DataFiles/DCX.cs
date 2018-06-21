@@ -53,36 +53,39 @@ namespace MeowDSIO.DataFiles
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             using (MemoryStream cmpStream = new MemoryStream())
-            using (MemoryStream dcmpStream = new MemoryStream(Data))
             {
-                DeflateStream dfltStream = new DeflateStream(cmpStream, CompressionMode.Compress);
-                dcmpStream.CopyTo(dfltStream);
-                dfltStream.Close();
+                using (MemoryStream dcmpStream = new MemoryStream(Data))
+                {
+                    using (DeflateStream dfltStream = new DeflateStream(cmpStream, CompressionMode.Compress))
+                    {
+                        dcmpStream.CopyTo(dfltStream);
 
-                bin.WriteStringAscii("DCX\0", terminate: false);
-                bin.Write(0x10000);
-                bin.Write(0x18);
-                bin.Write(0x24);
-                bin.Write(0x24);
-                bin.Write(0x2C);
-                bin.WriteStringAscii("DCS\0", terminate: false);
-                bin.Write(Data.Length);
-                // Size includes 78DA
-                bin.Write((int)(cmpStream.Length + 2));
-                bin.WriteStringAscii("DCP\0", terminate: false);
-                bin.WriteStringAscii("DFLT", terminate: false);
-                bin.Write(0x20);
-                bin.Write(0x9000000);
-                bin.Write(0x0);
-                bin.Write(0x0);
-                bin.Write(0x0);
-                bin.Write(0x00010100);
-                bin.WriteStringAscii("DCA\0", terminate: false);
-                bin.Write(0x8);
-                bin.Write((byte)0x78);
-                bin.Write((byte)0xDA);
+                        bin.WriteStringAscii("DCX\0", terminate: false);
+                        bin.Write(0x10000);
+                        bin.Write(0x18);
+                        bin.Write(0x24);
+                        bin.Write(0x24);
+                        bin.Write(0x2C);
+                        bin.WriteStringAscii("DCS\0", terminate: false);
+                        bin.Write(Data.Length);
+                        // Size includes 78DA
+                        bin.Write((int)(cmpStream.Length + 2));
+                        bin.WriteStringAscii("DCP\0", terminate: false);
+                        bin.WriteStringAscii("DFLT", terminate: false);
+                        bin.Write(0x20);
+                        bin.Write(0x9000000);
+                        bin.Write(0x0);
+                        bin.Write(0x0);
+                        bin.Write(0x0);
+                        bin.Write(0x00010100);
+                        bin.WriteStringAscii("DCA\0", terminate: false);
+                        bin.Write(0x8);
+                        bin.Write((byte)0x78);
+                        bin.Write((byte)0xDA);
 
-                bin.Write(cmpStream.ToArray());
+                        bin.Write(cmpStream.ToArray());
+                    }
+                }
             }
         }
     }
