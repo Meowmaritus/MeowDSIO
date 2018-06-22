@@ -226,6 +226,10 @@ namespace MeowDSIO
             var dcx = LoadFromFile<DCX>(filePath);
             var data = LoadFromBytes<T>(dcx.Data, filePath, prog);
             data.FilePath = filePath;
+            if (data.FilePath.ToUpper().EndsWith(".DCX"))
+            {
+                data.VirtualUri = data.FilePath.Substring(0, data.FilePath.Length - ".DCX".Length);
+            }
             return data;
         }
 
