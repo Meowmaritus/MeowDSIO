@@ -224,7 +224,9 @@ namespace MeowDSIO
             where T : DataFile, new()
         {
             var dcx = LoadFromFile<DCX>(filePath);
-            return LoadFromBytes<T>(dcx.Data, filePath, prog);
+            var data = LoadFromBytes<T>(dcx.Data, filePath, prog);
+            data.FilePath = filePath;
+            return data;
         }
 
 
