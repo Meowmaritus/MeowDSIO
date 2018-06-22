@@ -23,7 +23,8 @@ namespace MeowDSIO.DataTypes.TAE
         Type5   = 5,
         Type8 = 8,
         Type16  = 16,
-        //Type20 = 20,
+        NEW_Type20 = 20,
+        NEW_Type21 = 21,
         Type24 = 24,
         Type32  = 32,
         Type33  = 33,
@@ -32,9 +33,12 @@ namespace MeowDSIO.DataTypes.TAE
         SpEffect  = 66, //int spEffectID
         SpEffectB = 67,
         PartsSFX  = 96,
+        NEW_Type99 = 99,
         PartsSFX2 = 100,
         Type101 = 101,
+        NEW_Type102 = 102,
         Type104 = 104,
+        NEW_Type108 = 108,
         PartsSFX3 = 109,
         Type110 = 110,
         PartsSFX4 = 112,
@@ -50,7 +54,15 @@ namespace MeowDSIO.DataTypes.TAE
         Rotate = 130,
         ScreenShake = 144,
         ScreenShakeB = 145,
+        NEW_Type160 = 160,
+        NEW_Type161 = 161,
+        NEW_Type162 = 162,
+        NEW_Type176 = 176,
+        NEW_Type180 = 180,
+        NEW_Type181 = 181,
+        NEW_Type182 = 182,
         FadeOpacity = 193, //float targetOpacity, float fadeDuration
+        NEW_Type196 = 196,
         Type224 = 224,
         Type225 = 225,
         Type226 = 226,
@@ -58,6 +70,7 @@ namespace MeowDSIO.DataTypes.TAE
         Type229 = 229,
         Type231 = 231,
         Type232 = 232,
+        NEW_Type233 = 233,
         Type236 = 236,
         Type300 = 300,
         Type301 = 301,
@@ -68,6 +81,7 @@ namespace MeowDSIO.DataTypes.TAE
         PlayerWeaponHitbox = 307,
         Type308 = 308,
         Type401 = 401,
+        NEW_Type500 = 500,
     }
 
     public class AnimationEvent : Data
@@ -168,72 +182,69 @@ namespace MeowDSIO.DataTypes.TAE
                 case AnimationEventType.Hitbox: return 3;
                 case AnimationEventType.Type2: return 4;
                 case AnimationEventType.Type5: return 2;
-                case AnimationEventType.Type8: return 14;
+                case AnimationEventType.Type8: return 12; //14?
                 case AnimationEventType.Type16: return 4;
-                
-                case AnimationEventType.Type24: return 6;
+                case AnimationEventType.Type24: return 4; //6?
                 case AnimationEventType.Type32: return 1;
                 case AnimationEventType.Type33: return 1;
-                case AnimationEventType.Type64: return 4;
-                case AnimationEventType.Type65: return 2;
+                case AnimationEventType.Type64: return 2; //4?
+                case AnimationEventType.Type65: return 1; //2?
                 case AnimationEventType.SpEffect: return 1;
-                case AnimationEventType.SpEffectB: return 3;
+                case AnimationEventType.SpEffectB: return 1; //3?
                 case AnimationEventType.PartsSFX: return 3;
-                
-                case AnimationEventType.PartsSFX2: return 3;
+                case AnimationEventType.PartsSFX2: return 8; //3?
                 case AnimationEventType.Type101: return 1;
-                
-                case AnimationEventType.Type104: return 5;
-
+                case AnimationEventType.Type104: return 3; //5?
                 case AnimationEventType.PartsSFX3: return 3;
-                case AnimationEventType.Type110: return 3;
+                case AnimationEventType.Type110: return 1; //3?
                 case AnimationEventType.PartsSFX4: return 2;
-                case AnimationEventType.Type114: return 5;
-                case AnimationEventType.Type115: return 5;
-                case AnimationEventType.Type116: return 4;
+                case AnimationEventType.Type114: return 3; //5?
+                case AnimationEventType.Type115: return 3; //5?
+                case AnimationEventType.Type116: return 3; //4?
                 case AnimationEventType.PartsSFX5: return 3;
-                case AnimationEventType.Type119: return 5;
-                case AnimationEventType.Type120: return 8;
-                case AnimationEventType.Type121: return 4;
+                case AnimationEventType.Type119: return 3; //5?
+                case AnimationEventType.Type120: return 6; //8?
+                case AnimationEventType.Type121: return 2; //4?
                 case AnimationEventType.BodySoundEffect: return 2;
                 case AnimationEventType.WeaponSoundEffect: return 4;
                 case AnimationEventType.Rotate: return 4;
                 case AnimationEventType.ScreenShake: return 3;
-                case AnimationEventType.ScreenShakeB: return 3;
-
+                case AnimationEventType.ScreenShakeB: return 1; //3?
                 case AnimationEventType.FadeOpacity: return 2;
                 case AnimationEventType.Type224: return 1;
                 case AnimationEventType.Type225: return 1;
                 case AnimationEventType.Type226: return 1;
                 case AnimationEventType.Ragdoll: return 3;
-                case AnimationEventType.Type231: return 1;
-                case AnimationEventType.Type232: return 3;
-                case AnimationEventType.Type236: return 5;
                 case AnimationEventType.Type229: return 1;
-                case AnimationEventType.Type300: return 2;
-                case AnimationEventType.Type301: return 3;
-                case AnimationEventType.Type302: return 3;
+                case AnimationEventType.Type231: return 1;
+                case AnimationEventType.Type232: return 1; //3?
+                case AnimationEventType.Type236: return 3; //5?
+                case AnimationEventType.Type300: return 4; //2?
+                case AnimationEventType.Type301: return 1; //3?
+                case AnimationEventType.Type302: return 1; //3?
                 case AnimationEventType.AnimationStack: return 1;
-                case AnimationEventType.Type304: return 4;
+                case AnimationEventType.Type304: return 2; //4?
                 case AnimationEventType.Type306: return 3;
-                case AnimationEventType.PlayerWeaponHitbox: return 5;
-                case AnimationEventType.Type308: return 1;
+                case AnimationEventType.PlayerWeaponHitbox: return 2; //5?
+                case AnimationEventType.Type308: return 6; //1?
                 case AnimationEventType.Type401: return 1;
 
-                //case AnimationEventType.Type20: return 6;
-                //case AnimationEventType.Type21: return 6;
-                //case AnimationEventType.Type99: return 5;
-                //case AnimationEventType.Type102: return 6;
-                //case AnimationEventType.Type108: return 6;
-                //case AnimationEventType.Type108: return 6;
-                //case AnimationEventType.Type160: return 6;
-                ////case AnimationEventType.Type161: return ??;
-                //case AnimationEventType.Type162: return 6;
-                //case AnimationEventType.Type176: return 10;
-                //case AnimationEventType.Type180: return 6;
-                //case AnimationEventType.Type181: return 6;
-                //case AnimationEventType.Type182: return 6;
-                //case AnimationEventType.Type196: return ;
+                //EXPERIMENTAL:
+                //case AnimationEventType.NEW_Type20: return 6;
+                //case AnimationEventType.NEW_Type21: return 6;
+                //case AnimationEventType.NEW_Type99: return 3; //5?
+                //case AnimationEventType.NEW_Type102: return 6;
+                //case AnimationEventType.NEW_Type108: return 3; //5?
+                //case AnimationEventType.NEW_Type160: return 6;
+                //case AnimationEventType.NEW_Type161: return 6; //??
+                //case AnimationEventType.NEW_Type162: return 6;
+                //case AnimationEventType.NEW_Type176: return 10;
+                //case AnimationEventType.NEW_Type180: return 6;
+                //case AnimationEventType.NEW_Type181: return 6;
+                //case AnimationEventType.NEW_Type182: return 6;
+                //case AnimationEventType.NEW_Type196: return 6; //??
+                //case AnimationEventType.NEW_Type233: return 2; //??
+                //case AnimationEventType.NEW_Type500: return 1;
             }
             Console.Error.WriteLine($"[ANIM {animID_ForDebug}] Animation Event Type {type} does not have a param data " + 
                 $"array length specified in {nameof(AnimationEvent)}.{nameof(GetParamCount)}().");
