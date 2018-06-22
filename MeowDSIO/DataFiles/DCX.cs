@@ -44,7 +44,7 @@ namespace MeowDSIO.DataFiles
             // Size includes 78DA
             byte[] compressed = bin.ReadBytes(compressedSize - 2);
             Data = new byte[uncompressedSize];
-            
+
             using (MemoryStream cmpStream = new MemoryStream(compressed))
             using (DeflateStream dfltStream = new DeflateStream(cmpStream, CompressionMode.Decompress))
             using (MemoryStream dcmpStream = new MemoryStream(Data))
@@ -56,41 +56,43 @@ namespace MeowDSIO.DataFiles
         {
             bin.BigEndian = true;
 
+            byte[] compressed;
             using (MemoryStream cmpStream = new MemoryStream())
+            using (MemoryStream dcmpStream = new MemoryStream(Data))
             {
-                using (MemoryStream dcmpStream = new MemoryStream(Data))
-                {
-                    using (DeflateStream dfltStream = new DeflateStream(cmpStream, CompressionMode.Compress))
-                    {
-                        dcmpStream.CopyTo(dfltStream);
-
-                        bin.WriteStringAscii("DCX\0", terminate: false);
-                        bin.Write(0x10000);
-                        bin.Write(0x18);
-                        bin.Write(0x24);
-                        bin.Write(0x24);
-                        bin.Write(0x2C);
-                        bin.WriteStringAscii("DCS\0", terminate: false);
-                        bin.Write(Data.Length);
-                        // Size includes 78DA
-                        bin.Write((int)(cmpStream.Length + 2));
-                        bin.WriteStringAscii("DCP\0", terminate: false);
-                        bin.WriteStringAscii("DFLT", terminate: false);
-                        bin.Write(0x20);
-                        bin.Write(0x9000000);
-                        bin.Write(0x0);
-                        bin.Write(0x0);
-                        bin.Write(0x0);
-                        bin.Write(0x00010100);
-                        bin.WriteStringAscii("DCA\0", terminate: false);
-                        bin.Write(0x8);
-                        bin.Write((byte)0x78);
-                        bin.Write((byte)0xDA);
-
-                        bin.Write(cmpStream.ToArray());
-                    }
-                }
+                // Deflate stream must be closed before the compressed stream can be used,
+                // so don't try to streamline this byte[] out again
+                // Also, WinForms is the best and WPF is for dweebs
+                DeflateStream dfltStream = new DeflateStream(cmpStream, CompressionMode.Compress);
+                dcmpStream.CopyTo(dfltStream);
+                dfltStream.Close();
+                compressed = cmpStream.ToArray();
             }
+
+            bin.WriteStringAscii("DCX\0", terminate: false);
+            bin.Write(0x10000);
+            bin.Write(0x18);
+            bin.Write(0x24);
+            bin.Write(0x24);
+            bin.Write(0x2C);
+            bin.WriteStringAscii("DCS\0", terminate: false);
+            bin.Write(Data.Length);
+            // Size includes 78DA
+            bin.Write(compressed.Length + 2);
+            bin.WriteStringAscii("DCP\0", terminate: false);
+            bin.WriteStringAscii("DFLT", terminate: false);
+            bin.Write(0x20);
+            bin.Write(0x9000000);
+            bin.Write(0x0);
+            bin.Write(0x0);
+            bin.Write(0x0);
+            bin.Write(0x00010100);
+            bin.WriteStringAscii("DCA\0", terminate: false);
+            bin.Write(0x8);
+            bin.Write((byte)0x78);
+            bin.Write((byte)0xDA);
+
+            bin.Write(compressed);
         }
     }
 }
