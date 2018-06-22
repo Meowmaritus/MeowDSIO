@@ -68,5 +68,10 @@ namespace MeowDSIO.DataTypes.BND
         {
             Data = null;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
