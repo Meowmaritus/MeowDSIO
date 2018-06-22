@@ -22,5 +22,18 @@ namespace MeowDSIO.DataTypes.TAE
                 Events[i].DisplayIndex = i + 1;
             }
         }
+
+        public float GetLatestEventEndTime()
+        {
+            float latest = 0;
+            foreach (var ev in Events)
+            {
+                if (ev.EndTime > latest)
+                {
+                    latest = ev.EndTime;
+                }
+            }
+            return latest;
+        }
     }
 }
