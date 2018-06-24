@@ -11,32 +11,32 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public class MsbEventList : IList<MsbEventBase>
     {
-        public List<MsbEventBlackEyeOrbInvasion> BlackEyeOrbInvasion { get; set; } 
-            = new List<MsbEventBlackEyeOrbInvasion>();
-        public List<MsbEventBloodMsg> BloodMessages { get; set; }
-            = new List<MsbEventBloodMsg>();
-        public List<MsbEventEnvironment> EnvironmentEvents { get; set; }
-            = new List<MsbEventEnvironment>();
-        public List<MsbEventGenerator> Generators { get; set; }
-            = new List<MsbEventGenerator>();
         public List<MsbEventLight> Lights { get; set; }
             = new List<MsbEventLight>();
+        public List<MsbEventSound> Sounds { get; set; }
+            = new List<MsbEventSound>();
+        public List<MsbEventSFX> SFXs { get; set; }
+            = new List<MsbEventSFX>();
+        public List<MsbEventWindSFX> WindSFXs { get; set; }
+            = new List<MsbEventWindSFX>();
+        public List<MsbEventTreasure> Treasures { get; set; }
+            = new List<MsbEventTreasure>();
+        public List<MsbEventGenerator> Generators { get; set; }
+            = new List<MsbEventGenerator>();
+        public List<MsbEventBloodMsg> BloodMessages { get; set; }
+            = new List<MsbEventBloodMsg>();
+        public List<MsbEventObjAct> ObjActs { get; set; }
+            = new List<MsbEventObjAct>();
+        public List<MsbEventSpawnPoint> SpawnPoints { get; set; }
+            = new List<MsbEventSpawnPoint>();
         public List<MsbEventMapOffset> MapOffsets { get; set; }
             = new List<MsbEventMapOffset>();
         public List<MsbEventNavimesh> Navimeshes { get; set; }
             = new List<MsbEventNavimesh>();
-        public List<MsbEventObjAct> ObjActs { get; set; }
-            = new List<MsbEventObjAct>();
-        public List<MsbEventSFX> SFXs { get; set; }
-            = new List<MsbEventSFX>();
-        public List<MsbEventSound> Sounds { get; set; }
-            = new List<MsbEventSound>();
-        public List<MsbEventSpawnPoint> SpawnPoints { get; set; }
-            = new List<MsbEventSpawnPoint>();
-        public List<MsbEventTreasure> Treasures { get; set; }
-            = new List<MsbEventTreasure>();
-        public List<MsbEventWindSFX> WindSFXs { get; set; }
-            = new List<MsbEventWindSFX>();
+        public List<MsbEventEnvironment> EnvironmentEvents { get; set; }
+            = new List<MsbEventEnvironment>();
+        public List<MsbEventBlackEyeOrbInvasion> BlackEyeOrbInvasion { get; set; } 
+            = new List<MsbEventBlackEyeOrbInvasion>();
 
         private void CheckIndexDictRegister(Dictionary<int, MsbEventBase> indexDict, MsbEventBase thing)
         {

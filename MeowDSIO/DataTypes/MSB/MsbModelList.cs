@@ -10,23 +10,23 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public class MsbModelList : IList<MsbModelBase>
     {
-        public List<MsbModelCharacter> Characters { get; set; }
-            = new List<MsbModelCharacter>();
-
-        public List<MsbModelCollision> Collisions { get; set; }
-            = new List<MsbModelCollision>();
-
         public List<MsbModelMapPiece> MapPieces { get; set; }
             = new List<MsbModelMapPiece>();
-
-        public List<MsbModelNavimesh> Navimeshes { get; set; }
-            = new List<MsbModelNavimesh>();
 
         public List<MsbModelObject> Objects { get; set; }
             = new List<MsbModelObject>();
 
+        public List<MsbModelCharacter> Characters { get; set; }
+            = new List<MsbModelCharacter>();
+
         public List<MsbModelPlayer> Players { get; set; }
             = new List<MsbModelPlayer>();
+
+        public List<MsbModelCollision> Collisions { get; set; }
+            = new List<MsbModelCollision>();
+
+        public List<MsbModelNavimesh> Navimeshes { get; set; }
+            = new List<MsbModelNavimesh>();
 
         public IList<MsbModelBase> GlobalList =>
             MapPieces.Cast<MsbModelBase>()

@@ -11,32 +11,24 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public class MsbPartsList : IList<MsbPartsBase>
     {
-        public List<MsbPartsCollision> Collisions { get; set; }
-            = new List<MsbPartsCollision>();
-
-        public List<MsbPartsCollisionUnused> UnusedCollisions { get; set; }
-            = new List<MsbPartsCollisionUnused>();
-
         public List<MsbPartsMapPiece> MapPieces { get; set; }
             = new List<MsbPartsMapPiece>();
-
-        public List<MsbPartsNavimesh> Navimeshes { get; set; }
-            = new List<MsbPartsNavimesh>();
-
-        public List<MsbPartsNPC> NPCs { get; set; }
-            = new List<MsbPartsNPC>();
-
-        public List<MsbPartsNPCUnused> UnusedNPCs { get; set; }
-            = new List<MsbPartsNPCUnused>();
-
         public List<MsbPartsObject> Objects { get; set; }
             = new List<MsbPartsObject>();
-
-        public List<MsbPartsObjectUnused> UnusedObjects { get; set; }
-            = new List<MsbPartsObjectUnused>();
-
+        public List<MsbPartsNPC> NPCs { get; set; }
+            = new List<MsbPartsNPC>();
         public List<MsbPartsPlayer> Players { get; set; }
             = new List<MsbPartsPlayer>();
+        public List<MsbPartsCollision> Collisions { get; set; }
+            = new List<MsbPartsCollision>();
+        public List<MsbPartsNavimesh> Navimeshes { get; set; }
+            = new List<MsbPartsNavimesh>();
+        public List<MsbPartsObjectUnused> UnusedObjects { get; set; }
+            = new List<MsbPartsObjectUnused>();
+        public List<MsbPartsNPCUnused> UnusedNPCs { get; set; }
+            = new List<MsbPartsNPCUnused>();
+        public List<MsbPartsCollisionUnused> UnusedCollisions { get; set; }
+            = new List<MsbPartsCollisionUnused>();
 
         private void CheckIndexDictRegister(List<MsbPartsBase> indexDict, MsbPartsBase thing)
         {
