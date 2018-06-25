@@ -30,5 +30,10 @@ namespace MeowDSIO.DataTypes.PARAMBND
             this.Name = Name;
             this.Param = Param;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
