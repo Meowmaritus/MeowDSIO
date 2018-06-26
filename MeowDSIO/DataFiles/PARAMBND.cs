@@ -52,7 +52,7 @@ namespace MeowDSIO.DataFiles
             foreach (var entry in this)
             {
                 if (applyDs1rLazyHotfix &&
-                    (entry.Name == "LEVELSYNC_PARAM_ST" || entry.Name == "TONE_MAP_BANK"))
+                    (entry.Param.ID == "LEVELSYNC_PARAM_ST" || entry.Param.ID == "TONE_MAP_BANK"))
                     continue;
 
                 entry.Param.ApplyPARAMDEFTemplate(pdbnd[entry.Param.ID]);
