@@ -66,6 +66,7 @@
     <Compile Include="DataFiles\PARAM.cs" />
     <Compile Include="DataFiles\PARAMBND.cs" />
     <Compile Include="DataFiles\PARAMDEF.cs" />
+    <Compile Include="DataFiles\PARAMDEFBND_RemasterHotfix.cs" />
     <Compile Include="DataFiles\PARAMDEFBND.cs" />
     <Compile Include="DataFiles\TAE.cs" />
     <Compile Include="DataFiles\TPF.cs" />

@@ -47,12 +47,19 @@ namespace MeowDSIO.DataFiles
             }
         }
 
-        public void ApplyParamDefBND(PARAMDEFBND pdbnd, bool applyDs1rLazyHotfix = false)
+        public void ApplyParamDefBND(PARAMDEFBND pdbnd)
         {
             foreach (var entry in this)
             {
-                if (applyDs1rLazyHotfix &&
-                    (entry.Param.ID == "LEVELSYNC_PARAM_ST" || entry.Param.ID == "TONE_MAP_BANK"))
+                entry.Param.ApplyPARAMDEFTemplate(pdbnd[entry.Param.ID]);
+            }
+        }
+
+        public void ApplyParamDefBND_RemasterHotfix(PARAMDEFBND_RemasterHotfix pdbnd)
+        {
+            foreach (var entry in this)
+            {
+                if (entry.Param.ID == "LEVELSYNC_PARAM_ST" || entry.Param.ID == "TONE_MAP_BANK")
                     continue;
 
                 entry.Param.ApplyPARAMDEFTemplate(pdbnd[entry.Param.ID]);
