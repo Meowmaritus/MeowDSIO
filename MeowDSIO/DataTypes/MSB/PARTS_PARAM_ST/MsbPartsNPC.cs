@@ -26,10 +26,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         public int UNK4 { get; set; } = 0;
         public int UNK5 { get; set; } = 0;
 
-        public short UNK6 { get; set; } = 0;
-        public short UNK7 { get; set; } = 0;
-        public short UNK8 { get; set; } = 0;
-        public short UNK9 { get; set; } = 0;
+        public short MovePoint1 { get; set; } = 0;
+        public short MovePoint2 { get; set; } = 0;
+        public short MovePoint3 { get; set; } = 0;
+        public short MovePoint4 { get; set; } = 0;
 
         public int UNK10 { get; set; } = 0;
         public int UNK11 { get; set; } = 0;
@@ -62,10 +62,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
             UNK4 = bin.ReadInt32();
             UNK5 = bin.ReadInt32();
 
-            UNK6 = bin.ReadInt16();
-            UNK7 = bin.ReadInt16();
-            UNK8 = bin.ReadInt16();
-            UNK9 = bin.ReadInt16();
+            MovePoint1 = bin.ReadInt16();
+            MovePoint2 = bin.ReadInt16();
+            MovePoint3 = bin.ReadInt16();
+            MovePoint4 = bin.ReadInt16();
 
             UNK10 = bin.ReadInt32();
             UNK11 = bin.ReadInt32();
@@ -92,10 +92,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
             bin.Write(UNK4);
             bin.Write(UNK5);
 
-            bin.Write(UNK6);
-            bin.Write(UNK7);
-            bin.Write(UNK8);
-            bin.Write(UNK9);
+            bin.Write(MovePoint1);
+            bin.Write(MovePoint2);
+            bin.Write(MovePoint3);
+            bin.Write(MovePoint4);
 
             bin.Write(UNK10);
             bin.Write(UNK11);
