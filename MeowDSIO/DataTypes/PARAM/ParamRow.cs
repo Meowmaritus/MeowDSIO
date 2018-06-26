@@ -16,6 +16,34 @@ namespace MeowDSIO.DataTypes.PARAM
 
         public ObservableCollection<ParamCellValueRef> Cells { get; set; }
 
+        public object this[string fieldName]
+        {
+            get
+            {
+                var fieldsOfName = Cells.Where(x => x.Def.Name == fieldName);
+                if (fieldsOfName.Any())
+                {
+                    return fieldsOfName.First().Value;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                var fieldsOfName = Cells.Where(x => x.Def.Name == fieldName);
+                if (fieldsOfName.Any())
+                {
+                    fieldsOfName.First().Value = value;
+                }
+                else
+                {
+                    throw new Exception($"Param column {fieldName} does not exist in this param");
+                }
+            }
+        }
+
         public void LoadValuesFromRawData(DataFiles.PARAM Parent)
         {
             int offset = 0, bitVal = 0, bitField = 0;
