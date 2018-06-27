@@ -10,26 +10,23 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public class TimeActEventList : IList<TimeActEventBase>
     {
-        public List<Tae0> Events0 { get; set; } = new List<Tae0>();
-        public List<Tae1> Events1 { get; set; } = new List<Tae1>();
-        public List<Tae2> Events2 { get; set; } = new List<Tae2>();
-        public List<Tae5> Events5 { get; set; } = new List<Tae5>();
-        public List<Tae8> Events8 { get; set; } = new List<Tae8>();
-        public List<Tae16> Events16 { get; set; } = new List<Tae16>();
-        public List<Tae20> Events20 { get; set; } = new List<Tae20>();
-        public List<Tae21> Events21 { get; set; } = new List<Tae21>();
-        public List<Tae24> Events24 { get; set; } = new List<Tae24>();
-        public List<Tae32> Events32 { get; set; } = new List<Tae32>();
-        public List<Tae33> Events33 { get; set; } = new List<Tae33>();
-        public List<Tae64> Events64 { get; set; } = new List<Tae64>();
-        public List<Tae65> Events65 { get; set; } = new List<Tae65>();
-        public List<Tae66> Events66 { get; set; } = new List<Tae66>();
-        public List<Tae67> Events67 { get; set; } = new List<Tae67>();
-        public List<Tae96> Events96 { get; set; } = new List<Tae96>();
-        public List<Tae99> Events99 { get; set; } = new List<Tae99>();
+        public List<Tae000> Events0 { get; set; } = new List<Tae000>();
+        public List<Tae001> Events1 { get; set; } = new List<Tae001>();
+        public List<Tae002> Events2 { get; set; } = new List<Tae002>();
+        public List<Tae005> Events5 { get; set; } = new List<Tae005>();
+        public List<Tae008> Events8 { get; set; } = new List<Tae008>();
+        public List<Tae016> Events16 { get; set; } = new List<Tae016>();
+        public List<Tae024> Events24 { get; set; } = new List<Tae024>();
+        public List<Tae032> Events32 { get; set; } = new List<Tae032>();
+        public List<Tae033> Events33 { get; set; } = new List<Tae033>();
+        public List<Tae064> Events64 { get; set; } = new List<Tae064>();
+        public List<Tae065> Events65 { get; set; } = new List<Tae065>();
+        public List<Tae066> Events66 { get; set; } = new List<Tae066>();
+        public List<Tae067> Events67 { get; set; } = new List<Tae067>();
+        public List<Tae096> Events96 { get; set; } = new List<Tae096>();
+        public List<Tae099> Events99 { get; set; } = new List<Tae099>();
         public List<Tae100> Events100 { get; set; } = new List<Tae100>();
         public List<Tae101> Events101 { get; set; } = new List<Tae101>();
-        public List<Tae102> Events102 { get; set; } = new List<Tae102>();
         public List<Tae104> Events104 { get; set; } = new List<Tae104>();
         public List<Tae108> Events108 { get; set; } = new List<Tae108>();
         public List<Tae109> Events109 { get; set; } = new List<Tae109>();
@@ -42,20 +39,12 @@ namespace MeowDSIO.DataTypes.TAE
         public List<Tae119> Events119 { get; set; } = new List<Tae119>();
         public List<Tae120> Events120 { get; set; } = new List<Tae120>();
         public List<Tae121> Events121 { get; set; } = new List<Tae121>();
-        public List<Tae128> Events128 { get; set; } = new List<Tae128>();
+        public List<TaePlaySound> Events128 { get; set; } = new List<TaePlaySound>();
         public List<Tae129> Events129 { get; set; } = new List<Tae129>();
         public List<Tae130> Events130 { get; set; } = new List<Tae130>();
         public List<Tae144> Events144 { get; set; } = new List<Tae144>();
         public List<Tae145> Events145 { get; set; } = new List<Tae145>();
-        public List<Tae160> Events160 { get; set; } = new List<Tae160>();
-        public List<Tae161> Events161 { get; set; } = new List<Tae161>();
-        public List<Tae162> Events162 { get; set; } = new List<Tae162>();
-        public List<Tae176> Events176 { get; set; } = new List<Tae176>();
-        public List<Tae180> Events180 { get; set; } = new List<Tae180>();
-        public List<Tae181> Events181 { get; set; } = new List<Tae181>();
-        public List<Tae182> Events182 { get; set; } = new List<Tae182>();
         public List<Tae193> Events193 { get; set; } = new List<Tae193>();
-        public List<Tae196> Events196 { get; set; } = new List<Tae196>();
         public List<Tae224> Events224 { get; set; } = new List<Tae224>();
         public List<Tae225> Events225 { get; set; } = new List<Tae225>();
         public List<Tae226> Events226 { get; set; } = new List<Tae226>();
@@ -83,8 +72,6 @@ namespace MeowDSIO.DataTypes.TAE
             .Concat(Events5)
             .Concat(Events8)
             .Concat(Events16)
-            .Concat(Events20)
-            .Concat(Events21)
             .Concat(Events24)
             .Concat(Events32)
             .Concat(Events33)
@@ -96,7 +83,6 @@ namespace MeowDSIO.DataTypes.TAE
             .Concat(Events99)
             .Concat(Events100)
             .Concat(Events101)
-            .Concat(Events102)
             .Concat(Events104)
             .Concat(Events108)
             .Concat(Events109)
@@ -114,15 +100,7 @@ namespace MeowDSIO.DataTypes.TAE
             .Concat(Events130)
             .Concat(Events144)
             .Concat(Events145)
-            .Concat(Events160)
-            .Concat(Events161)
-            .Concat(Events162)
-            .Concat(Events176)
-            .Concat(Events180)
-            .Concat(Events181)
-            .Concat(Events182)
             .Concat(Events193)
-            .Concat(Events196)
             .Concat(Events224)
             .Concat(Events225)
             .Concat(Events226)

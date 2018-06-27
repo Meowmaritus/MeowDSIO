@@ -146,7 +146,7 @@ namespace MeowDSIO
 
             using (var fileStream = File.Open(data.FilePath, FileMode.Open))
             {
-                using (var binaryReader = new DSBinaryReader(null, fileStream))
+                using (var binaryReader = new DSBinaryReader(data.FilePath ?? data.VirtualUri, fileStream))
                 {
                     DCX dcx = new DCX();
                     dcx.FilePath = data.FilePath;
@@ -155,7 +155,7 @@ namespace MeowDSIO
 
                     using (var tempStream = new MemoryStream(dcx.Data))
                     {
-                        using (var dcxBinaryReader = new DSBinaryReader(null, tempStream))
+                        using (var dcxBinaryReader = new DSBinaryReader(data.FilePath ?? data.VirtualUri, tempStream))
                         {
                             data.Read(dcxBinaryReader, prog);
                             data.IsModified = false;
@@ -291,7 +291,7 @@ namespace MeowDSIO
         {
             using (var tempStream = new MemoryStream(bytes))
             {
-                using (var binaryReader = new DSBinaryReader(null, tempStream))
+                using (var binaryReader = new DSBinaryReader(virtualUri, tempStream))
                 {
                     T result = new T();
                     result.VirtualUri = virtualUri;
@@ -343,7 +343,7 @@ namespace MeowDSIO
         public static T LoadFromStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
-            using (var binaryReader = new DSBinaryReader(null, stream))
+            using (var binaryReader = new DSBinaryReader(virtualUri, stream))
             {
                 T result = new T();
                 result.VirtualUri = virtualUri;

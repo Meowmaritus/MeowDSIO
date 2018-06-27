@@ -20,12 +20,12 @@ namespace MeowDSIO.DataTypes.TAE
             ResetToDefaultFileName();
         }
 
-        public AnimationEvent AddNewEvent()
-        {
-            var newEvent = new AnimationEvent(Anim.Events.Count + 1, AnimationEventType.ApplySpecialProperty, ID);
-            Anim.Events.Add(newEvent);
-            return newEvent;
-        }
+        //public AnimationEvent AddNewEvent()
+        //{
+        //    var newEvent = new AnimationEvent(Anim.Events.Count + 1, AnimationEventType.ApplySpecialProperty, ID);
+        //    Anim.Events.Add(newEvent);
+        //    return newEvent;
+        //}
 
         public void ResetToDefaultFileName()
         {
