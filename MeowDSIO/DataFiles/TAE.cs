@@ -88,60 +88,60 @@ namespace MeowDSIO.DataFiles
                         {
                             switch (eventType)
                             {
-                                case TimeActEventType.Type0: var newType0 = new Tae000() { StartTime = startTime, EndTime = endTime }; newType0.ReadParameters(bin); anim.EventList.Events0.Add(newType0); break;
-                                case TimeActEventType.Type1: var newType1 = new Tae001() { StartTime = startTime, EndTime = endTime }; newType1.ReadParameters(bin); anim.EventList.Events1.Add(newType1); break;
-                                case TimeActEventType.Type2: var newType2 = new Tae002() { StartTime = startTime, EndTime = endTime }; newType2.ReadParameters(bin); anim.EventList.Events2.Add(newType2); break;
-                                case TimeActEventType.Type5: var newType5 = new Tae005() { StartTime = startTime, EndTime = endTime }; newType5.ReadParameters(bin); anim.EventList.Events5.Add(newType5); break;
-                                case TimeActEventType.Type8: var newType8 = new Tae008() { StartTime = startTime, EndTime = endTime }; newType8.ReadParameters(bin); anim.EventList.Events8.Add(newType8); break;
-                                case TimeActEventType.Type16: var newType16 = new Tae016() { StartTime = startTime, EndTime = endTime }; newType16.ReadParameters(bin); anim.EventList.Events16.Add(newType16); break;
-                                case TimeActEventType.Type24: var newType24 = new Tae024() { StartTime = startTime, EndTime = endTime }; newType24.ReadParameters(bin); anim.EventList.Events24.Add(newType24); break;
-                                case TimeActEventType.Type32: var newType32 = new Tae032() { StartTime = startTime, EndTime = endTime }; newType32.ReadParameters(bin); anim.EventList.Events32.Add(newType32); break;
-                                case TimeActEventType.Type33: var newType33 = new Tae033() { StartTime = startTime, EndTime = endTime }; newType33.ReadParameters(bin); anim.EventList.Events33.Add(newType33); break;
-                                case TimeActEventType.Type64: var newType64 = new Tae064() { StartTime = startTime, EndTime = endTime }; newType64.ReadParameters(bin); anim.EventList.Events64.Add(newType64); break;
-                                case TimeActEventType.Type65: var newType65 = new Tae065() { StartTime = startTime, EndTime = endTime }; newType65.ReadParameters(bin); anim.EventList.Events65.Add(newType65); break;
-                                case TimeActEventType.Type66: var newType66 = new Tae066() { StartTime = startTime, EndTime = endTime }; newType66.ReadParameters(bin); anim.EventList.Events66.Add(newType66); break;
-                                case TimeActEventType.Type67: var newType67 = new Tae067() { StartTime = startTime, EndTime = endTime }; newType67.ReadParameters(bin); anim.EventList.Events67.Add(newType67); break;
-                                case TimeActEventType.Type96: var newType96 = new Tae096() { StartTime = startTime, EndTime = endTime }; newType96.ReadParameters(bin); anim.EventList.Events96.Add(newType96); break;
-                                case TimeActEventType.Type99: var newType99 = new Tae099() { StartTime = startTime, EndTime = endTime }; newType99.ReadParameters(bin); anim.EventList.Events99.Add(newType99); break;
-                                case TimeActEventType.Type100: var newType100 = new Tae100() { StartTime = startTime, EndTime = endTime }; newType100.ReadParameters(bin); anim.EventList.Events100.Add(newType100); break;
-                                case TimeActEventType.Type101: var newType101 = new Tae101() { StartTime = startTime, EndTime = endTime }; newType101.ReadParameters(bin); anim.EventList.Events101.Add(newType101); break;
-                                case TimeActEventType.Type104: var newType104 = new Tae104() { StartTime = startTime, EndTime = endTime }; newType104.ReadParameters(bin); anim.EventList.Events104.Add(newType104); break;
-                                case TimeActEventType.Type108: var newType108 = new Tae108() { StartTime = startTime, EndTime = endTime }; newType108.ReadParameters(bin); anim.EventList.Events108.Add(newType108); break;
-                                case TimeActEventType.Type109: var newType109 = new Tae109() { StartTime = startTime, EndTime = endTime }; newType109.ReadParameters(bin); anim.EventList.Events109.Add(newType109); break;
-                                case TimeActEventType.Type110: var newType110 = new Tae110() { StartTime = startTime, EndTime = endTime }; newType110.ReadParameters(bin); anim.EventList.Events110.Add(newType110); break;
-                                case TimeActEventType.Type112: var newType112 = new Tae112() { StartTime = startTime, EndTime = endTime }; newType112.ReadParameters(bin); anim.EventList.Events112.Add(newType112); break;
-                                case TimeActEventType.Type114: var newType114 = new Tae114() { StartTime = startTime, EndTime = endTime }; newType114.ReadParameters(bin); anim.EventList.Events114.Add(newType114); break;
-                                case TimeActEventType.Type115: var newType115 = new Tae115() { StartTime = startTime, EndTime = endTime }; newType115.ReadParameters(bin); anim.EventList.Events115.Add(newType115); break;
-                                case TimeActEventType.Type116: var newType116 = new Tae116() { StartTime = startTime, EndTime = endTime }; newType116.ReadParameters(bin); anim.EventList.Events116.Add(newType116); break;
-                                case TimeActEventType.Type118: var newType118 = new Tae118() { StartTime = startTime, EndTime = endTime }; newType118.ReadParameters(bin); anim.EventList.Events118.Add(newType118); break;
-                                case TimeActEventType.Type119: var newType119 = new Tae119() { StartTime = startTime, EndTime = endTime }; newType119.ReadParameters(bin); anim.EventList.Events119.Add(newType119); break;
-                                case TimeActEventType.Type120: var newType120 = new Tae120() { StartTime = startTime, EndTime = endTime }; newType120.ReadParameters(bin); anim.EventList.Events120.Add(newType120); break;
-                                case TimeActEventType.Type121: var newType121 = new Tae121() { StartTime = startTime, EndTime = endTime }; newType121.ReadParameters(bin); anim.EventList.Events121.Add(newType121); break;
-                                case TimeActEventType.PlaySound: var newType128 = new TaePlaySound() { StartTime = startTime, EndTime = endTime }; newType128.ReadParameters(bin); anim.EventList.Events128.Add(newType128); break;
-                                case TimeActEventType.Type129: var newType129 = new Tae129() { StartTime = startTime, EndTime = endTime }; newType129.ReadParameters(bin); anim.EventList.Events129.Add(newType129); break;
-                                case TimeActEventType.Type130: var newType130 = new Tae130() { StartTime = startTime, EndTime = endTime }; newType130.ReadParameters(bin); anim.EventList.Events130.Add(newType130); break;
-                                case TimeActEventType.Type144: var newType144 = new Tae144() { StartTime = startTime, EndTime = endTime }; newType144.ReadParameters(bin); anim.EventList.Events144.Add(newType144); break;
-                                case TimeActEventType.Type145: var newType145 = new Tae145() { StartTime = startTime, EndTime = endTime }; newType145.ReadParameters(bin); anim.EventList.Events145.Add(newType145); break;
-                                case TimeActEventType.Type193: var newType193 = new Tae193() { StartTime = startTime, EndTime = endTime }; newType193.ReadParameters(bin); anim.EventList.Events193.Add(newType193); break;
-                                case TimeActEventType.Type224: var newType224 = new Tae224() { StartTime = startTime, EndTime = endTime }; newType224.ReadParameters(bin); anim.EventList.Events224.Add(newType224); break;
-                                case TimeActEventType.Type225: var newType225 = new Tae225() { StartTime = startTime, EndTime = endTime }; newType225.ReadParameters(bin); anim.EventList.Events225.Add(newType225); break;
-                                case TimeActEventType.Type226: var newType226 = new Tae226() { StartTime = startTime, EndTime = endTime }; newType226.ReadParameters(bin); anim.EventList.Events226.Add(newType226); break;
-                                case TimeActEventType.Type228: var newType228 = new Tae228() { StartTime = startTime, EndTime = endTime }; newType228.ReadParameters(bin); anim.EventList.Events228.Add(newType228); break;
-                                case TimeActEventType.Type229: var newType229 = new Tae229() { StartTime = startTime, EndTime = endTime }; newType229.ReadParameters(bin); anim.EventList.Events229.Add(newType229); break;
-                                case TimeActEventType.Type231: var newType231 = new Tae231() { StartTime = startTime, EndTime = endTime }; newType231.ReadParameters(bin); anim.EventList.Events231.Add(newType231); break;
-                                case TimeActEventType.Type232: var newType232 = new Tae232() { StartTime = startTime, EndTime = endTime }; newType232.ReadParameters(bin); anim.EventList.Events232.Add(newType232); break;
-                                case TimeActEventType.Type233: var newType233 = new Tae233() { StartTime = startTime, EndTime = endTime }; newType233.ReadParameters(bin); anim.EventList.Events233.Add(newType233); break;
-                                case TimeActEventType.Type236: var newType236 = new Tae236() { StartTime = startTime, EndTime = endTime }; newType236.ReadParameters(bin); anim.EventList.Events236.Add(newType236); break;
-                                case TimeActEventType.Type300: var newType300 = new Tae300() { StartTime = startTime, EndTime = endTime }; newType300.ReadParameters(bin); anim.EventList.Events300.Add(newType300); break;
-                                case TimeActEventType.Type301: var newType301 = new Tae301() { StartTime = startTime, EndTime = endTime }; newType301.ReadParameters(bin); anim.EventList.Events301.Add(newType301); break;
-                                case TimeActEventType.Type302: var newType302 = new Tae302() { StartTime = startTime, EndTime = endTime }; newType302.ReadParameters(bin); anim.EventList.Events302.Add(newType302); break;
-                                case TimeActEventType.Type303: var newType303 = new Tae303() { StartTime = startTime, EndTime = endTime }; newType303.ReadParameters(bin); anim.EventList.Events303.Add(newType303); break;
-                                case TimeActEventType.Type304: var newType304 = new Tae304() { StartTime = startTime, EndTime = endTime }; newType304.ReadParameters(bin); anim.EventList.Events304.Add(newType304); break;
-                                case TimeActEventType.Type306: var newType306 = new Tae306() { StartTime = startTime, EndTime = endTime }; newType306.ReadParameters(bin); anim.EventList.Events306.Add(newType306); break;
-                                case TimeActEventType.Type307: var newType307 = new Tae307() { StartTime = startTime, EndTime = endTime }; newType307.ReadParameters(bin); anim.EventList.Events307.Add(newType307); break;
-                                case TimeActEventType.Type308: var newType308 = new Tae308() { StartTime = startTime, EndTime = endTime }; newType308.ReadParameters(bin); anim.EventList.Events308.Add(newType308); break;
-                                case TimeActEventType.Type401: var newType401 = new Tae401() { StartTime = startTime, EndTime = endTime }; newType401.ReadParameters(bin); anim.EventList.Events401.Add(newType401); break;
-                                case TimeActEventType.Type500: var newType500 = new Tae500() { StartTime = startTime, EndTime = endTime }; newType500.ReadParameters(bin); anim.EventList.Events500.Add(newType500); break;
+                                case TimeActEventType.Type0: var newType0 = new Tae000() { Index = i, StartTime = startTime, EndTime = endTime }; newType0.ReadParameters(bin); anim.EventList.Events0.Add(newType0); break;
+                                case TimeActEventType.Type1: var newType1 = new Tae001() { Index = i, StartTime = startTime, EndTime = endTime }; newType1.ReadParameters(bin); anim.EventList.Events1.Add(newType1); break;
+                                case TimeActEventType.Type2: var newType2 = new Tae002() { Index = i, StartTime = startTime, EndTime = endTime }; newType2.ReadParameters(bin); anim.EventList.Events2.Add(newType2); break;
+                                case TimeActEventType.Type5: var newType5 = new Tae005() { Index = i, StartTime = startTime, EndTime = endTime }; newType5.ReadParameters(bin); anim.EventList.Events5.Add(newType5); break;
+                                case TimeActEventType.Type8: var newType8 = new Tae008() { Index = i, StartTime = startTime, EndTime = endTime }; newType8.ReadParameters(bin); anim.EventList.Events8.Add(newType8); break;
+                                case TimeActEventType.Type16: var newType16 = new Tae016() { Index = i, StartTime = startTime, EndTime = endTime }; newType16.ReadParameters(bin); anim.EventList.Events16.Add(newType16); break;
+                                case TimeActEventType.Type24: var newType24 = new Tae024() { Index = i, StartTime = startTime, EndTime = endTime }; newType24.ReadParameters(bin); anim.EventList.Events24.Add(newType24); break;
+                                case TimeActEventType.Type32: var newType32 = new Tae032() { Index = i, StartTime = startTime, EndTime = endTime }; newType32.ReadParameters(bin); anim.EventList.Events32.Add(newType32); break;
+                                case TimeActEventType.Type33: var newType33 = new Tae033() { Index = i, StartTime = startTime, EndTime = endTime }; newType33.ReadParameters(bin); anim.EventList.Events33.Add(newType33); break;
+                                case TimeActEventType.Type64: var newType64 = new Tae064() { Index = i, StartTime = startTime, EndTime = endTime }; newType64.ReadParameters(bin); anim.EventList.Events64.Add(newType64); break;
+                                case TimeActEventType.Type65: var newType65 = new Tae065() { Index = i, StartTime = startTime, EndTime = endTime }; newType65.ReadParameters(bin); anim.EventList.Events65.Add(newType65); break;
+                                case TimeActEventType.Type66: var newType66 = new Tae066() { Index = i, StartTime = startTime, EndTime = endTime }; newType66.ReadParameters(bin); anim.EventList.Events66.Add(newType66); break;
+                                case TimeActEventType.Type67: var newType67 = new Tae067() { Index = i, StartTime = startTime, EndTime = endTime }; newType67.ReadParameters(bin); anim.EventList.Events67.Add(newType67); break;
+                                case TimeActEventType.Type96: var newType96 = new Tae096() { Index = i, StartTime = startTime, EndTime = endTime }; newType96.ReadParameters(bin); anim.EventList.Events96.Add(newType96); break;
+                                case TimeActEventType.Type99: var newType99 = new Tae099() { Index = i, StartTime = startTime, EndTime = endTime }; newType99.ReadParameters(bin); anim.EventList.Events99.Add(newType99); break;
+                                case TimeActEventType.Type100: var newType100 = new Tae100() { Index = i, StartTime = startTime, EndTime = endTime }; newType100.ReadParameters(bin); anim.EventList.Events100.Add(newType100); break;
+                                case TimeActEventType.Type101: var newType101 = new Tae101() { Index = i, StartTime = startTime, EndTime = endTime }; newType101.ReadParameters(bin); anim.EventList.Events101.Add(newType101); break;
+                                case TimeActEventType.Type104: var newType104 = new Tae104() { Index = i, StartTime = startTime, EndTime = endTime }; newType104.ReadParameters(bin); anim.EventList.Events104.Add(newType104); break;
+                                case TimeActEventType.Type108: var newType108 = new Tae108() { Index = i, StartTime = startTime, EndTime = endTime }; newType108.ReadParameters(bin); anim.EventList.Events108.Add(newType108); break;
+                                case TimeActEventType.Type109: var newType109 = new Tae109() { Index = i, StartTime = startTime, EndTime = endTime }; newType109.ReadParameters(bin); anim.EventList.Events109.Add(newType109); break;
+                                case TimeActEventType.Type110: var newType110 = new Tae110() { Index = i, StartTime = startTime, EndTime = endTime }; newType110.ReadParameters(bin); anim.EventList.Events110.Add(newType110); break;
+                                case TimeActEventType.Type112: var newType112 = new Tae112() { Index = i, StartTime = startTime, EndTime = endTime }; newType112.ReadParameters(bin); anim.EventList.Events112.Add(newType112); break;
+                                case TimeActEventType.Type114: var newType114 = new Tae114() { Index = i, StartTime = startTime, EndTime = endTime }; newType114.ReadParameters(bin); anim.EventList.Events114.Add(newType114); break;
+                                case TimeActEventType.Type115: var newType115 = new Tae115() { Index = i, StartTime = startTime, EndTime = endTime }; newType115.ReadParameters(bin); anim.EventList.Events115.Add(newType115); break;
+                                case TimeActEventType.Type116: var newType116 = new Tae116() { Index = i, StartTime = startTime, EndTime = endTime }; newType116.ReadParameters(bin); anim.EventList.Events116.Add(newType116); break;
+                                case TimeActEventType.Type118: var newType118 = new Tae118() { Index = i, StartTime = startTime, EndTime = endTime }; newType118.ReadParameters(bin); anim.EventList.Events118.Add(newType118); break;
+                                case TimeActEventType.Type119: var newType119 = new Tae119() { Index = i, StartTime = startTime, EndTime = endTime }; newType119.ReadParameters(bin); anim.EventList.Events119.Add(newType119); break;
+                                case TimeActEventType.Type120: var newType120 = new Tae120() { Index = i, StartTime = startTime, EndTime = endTime }; newType120.ReadParameters(bin); anim.EventList.Events120.Add(newType120); break;
+                                case TimeActEventType.Type121: var newType121 = new Tae121() { Index = i, StartTime = startTime, EndTime = endTime }; newType121.ReadParameters(bin); anim.EventList.Events121.Add(newType121); break;
+                                case TimeActEventType.PlaySound: var newType128 = new TaePlaySound() { Index = i, StartTime = startTime, EndTime = endTime }; newType128.ReadParameters(bin); anim.EventList.Events128.Add(newType128); break;
+                                case TimeActEventType.Type129: var newType129 = new Tae129() { Index = i, StartTime = startTime, EndTime = endTime }; newType129.ReadParameters(bin); anim.EventList.Events129.Add(newType129); break;
+                                case TimeActEventType.Type130: var newType130 = new Tae130() { Index = i, StartTime = startTime, EndTime = endTime }; newType130.ReadParameters(bin); anim.EventList.Events130.Add(newType130); break;
+                                case TimeActEventType.Type144: var newType144 = new Tae144() { Index = i, StartTime = startTime, EndTime = endTime }; newType144.ReadParameters(bin); anim.EventList.Events144.Add(newType144); break;
+                                case TimeActEventType.Type145: var newType145 = new Tae145() { Index = i, StartTime = startTime, EndTime = endTime }; newType145.ReadParameters(bin); anim.EventList.Events145.Add(newType145); break;
+                                case TimeActEventType.Type193: var newType193 = new Tae193() { Index = i, StartTime = startTime, EndTime = endTime }; newType193.ReadParameters(bin); anim.EventList.Events193.Add(newType193); break;
+                                case TimeActEventType.Type224: var newType224 = new Tae224() { Index = i, StartTime = startTime, EndTime = endTime }; newType224.ReadParameters(bin); anim.EventList.Events224.Add(newType224); break;
+                                case TimeActEventType.Type225: var newType225 = new Tae225() { Index = i, StartTime = startTime, EndTime = endTime }; newType225.ReadParameters(bin); anim.EventList.Events225.Add(newType225); break;
+                                case TimeActEventType.Type226: var newType226 = new Tae226() { Index = i, StartTime = startTime, EndTime = endTime }; newType226.ReadParameters(bin); anim.EventList.Events226.Add(newType226); break;
+                                case TimeActEventType.Type228: var newType228 = new Tae228() { Index = i, StartTime = startTime, EndTime = endTime }; newType228.ReadParameters(bin); anim.EventList.Events228.Add(newType228); break;
+                                case TimeActEventType.Type229: var newType229 = new Tae229() { Index = i, StartTime = startTime, EndTime = endTime }; newType229.ReadParameters(bin); anim.EventList.Events229.Add(newType229); break;
+                                case TimeActEventType.Type231: var newType231 = new Tae231() { Index = i, StartTime = startTime, EndTime = endTime }; newType231.ReadParameters(bin); anim.EventList.Events231.Add(newType231); break;
+                                case TimeActEventType.Type232: var newType232 = new Tae232() { Index = i, StartTime = startTime, EndTime = endTime }; newType232.ReadParameters(bin); anim.EventList.Events232.Add(newType232); break;
+                                case TimeActEventType.Type233: var newType233 = new Tae233() { Index = i, StartTime = startTime, EndTime = endTime }; newType233.ReadParameters(bin); anim.EventList.Events233.Add(newType233); break;
+                                case TimeActEventType.Type236: var newType236 = new Tae236() { Index = i, StartTime = startTime, EndTime = endTime }; newType236.ReadParameters(bin); anim.EventList.Events236.Add(newType236); break;
+                                case TimeActEventType.Type300: var newType300 = new Tae300() { Index = i, StartTime = startTime, EndTime = endTime }; newType300.ReadParameters(bin); anim.EventList.Events300.Add(newType300); break;
+                                case TimeActEventType.Type301: var newType301 = new Tae301() { Index = i, StartTime = startTime, EndTime = endTime }; newType301.ReadParameters(bin); anim.EventList.Events301.Add(newType301); break;
+                                case TimeActEventType.Type302: var newType302 = new Tae302() { Index = i, StartTime = startTime, EndTime = endTime }; newType302.ReadParameters(bin); anim.EventList.Events302.Add(newType302); break;
+                                case TimeActEventType.Type303: var newType303 = new Tae303() { Index = i, StartTime = startTime, EndTime = endTime }; newType303.ReadParameters(bin); anim.EventList.Events303.Add(newType303); break;
+                                case TimeActEventType.Type304: var newType304 = new Tae304() { Index = i, StartTime = startTime, EndTime = endTime }; newType304.ReadParameters(bin); anim.EventList.Events304.Add(newType304); break;
+                                case TimeActEventType.Type306: var newType306 = new Tae306() { Index = i, StartTime = startTime, EndTime = endTime }; newType306.ReadParameters(bin); anim.EventList.Events306.Add(newType306); break;
+                                case TimeActEventType.Type307: var newType307 = new Tae307() { Index = i, StartTime = startTime, EndTime = endTime }; newType307.ReadParameters(bin); anim.EventList.Events307.Add(newType307); break;
+                                case TimeActEventType.Type308: var newType308 = new Tae308() { Index = i, StartTime = startTime, EndTime = endTime }; newType308.ReadParameters(bin); anim.EventList.Events308.Add(newType308); break;
+                                case TimeActEventType.Type401: var newType401 = new Tae401() { Index = i, StartTime = startTime, EndTime = endTime }; newType401.ReadParameters(bin); anim.EventList.Events401.Add(newType401); break;
+                                case TimeActEventType.Type500: var newType500 = new Tae500() { Index = i, StartTime = startTime, EndTime = endTime }; newType500.ReadParameters(bin); anim.EventList.Events500.Add(newType500); break;
                             }
                         }
                         bin.StepOut();
@@ -155,9 +155,13 @@ namespace MeowDSIO.DataFiles
                 if (fileType == 0)
                 {
                     int dataOffset = bin.ReadInt32();
-                    bin.BaseStream.Seek(dataOffset, SeekOrigin.Begin);
+                    //bin.BaseStream.Seek(dataOffset, SeekOrigin.Begin);
 
                     int nameOffset = bin.ReadInt32();
+
+                    anim.Unk1 = bin.ReadInt32();
+                    anim.Unk2 = bin.ReadInt32();
+
                     if (nameOffset == 0)
                     {
                         throw new Exception("Anim file type was that of a named one but the name pointer was NULL.");
@@ -168,6 +172,14 @@ namespace MeowDSIO.DataFiles
                 else if (fileType == 1)
                 {
                     anim.FileName = null;
+
+                    bin.ReadInt32(); //offset pointing to next dword for some reason.
+                    bin.ReadInt32(); //offset pointing to start of next anim file struct
+
+                    anim.RefAnimID = bin.ReadInt32();
+                    //Null 1
+                    //Null 2
+                    //Null 3
                 }
                 else
                 {
@@ -412,7 +424,7 @@ namespace MeowDSIO.DataFiles
             var animTimeConstantOffsets = new Dictionary<int, Dictionary<float, int>>(); //<animation ID, Dictionary<time const, offset>>
             {
                 //The unnamed animation files contain the ID of the last named animation file.
-                int lastNamedAnimation = -1;
+                //int lastNamedAnimation = -1;
 
                 //TODO: Check if it's possible for the very first animation data listed to be unnamed, 
                 //and what would go in the last named animation ID value if that were the case?
@@ -425,7 +437,6 @@ namespace MeowDSIO.DataFiles
                         animationFileOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
                         if (anim.Anim.FileName != null)
                         {
-                            lastNamedAnimation = anim.ID; //Set last named animation ID value for the unnamed ones to reference.
                             bin.Write(0x00000000); //type 0 - named
                             bin.Write((int)(bin.BaseStream.Position + 0x04)); //offset pointing to next dword for some reason.
                             bin.Write((int)(bin.BaseStream.Position + 0x10)); //offset pointing to name start
@@ -433,7 +444,10 @@ namespace MeowDSIO.DataFiles
                             bin.Write(anim.Anim.Unk2); //Unknown
                             bin.Write(0x00000000); //Null
                             //name start:
-                            bin.Write(Encoding.Unicode.GetBytes(anim.Anim.FileName));
+                            if (anim.Anim.FileName.Length > 0)
+                            {
+                                bin.Write(Encoding.Unicode.GetBytes(anim.Anim.FileName));
+                            }
                             bin.Write((short)0); //string terminator
                         }
                         else
@@ -441,7 +455,7 @@ namespace MeowDSIO.DataFiles
                             bin.Write(0x00000001); //type 1 - nameless
                             bin.Write((int)(bin.BaseStream.Position + 0x04)); //offset pointing to next dword for some reason.
                             bin.Write((int)(bin.BaseStream.Position + 0x14)); //offset pointing to start of next anim file struct
-                            bin.Write(lastNamedAnimation); //Last named animation ID, to which this one is linked.
+                            bin.Write(anim.Anim.RefAnimID); //Last named animation ID, to which this one is linked.
                             bin.Write(0x00000000); //Null 1
                             bin.Write(0x00000000); //Null 2
                             bin.Write(0x00000000); //Null 3
@@ -466,9 +480,9 @@ namespace MeowDSIO.DataFiles
                         bin.Write((int)animTimeConstantOffsets[anim.ID][e.EndTime]); //offset of end time in time constants.
                         bin.Placeholder(); //PLACEHOLDER: Event body
                         long currentEventHeaderLength = bin.Position - currentEventHeaderStart;
-                        while (currentEventHeaderLength < EventHeaderSize)
+                        if (currentEventHeaderLength < EventHeaderSize)
                         {
-                            bin.Write((byte)0);
+                            bin.Write(new byte[EventHeaderSize - currentEventHeaderLength]);
                         }
                     }
 
@@ -546,6 +560,8 @@ namespace MeowDSIO.DataFiles
                 }
             });
 
+            var END_OF_FILE = (int)bin.Position;
+
             //final header write:
             bin.Seek(0, SeekOrigin.Begin);
 
@@ -589,7 +605,7 @@ namespace MeowDSIO.DataFiles
             //Here would be the value at the very beginning of this method!
 
             //Go to end and pretend like this was a totally normal file write and not the shitshow it was.
-            bin.Seek(0, SeekOrigin.End);
+            bin.Seek(END_OF_FILE, SeekOrigin.Begin);
         }
     }
 }

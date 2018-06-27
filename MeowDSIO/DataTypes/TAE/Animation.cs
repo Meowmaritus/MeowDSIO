@@ -17,6 +17,8 @@ namespace MeowDSIO.DataTypes.TAE
         public int Unk1 { get; set; } = 0;
         public int Unk2 { get; set; } = -2;
 
+        public int RefAnimID = -1;
+
         //public void UpdateEventIndices()
         //{
         //    for (int i = 0; i < Events.Count; i++)

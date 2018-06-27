@@ -120,6 +120,7 @@ namespace MeowDSIO.DataTypes.TAE
             .Concat(Events308)
             .Concat(Events401)
             .Concat(Events500)
+            .OrderBy(x => x.Index)
             .ToList();
 
         public TimeActEventBase this[int index] { get => GlobalList[index]; set => GlobalList[index] = value; }

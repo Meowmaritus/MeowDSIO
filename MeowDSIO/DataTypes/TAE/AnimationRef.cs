@@ -44,5 +44,10 @@ namespace MeowDSIO.DataTypes.TAE
 
             Anim.FileName = $"a{leftNum:D02}_{rightNum:D04}.HKXwin";
         }
+
+        public override string ToString()
+        {
+            return $"[{ID}] {Anim.FileName}";
+        }
     }
 }

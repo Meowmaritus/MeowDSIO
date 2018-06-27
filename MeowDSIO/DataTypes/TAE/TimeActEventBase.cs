@@ -8,6 +8,8 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public abstract class TimeActEventBase
     {
+        public int Index { get; set; } = -1;
+
         protected abstract TimeActEventType GetEventType();
 
         public TimeActEventType EventType => GetEventType();
