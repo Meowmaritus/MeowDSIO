@@ -71,8 +71,7 @@ namespace MeowDSIO.DataFiles
                 }
                 else if (entry.ID >= ID_ANIBND_START && entry.ID <= ID_ANIBND_END)
                 {
-                    //Models[modelIdx].AnimContainer = entry.ReadDataAs<ANIBND>();
-                    Models[modelIdx].AnimContainer = entry.ReadDataAs<BND>();
+                    Models[modelIdx].AnimContainer = entry.ReadDataAs<ANIBND>();
 
                 }
                 else if (entry.ID >= ID_HKXPWV_START && entry.ID <= ID_HKXPWV_END)
