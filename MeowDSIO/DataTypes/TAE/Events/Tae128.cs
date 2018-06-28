@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class TaePlaySound : TimeActEventBase
+    public class Tae128 : TimeActEventBase
     {
         public MSB.MsbSoundType SoundType { get; set; } = 0;
         public int SoundID { get; set; } = 0;
@@ -25,7 +25,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.PlaySound;
+            return TimeActEventType.Type128;
         }
     }
 }

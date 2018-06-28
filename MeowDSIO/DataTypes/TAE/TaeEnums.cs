@@ -43,7 +43,7 @@ namespace MeowDSIO.DataTypes.TAE
         Type119 = 119,
         Type120 = 120,
         Type121 = 121,
-        PlaySound = 128,
+        Type128 = 128,
         Type129 = 129,
         Type130 = 130,
         Type144 = 144,

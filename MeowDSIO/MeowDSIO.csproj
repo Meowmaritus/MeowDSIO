@@ -196,7 +196,7 @@
     <Compile Include="DataTypes\TAE\Events\Tae144.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae130.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae129.cs" />
-    <Compile Include="DataTypes\TAE\Events\TaePlaySound.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae128.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae121.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae120.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae118.cs" />

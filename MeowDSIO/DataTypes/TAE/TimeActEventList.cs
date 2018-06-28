@@ -39,7 +39,7 @@ namespace MeowDSIO.DataTypes.TAE
         public List<Tae119> Events119 { get; set; } = new List<Tae119>();
         public List<Tae120> Events120 { get; set; } = new List<Tae120>();
         public List<Tae121> Events121 { get; set; } = new List<Tae121>();
-        public List<TaePlaySound> Events128 { get; set; } = new List<TaePlaySound>();
+        public List<Tae128> Events128 { get; set; } = new List<Tae128>();
         public List<Tae129> Events129 { get; set; } = new List<Tae129>();
         public List<Tae130> Events130 { get; set; } = new List<Tae130>();
         public List<Tae144> Events144 { get; set; } = new List<Tae144>();
