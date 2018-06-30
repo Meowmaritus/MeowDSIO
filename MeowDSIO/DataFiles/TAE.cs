@@ -154,6 +154,8 @@ namespace MeowDSIO.DataFiles
                 int fileType = bin.ReadInt32();
                 if (fileType == 0)
                 {
+                    anim.IsReference = false;
+
                     int dataOffset = bin.ReadInt32();
                     //bin.BaseStream.Seek(dataOffset, SeekOrigin.Begin);
 
@@ -162,7 +164,7 @@ namespace MeowDSIO.DataFiles
                     anim.Unk1 = bin.ReadInt32();
                     anim.Unk2 = bin.ReadInt32();
 
-                    if (nameOffset == 0)
+                    if (nameOffset <= 0)
                     {
                         throw new Exception("Anim file type was that of a named one but the name pointer was NULL.");
                     }
@@ -171,6 +173,8 @@ namespace MeowDSIO.DataFiles
                 }
                 else if (fileType == 1)
                 {
+                    anim.IsReference = true;
+
                     anim.FileName = null;
 
                     bin.ReadInt32(); //offset pointing to next dword for some reason.
@@ -435,7 +439,7 @@ namespace MeowDSIO.DataFiles
                     {
                         //Write anim file struct:
                         animationFileOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
-                        if (anim.Anim.FileName != null)
+                        if (!anim.Anim.IsReference)
                         {
                             bin.Write(0x00000000); //type 0 - named
                             bin.Write((int)(bin.BaseStream.Position + 0x04)); //offset pointing to next dword for some reason.

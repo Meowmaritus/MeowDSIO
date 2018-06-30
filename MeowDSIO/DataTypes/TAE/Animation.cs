@@ -9,6 +9,7 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public class Animation : Data
     {
+        public bool IsReference { get; set; } = false;
         public string FileName { get; set; } = "a00_0000.hkxwin";
 
         public TimeActEventList EventList { get; set; } = new TimeActEventList();
