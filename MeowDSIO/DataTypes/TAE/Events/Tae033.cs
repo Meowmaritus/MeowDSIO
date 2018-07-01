@@ -34,7 +34,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type33;
+            return TimeActEventType.Type033;
         }
     }
 }

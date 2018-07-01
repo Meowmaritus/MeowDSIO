@@ -8,27 +8,21 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public enum TimeActEventType
     {
-        /*
-        int propertyType, int unk1, int unk2
-
-        Known parameter usages:
-        (8, 0, -1) = Invulnerability (used for rolls etc)
-         */
-        Type0 = 0,
-        Type1 = 1,
-        Type2 = 2,
-        Type5 = 5,
-        Type8 = 8,
-        Type16 = 16,
-        Type24 = 24,
-        Type32 = 32,
-        Type33 = 33,
-        Type64 = 64,
-        Type65 = 65,
-        Type66 = 66,
-        Type67 = 67,
-        Type96 = 96,
-        Type99 = 99,
+        Type000 = 000,
+        Type001 = 001,
+        Type002 = 002,
+        Type005 = 005,
+        Type008 = 008,
+        Type016 = 016,
+        Type024 = 024,
+        Type032 = 032,
+        Type033 = 033,
+        Type064 = 064,
+        Type065 = 065,
+        Type066 = 066,
+        Type067 = 067,
+        Type096 = 096,
+        Type099 = 099,
         Type100 = 100,
         Type101 = 101,
         Type104 = 104,

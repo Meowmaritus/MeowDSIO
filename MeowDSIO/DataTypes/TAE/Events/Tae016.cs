@@ -49,7 +49,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type16;
+            return TimeActEventType.Type016;
         }
     }
 }
