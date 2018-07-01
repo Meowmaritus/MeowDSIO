@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,8 @@ namespace MeowDSIO.DataTypes.TAE
         public bool IsReference { get; set; } = false;
         public string FileName { get; set; } = "a00_0000.hkxwin";
 
-        public TimeActEventList EventList { get; set; } = new TimeActEventList();
+        public ObservableCollection<TimeActEventBase> EventList { get; set; }
+            = new ObservableCollection<TimeActEventBase>();
 
         //These are the unknown 1/2 in the anim file struct:
         public int Unk1 { get; set; } = 0;

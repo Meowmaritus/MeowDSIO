@@ -8,33 +8,46 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae193 : TimeActEventBase
     {
+        public Tae193(float StartTime, float EndTime)
+        {
+            this.StartTime = StartTime;
+            this.EndTime = EndTime;
+        }
+
+        public Tae193(float StartTime, float EndTime, float Opacity, float FadeDuration)
+            : this(StartTime, EndTime)
+        {
+            this.Opacity = Opacity;
+            this.FadeDuration = FadeDuration;
+        }
+
         public override IList<object> Parameters
         {
             get => new List<object>
             {
-                UNK1,
-                UNK2,
+                Opacity,
+                FadeDuration,
             };
             set
             {
-                UNK1 = (int)value[0];
-                UNK2 = (int)value[1];
+                Opacity = (float)value[0];
+                FadeDuration = (float)value[1];
             }
         }
 
-        public int UNK1 { get; set; } = 0;
-        public int UNK2 { get; set; } = 0;
+        public float Opacity { get; set; } = 0;
+        public float FadeDuration { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
+            Opacity = bin.ReadSingle();
+            FadeDuration = bin.ReadSingle();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(UNK1);
-            bin.Write(UNK2);
+            bin.Write(Opacity);
+            bin.Write(FadeDuration);
         }
 
         protected override TimeActEventType GetEventType()

@@ -228,7 +228,6 @@
     <Compile Include="DataTypes\TAE\TaeEnums.cs" />
     <Compile Include="DataTypes\TAE\TAEHeader.cs" />
     <Compile Include="DataTypes\TAE\TimeActEventBase.cs" />
-    <Compile Include="DataTypes\TAE\TimeActEventList.cs" />
     <Compile Include="DataTypes\TPF\TPFEntry.cs" />
     <Compile Include="DataTypes\TPF\TPFEntryReadBuffer.cs" />
     <Compile Include="DSBinaryReader.Endianness.cs" />

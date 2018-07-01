@@ -8,6 +8,19 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae128 : TimeActEventBase
     {
+        public Tae128(float StartTime, float EndTime)
+        {
+            this.StartTime = StartTime;
+            this.EndTime = EndTime;
+        }
+
+        public Tae128(float StartTime, float EndTime, MSB.MsbSoundType SoundType, int SoundID)
+            : this(StartTime, EndTime)
+        {
+            this.SoundType = SoundType;
+            this.SoundID = SoundID;
+        }
+
         public override IList<object> Parameters
         {
             get => new List<object>

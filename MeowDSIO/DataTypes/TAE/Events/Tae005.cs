@@ -8,6 +8,19 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae005 : TimeActEventBase
     {
+        public Tae005(float StartTime, float EndTime)
+        {
+            this.StartTime = StartTime;
+            this.EndTime = EndTime;
+        }
+
+        public Tae005(float StartTime, float EndTime, int UNK1, int UNK2)
+            : this(StartTime, EndTime)
+        {
+            this.UNK1 = UNK1;
+            this.UNK2 = UNK2;
+        }
+
         public override IList<object> Parameters
         {
             get => new List<object>
