@@ -8,6 +8,22 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae116 : TimeActEventBase
     {
+        public override IList<object> Parameters
+        {
+            get => new List<object>
+            {
+                UNK1,
+                UNK2,
+                UNK3,
+            };
+            set
+            {
+                UNK1 = (int)value[0];
+                UNK2 = (int)value[1];
+                UNK3 = (int)value[2];
+            }
+        }
+
         public int UNK1 { get; set; } = 0;
         public int UNK2 { get; set; } = 0;
         public int UNK3 { get; set; } = 0;

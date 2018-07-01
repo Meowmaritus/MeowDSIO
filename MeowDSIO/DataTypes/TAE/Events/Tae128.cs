@@ -8,6 +8,20 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae128 : TimeActEventBase
     {
+        public override IList<object> Parameters
+        {
+            get => new List<object>
+            {
+                SoundType,
+                SoundID,
+            };
+            set
+            {
+                SoundType = (MSB.MsbSoundType)value[0];
+                SoundID = (int)value[1];
+            }
+        }
+
         public MSB.MsbSoundType SoundType { get; set; } = 0;
         public int SoundID { get; set; } = 0;
 

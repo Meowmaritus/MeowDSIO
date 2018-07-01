@@ -8,6 +8,18 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae401 : TimeActEventBase
     {
+        public override IList<object> Parameters
+        {
+            get => new List<object>
+            {
+                UNK1,
+            };
+            set
+            {
+                UNK1 = (int)value[0];
+            }
+        }
+
         public int UNK1 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)

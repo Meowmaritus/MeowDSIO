@@ -8,6 +8,22 @@ namespace MeowDSIO.DataTypes.TAE.Events
 {
     public class Tae000 : TimeActEventBase
     {
+        public override IList<object> Parameters
+        {
+            get => new List<object>
+            {
+                AnimCancelType,
+                UNK1,
+                UNK2,
+            };
+            set
+            {
+                AnimCancelType = (int)value[0];
+                UNK1 = (float)value[1];
+                UNK2 = (int)value[2];
+            }
+        }
+
         public int AnimCancelType { get; set; } = 0;
         public float UNK1 { get; set; } = 0;
         public int UNK2 { get; set; } = 0;
