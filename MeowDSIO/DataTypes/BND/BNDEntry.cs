@@ -12,12 +12,7 @@ namespace MeowDSIO.DataTypes.BND
         public int ID { get; set; }
         public string Name { get; set; }
         public int? Unknown1 = null;
-        public int? BND4_Unknown2 = null;
-        public int? BND4_Unknown3 = null;
-        public int? BND4_Unknown4 = null;
-        public int? BND4_Unknown5 = null;
-        public int? BND4_Unknown6 = null;
-        public int? BND4_Unknown7 = null;
+        public long? BND4_Unknown1 = null;
         private byte[] Data;
 
         public BNDEntry(int ID, string Name, int? Unknown1, byte[] FileBytes)
@@ -67,11 +62,6 @@ namespace MeowDSIO.DataTypes.BND
         public void Dispose()
         {
             Data = null;
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

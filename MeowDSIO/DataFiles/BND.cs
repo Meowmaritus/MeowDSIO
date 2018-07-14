@@ -144,28 +144,74 @@ namespace MeowDSIO.DataFiles
             }
             else if (Header.BndVersion == BndVersion.BND4)
             {
-                throw new NotImplementedException("BND4 not finished yet.");
+                //throw new NotImplementedException("BND4 not finished yet.");
 
-                //Header.BND4_Unknown1 = bin.ReadBytes(BNDHeader.BND4_Unknown1_Length);
-                //int fileCount = bin.ReadInt32();
-                //Header.BND4_Unknown2 = bin.ReadBytes(BNDHeader.BND4_Unknown2_Length);
-                //Header.Signature = bin.ReadStringAscii(BNDHeader.Signature_ByteLength);
-                //int entrySize = bin.ReadInt32();
+                Header.BND4_Unknown1 = bin.ReadBytes(BNDHeader.BND4_Unknown1_Length);
+                int fileCount = bin.ReadInt32();
+                Header.BND4_Unknown2 = bin.ReadBytes(BNDHeader.BND4_Unknown2_Length);
+                Header.Signature = bin.ReadStringAscii(BNDHeader.Signature_ByteLength);
+                long entrySize = bin.ReadInt64();
                 //Header.BND4_Unknown3 = bin.ReadBytes(BNDHeader.BND4_Unknown3_Length);
-                //int dataOffset = bin.ReadInt32();
+                long dataOffset = bin.ReadInt64();
                 //Header.BND4_Unknown4 = bin.ReadBytes(BNDHeader.BND4_Unknown4_Length);
-                //Header.BND4_IsUnicode = bin.ReadBoolean();
-                //Header.BND4_Unknown5 = bin.ReadBytes(BNDHeader.BND4_Unknown5_Length);
+                Header.BND4_IsUnicode = bin.ReadBoolean();
+                Header.BND4_Unknown5 = bin.ReadBytes(BNDHeader.BND4_Unknown5_Length);
 
-                //for (int i = 0; i < fileCount; i++)
-                //{
-                //    //var entry = new BNDEntry()
-                //    int entryDataOffset = bin.ReadInt32();
-                //    int entryNameOffset = bin.ReadInt32();
+                for (int i = 0; i < fileCount; i++)
+                {
+                    Header.BND4_Padding = bin.ReadUInt64();
 
-                //    int entryDataSize = bin.ReadInt32();
+                    long? entryUnknown1 = null;
 
-                //}
+                    long entryID = i;
+                    long entryDataOffset = -1;
+
+                    long entryDataSize = bin.ReadInt64();
+
+                    if (entrySize == 36)
+                    {
+                        entryUnknown1 = bin.ReadInt64();
+                        entryDataOffset = bin.ReadInt32();
+                        entryID = bin.ReadInt32();
+                    }
+                    else
+                    {
+                        entryDataOffset = bin.ReadInt32();
+                    }
+
+                    int entryNameOffset = bin.ReadInt32();
+
+                    string entryName = null;
+                    byte[] entryData = null;
+
+                    bin.StepIn(entryDataOffset);
+                    {
+                        entryData = bin.ReadBytes((int)entryDataSize);
+                    }
+                    bin.StepOut();
+
+                    bin.StepIn(entryNameOffset);
+                    {
+                        if (Header.BND4_IsUnicode)
+                        {
+                            entryName = bin.ReadStringUnicode();
+                        }
+                        else
+                        {
+                            entryName = bin.ReadStringShiftJIS();
+                        }
+                    }
+                    bin.StepOut();
+
+                    var newEntry = new BNDEntry((int)entryID, entryName, null, entryData);
+
+                    if (entryUnknown1.HasValue)
+                    {
+                        newEntry.BND4_Unknown1 = entryUnknown1.Value;
+                    }
+
+                    Entries.Add(newEntry);
+                }
             }
 
             

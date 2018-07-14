@@ -29,16 +29,18 @@ namespace MeowDSIO.DataTypes.BND
         public const int BND4_Unknown2_Length = 8;
         public byte[] BND4_Unknown2 { get; set; }
 
-        public const int BND4_Unknown3_Length = 4;
-        public byte[] BND4_Unknown3 { get; set; }
+        //public const int BND4_Unknown3_Length = 4;
+        //public byte[] BND4_Unknown3 { get; set; }
 
-        public const int BND4_Unknown4_Length =  4;
-        public byte[] BND4_Unknown4 { get; set; }
+        //public const int BND4_Unknown4_Length =  4;
+        //public byte[] BND4_Unknown4 { get; set; }
 
         public const int BND4_Unknown5_Length = 15;
         public byte[] BND4_Unknown5 { get; set; }
 
         public bool BND4_IsUnicode = true;
+
+        public ulong BND4_Padding = 0xFFFFFFFF00000040;
 
 
         public static readonly byte[] SupportedFormatValues = new byte[]
