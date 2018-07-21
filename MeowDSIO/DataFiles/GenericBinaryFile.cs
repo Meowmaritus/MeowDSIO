@@ -8,11 +8,14 @@ namespace MeowDSIO.DataFiles
 {
     public class GenericBinaryFile : DataFile
     {
-        public byte[] Data { get; set; } = null;
+        public byte[] Data { get; set; } = new byte[] { };
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
-            Data = bin.ReadAllBytes();
+            if (bin.Length > 0)
+                Data = bin.ReadAllBytes();
+            else
+                Data = new byte[] { };
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
