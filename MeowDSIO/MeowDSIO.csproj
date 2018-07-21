@@ -58,6 +58,7 @@
     <Compile Include="DataFiles\ESD.cs" />
     <Compile Include="DataFiles\FLVER.cs" />
     <Compile Include="DataFiles\FMG.cs" />
+    <Compile Include="DataFiles\GenericBinaryFile.cs" />
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MSB.cs" />
