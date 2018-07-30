@@ -9,6 +9,7 @@ namespace MeowDSIO.DataTypes.BND
     public struct BNDEntryHeaderBuffer
     {
         public byte UnkFlag1;
+        public bool IsCompressed;
         public int CompressedFileSize;
         public int FileOffset;
         public int FileID;
@@ -18,6 +19,7 @@ namespace MeowDSIO.DataTypes.BND
         public void Reset()
         {
             UnkFlag1 = 0x40;
+            IsCompressed = false;
             CompressedFileSize = -1;
             FileOffset = -1;
             FileID = -1;
@@ -47,7 +49,11 @@ namespace MeowDSIO.DataTypes.BND
                 bin.StepOut();
             }
 
-            return new BNDEntry(FileID, fileName, bytes) { UnkFlag1 = this.UnkFlag1 };
+            return new BNDEntry(FileID, fileName, bytes)
+            {
+                IsCompressed = IsCompressed,
+                UnkFlag1 = this.UnkFlag1
+            };
         }
     }
 }

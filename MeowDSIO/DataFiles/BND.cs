@@ -122,6 +122,11 @@ namespace MeowDSIO.DataFiles
 
                     e.UnkFlag1 = bin.ReadByte();
 
+                    if (e.UnkFlag1 == 0xC0)
+                    {
+                        e.IsCompressed = true;
+                    }
+
                     //Blank bytes
                     bin.ReadByte();
                     bin.ReadByte();
