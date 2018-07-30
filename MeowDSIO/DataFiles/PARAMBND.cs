@@ -95,7 +95,7 @@ namespace MeowDSIO.DataFiles
             {
                 bnd.Add(new BNDEntry(ID++,
                     $@"{PARAM_DIR}\{(IsDrawParams ? "DrawParam" : "GameParam")}\{entry.Name}.param", 
-                    null, DataFile.SaveAsBytes(entry.Param, entry.Name)));
+                    DataFile.SaveAsBytes(entry.Param, entry.Name)));
             }
 
             bin.WriteDataFile(bnd, bin.FileName);

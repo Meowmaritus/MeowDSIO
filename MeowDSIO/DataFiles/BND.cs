@@ -14,9 +14,9 @@ namespace MeowDSIO.DataFiles
         public List<BNDEntry> Entries = new List<BNDEntry>();
         public BNDHeader Header { get; set; } = new BNDHeader();
 
-        public void AddEntry(int id, string name, byte[] data, int? unknown1 = null)
+        public void AddEntry(int id, string name, byte[] data)
         {
-            Entries.Add(new BNDEntry(id, name, unknown1, data));
+            Entries.Add(new BNDEntry(id, name, data));
         }
 
         public BNDEntry GetFirstEntryWithIDAndName(int id, string name, bool ignoreCase = false)
@@ -120,7 +120,7 @@ namespace MeowDSIO.DataFiles
                 {
                     e.Reset();
 
-                    e.FileSize = bin.ReadInt32();
+                    e.CompressedFileSize = bin.ReadInt32();
                     e.FileOffset = bin.ReadInt32();
 
                     if (Header.Format != 0x00)
@@ -131,14 +131,14 @@ namespace MeowDSIO.DataFiles
 
                     if (Header.Format == 0x74 || Header.Format == 0x54 || Header.Format == 0x2E)
                     {
-                        e.Unknown1 = bin.ReadInt32();
+                        e.UncompressedFileSize = bin.ReadInt32();
                     }
 
                     bin.ReadInt32(); //Entry padding
 
                     Entries.Add(e.GetEntry(bin));
 
-                    prog_currentbyte += e.FileSize;
+                    prog_currentbyte += e.CompressedFileSize;
                     prog?.Report((prog_currentbyte, prog_numbytes));
                 }
             }
@@ -203,7 +203,7 @@ namespace MeowDSIO.DataFiles
                     }
                     bin.StepOut();
 
-                    var newEntry = new BNDEntry((int)entryID, entryName, null, entryData);
+                    var newEntry = new BNDEntry((int)entryID, entryName, entryData);
 
                     if (entryUnknown1.HasValue)
                     {
@@ -262,6 +262,16 @@ namespace MeowDSIO.DataFiles
 
                 for (int i = 0; i < Entries.Count; i++)
                 {
+                    if (Header.Format == 0x74 || Header.Format == 0x54)
+                    {
+                        bin.Write(0x00000040);
+                    }
+                    else
+                    {
+                        bin.Write(0x02000000);
+                    }
+
+                    //Write compressed size
                     bin.Write(Entries[i].Size);
                     bin.Placeholder(); //Placeholder for data offset
 
@@ -273,19 +283,8 @@ namespace MeowDSIO.DataFiles
 
                     if (Header.Format == 0x74 || Header.Format == 0x54 || Header.Format == 0x2E)
                     {
-                        bin.Write(Entries[i].Unknown1 ?? 0);
-                    }
-
-                    if (i < Entries.Count - 1) //Do not include padding after very last entry.
-                    {
-                        if (Header.Format == 0x74 || Header.Format == 0x54)
-                        {
-                            bin.Write(0x00000040);
-                        }
-                        else
-                        {
-                            bin.Write(0x02000000);
-                        }
+                        //Write actual size
+                        bin.Write(Entries[i].Size);
                     }
 
                     prog_cur += ProgEst_Header;

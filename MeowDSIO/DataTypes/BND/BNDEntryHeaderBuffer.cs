@@ -8,19 +8,19 @@ namespace MeowDSIO.DataTypes.BND
 {
     public struct BNDEntryHeaderBuffer
     {
-        public int FileSize;
+        public int CompressedFileSize;
         public int FileOffset;
         public int FileID;
         public int FileNameOffset;
-        public int? Unknown1;
+        public int UncompressedFileSize;
 
         public void Reset()
         {
-            FileSize = -1;
+            CompressedFileSize = -1;
             FileOffset = -1;
             FileID = -1;
             FileNameOffset = -1;
-            Unknown1 = null;
+            UncompressedFileSize = -1;
         }
 
         public BNDEntry GetEntry(DSBinaryReader bin)
@@ -31,7 +31,7 @@ namespace MeowDSIO.DataTypes.BND
             }
 
             bin.StepIn(FileOffset);
-            var bytes = bin.ReadBytes(FileSize);
+            var bytes = bin.ReadBytes(CompressedFileSize);
             bin.StepOut();
 
             string fileName = null;
@@ -45,7 +45,7 @@ namespace MeowDSIO.DataTypes.BND
                 bin.StepOut();
             }
 
-            return new BNDEntry(FileID, fileName, Unknown1, bytes);
+            return new BNDEntry(FileID, fileName, bytes);
         }
     }
 }

@@ -266,7 +266,7 @@ namespace MeowDSIO.DataFiles
                     foreach (var anim in AnimationHKXs)
                     {
                         bnd.Add(new BNDEntry(anim.Key + ID_PLAYER_ANIM_START,
-                            GetPlayerHkxFileName(anim.Key), null, anim.Value));
+                            GetPlayerHkxFileName(anim.Key), anim.Value));
                     }
                 }
 
@@ -275,14 +275,14 @@ namespace MeowDSIO.DataFiles
                     foreach (var tae in PlayerTAE)
                     {
                         var entry = new BNDEntry(tae.Key + ID_PLAYER_TAE_START,
-                            GetPlayerTaeFileName(tae.Key), null, new byte[] { });
+                            GetPlayerTaeFileName(tae.Key), new byte[] { });
                         entry.ReplaceData(tae.Value);
                         bnd.Add(entry);
                     }
                 }
 
                 if (PlayerSkeletonHKX != null)
-                    bnd.Add(new BNDEntry(ID_PLAYER_SKELETON, GetSkeletonFileName(), null, PlayerSkeletonHKX));
+                    bnd.Add(new BNDEntry(ID_PLAYER_SKELETON, GetSkeletonFileName(), PlayerSkeletonHKX));
             }
             else
             {
@@ -291,19 +291,19 @@ namespace MeowDSIO.DataFiles
                     foreach (var anim in AnimationHKXs)
                     {
                         bnd.Add(new BNDEntry(anim.Key + ID_STANDARD_ANIM_START,
-                            GetStandardHkxFileName(anim.Key), null, anim.Value));
+                            GetStandardHkxFileName(anim.Key), anim.Value));
                     }
                 }
 
                 if (StandardTAE != null)
                 {
-                    var taeEntry = new BNDEntry(ID_STANDARD_TAE, GetStandardTaeFileName(), null, new byte[] { });
+                    var taeEntry = new BNDEntry(ID_STANDARD_TAE, GetStandardTaeFileName(), new byte[] { });
                     taeEntry.ReplaceData(StandardTAE);
                     bnd.Add(taeEntry);
                 }
 
                 if (StandardSkeletonHKX != null)
-                    bnd.Add(new BNDEntry(ID_SKELETON, GetSkeletonFileName(), null, StandardSkeletonHKX));
+                    bnd.Add(new BNDEntry(ID_SKELETON, GetSkeletonFileName(), StandardSkeletonHKX));
             }
 
             int currentAnibnd = 0;
@@ -311,7 +311,7 @@ namespace MeowDSIO.DataFiles
             if (IsSplitData)
             {
                 bnd.Add(new BNDEntry((currentAnibnd++) + ID_ADDITIONAL_ANIBND_START,
-                    GetDivDataName(), null, BYTES_DIV_DATA));
+                    GetDivDataName(), BYTES_DIV_DATA));
             }
 
             if (AdditionalAnibnd != null)
@@ -319,7 +319,7 @@ namespace MeowDSIO.DataFiles
                 foreach (var a in AdditionalAnibnd)
                 {
                     bnd.Add(new BNDEntry((currentAnibnd++) + ID_ADDITIONAL_ANIBND_START,
-                        GetAdditionalAnibndName(a), null, BYTES_DIV_DATA));
+                        GetAdditionalAnibndName(a), BYTES_DIV_DATA));
                 }
             }
 
@@ -329,7 +329,7 @@ namespace MeowDSIO.DataFiles
                 foreach (var a in AdditionalAnibndLoad)
                 {
                     bnd.Add(new BNDEntry((currentAnibnd++) + ID_ADDITIONAL_ANIBND_LOAD_START,
-                        GetAdditionalAnibndLoadName(a), null, new byte[] { }));
+                        GetAdditionalAnibndLoadName(a), new byte[] { }));
                 }
             }
 
@@ -339,13 +339,13 @@ namespace MeowDSIO.DataFiles
                 foreach (var a in AdditionalAnibndDelayLoad)
                 {
                     bnd.Add(new BNDEntry((currentAnibnd++) + ID_ADDITIONAL_ANIBND_DELAYLOAD_START,
-                        GetAdditionalAnibndDelayLoadName(a), null, new byte[] { }));
+                        GetAdditionalAnibndDelayLoadName(a), new byte[] { }));
                 }
             }
 
             if (IsPlayerAnibndFormat)
             {
-                bnd.Add(new BNDEntry(ID_VER_0001, GetVer0001Name(), null, BYTES_VER_0001));
+                bnd.Add(new BNDEntry(ID_VER_0001, GetVer0001Name(), BYTES_VER_0001));
             }
 
             bnd.Entries = bnd.Entries.OrderBy(x => x.ID).ToList();

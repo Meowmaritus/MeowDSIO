@@ -41,7 +41,7 @@ namespace MeowDSIO.DataFiles
 
             foreach (var kvp in Entries)
             {
-                bnd.Entries.Add(new BNDEntry(ID++, kvp.Key, null, DataFile.SaveAsBytes(kvp.Value, kvp.Key)));
+                bnd.Entries.Add(new BNDEntry(ID++, kvp.Key, DataFile.SaveAsBytes(kvp.Value, kvp.Key)));
             }
 
             bin.WriteDataFile(bnd, FilePath ?? VirtualUri);

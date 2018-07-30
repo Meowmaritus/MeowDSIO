@@ -20,7 +20,7 @@ namespace MeowDSIO.DataTypes.BND
         public bool IsPS3_Maybe { get; set; }
         public byte UnkFlag01 { get; set; }
 
-        public const int UnknownBytes01_Length = 0x0C;
+        public const int UnknownBytes01_Length = 0x08;
         public byte[] UnknownBytes01 { get; set; }
 
         public const int BND4_Unknown1_Length = 8;

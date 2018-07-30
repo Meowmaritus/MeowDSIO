@@ -11,15 +11,13 @@ namespace MeowDSIO.DataTypes.BND
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public int? Unknown1 = null;
         public long? BND4_Unknown1 = null;
         private byte[] Data;
 
-        public BNDEntry(int ID, string Name, int? Unknown1, byte[] FileBytes)
+        public BNDEntry(int ID, string Name, byte[] FileBytes)
         {
             this.ID = ID;
             this.Name = Name;
-            this.Unknown1 = Unknown1;
             Data = FileBytes;
         }
 

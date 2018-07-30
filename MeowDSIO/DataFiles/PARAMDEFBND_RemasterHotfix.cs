@@ -78,7 +78,7 @@ namespace MeowDSIO.DataFiles
             {
                 bnd.Add(new BNDEntry(ID++,
                     $@"{PARAMDEF_DIR}\{entry.Name}.paramdef",
-                    null, DataFile.SaveAsBytes(entry.ParamDef, entry.Name)));
+                    DataFile.SaveAsBytes(entry.ParamDef, entry.Name)));
             }
 
             bin.WriteDataFile(bnd, bin.FileName);

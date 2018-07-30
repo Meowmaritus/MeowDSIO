@@ -122,7 +122,7 @@ namespace MeowDSIO.DataFiles
                     {
                         tpf.Add(new DataTypes.TPF.TPFEntry(tex.Key, mdl.TextureFlags[tex.Key], 0, tex.Value));
                     }
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.tpf", null, DataFile.SaveAsBytes(tpf, $"{ShortName}.tpf")));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.tpf", DataFile.SaveAsBytes(tpf, $"{ShortName}.tpf")));
                 }
 
                 ID++;
@@ -132,7 +132,7 @@ namespace MeowDSIO.DataFiles
             foreach (var mdl in Models)
             {
                 if (mdl.Mesh != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.flver", null, DataFile.SaveAsBytes(mdl.Mesh, $"{ShortName}.flver")));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.flver", DataFile.SaveAsBytes(mdl.Mesh, $"{ShortName}.flver")));
 
                 ID++;
             }
@@ -141,42 +141,42 @@ namespace MeowDSIO.DataFiles
             foreach (var mdl in Models)
             {
                 if (mdl.BodyHKX != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.hkx", null, mdl.BodyHKX));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.hkx", mdl.BodyHKX));
             }
 
             ID = ID_ANIBND_START;
             foreach (var mdl in Models)
             {
                 if (mdl.AnimContainer != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.anibnd", null, DataFile.SaveAsBytes(mdl.AnimContainer, $"{ShortName}{idx()}.anibnd")));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.anibnd", DataFile.SaveAsBytes(mdl.AnimContainer, $"{ShortName}{idx()}.anibnd")));
             }
 
             ID = ID_HKXPWV_START;
             foreach (var mdl in Models)
             {
                 if (mdl.HKXPWV != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.hkxpwv", null, mdl.HKXPWV));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.hkxpwv", mdl.HKXPWV));
             }
 
             ID = ID_BSIPWV_START;
             foreach (var mdl in Models)
             {
                 if (mdl.BSIPWV != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.bsipwv", null, mdl.BSIPWV));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.bsipwv", mdl.BSIPWV));
             }
 
             ID = ID_ClothHKX_START;
             foreach (var mdl in Models)
             {
                 if (mdl.ClothHKX != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}_c.hkx", null, mdl.ClothHKX));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}_c.hkx", mdl.ClothHKX));
             }
 
             ID = ID_CHRTPFBHD_START;
             foreach (var mdl in Models)
             {
                 if (mdl.CHRTPFBHD != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.chrtpfbhd", null, mdl.CHRTPFBHD));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.chrtpfbhd", mdl.CHRTPFBHD));
             }
 
             bin.WriteDataFile(BND, FilePath ?? VirtualUri);
