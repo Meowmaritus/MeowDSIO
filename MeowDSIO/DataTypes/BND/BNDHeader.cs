@@ -42,7 +42,6 @@ namespace MeowDSIO.DataTypes.BND
 
         public ulong BND4_Padding = 0xFFFFFFFF00000040;
 
-
         public static readonly byte[] SupportedFormatValues = new byte[]
         {
             //DeS:

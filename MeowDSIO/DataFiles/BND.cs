@@ -120,21 +120,25 @@ namespace MeowDSIO.DataFiles
                 {
                     e.Reset();
 
+                    e.UnkFlag1 = bin.ReadByte();
+
+                    //Blank bytes
+                    bin.ReadByte();
+                    bin.ReadByte();
+                    bin.ReadByte();
+
                     e.CompressedFileSize = bin.ReadInt32();
                     e.FileOffset = bin.ReadInt32();
+                    e.FileID = bin.ReadInt32();
+                    e.FileNameOffset = bin.ReadInt32();
 
-                    if (Header.Format != 0x00)
-                    {
-                        e.FileID = bin.ReadInt32();
-                        e.FileNameOffset = bin.ReadInt32();
-                    }
-
-                    if (Header.Format == 0x74 || Header.Format == 0x54 || Header.Format == 0x2E)
+                    if (Header.Format == 0x74 || 
+                        Header.Format == 0x54 || 
+                        Header.Format == 0x2E || 
+                        Header.Format == 0x64)
                     {
                         e.UncompressedFileSize = bin.ReadInt32();
                     }
-
-                    bin.ReadInt32(); //Entry padding
 
                     Entries.Add(e.GetEntry(bin));
 
@@ -262,26 +266,54 @@ namespace MeowDSIO.DataFiles
 
                 for (int i = 0; i < Entries.Count; i++)
                 {
-                    if (Header.Format == 0x74 || Header.Format == 0x54)
+                    if (Entries[i].UnkFlag1.HasValue)
                     {
-                        bin.Write(0x00000040);
+                        bin.Write(Entries[i].UnkFlag1.Value);
                     }
                     else
                     {
-                        bin.Write(0x02000000);
+                        if (Header.Format == 0x74 || Header.Format == 0x64)
+                        {
+                            if (Entries[i].IsCompressed)
+                                bin.Write((byte)0xC0);
+                            else
+                                bin.Write((byte)0x40);
+                        }
+                        else if (Header.Format == 0x54 ||
+                            Header.Format == 0x60 ||
+                            Header.Format == 0x70 ||
+                            Header.Format == 0xE0 ||
+                            Header.Format == 0xF0)
+                        {
+                            bin.Write((byte)0x40);
+                        }
+                        else if (Header.Format == 0x0E ||
+                            Header.Format == 0x2E)
+                        {
+                            bin.Write((byte)0x20);
+                        }
+                        else
+                        {
+                            //TODO: Think of a good way to go about this...?
+                            bin.Write((byte)0x40);
+                        }
                     }
+
+                    bin.Write((byte)0);
+                    bin.Write((byte)0);
+                    bin.Write((byte)0);
 
                     //Write compressed size
                     bin.Write(Entries[i].Size);
                     bin.Placeholder(); //Placeholder for data offset
 
-                    if (Header.Format != 0x00)
-                    {
-                        bin.Write(Entries[i].ID);
-                        bin.Placeholder(); //Placeholder for name offset
-                    }
+                    bin.Write(Entries[i].ID);
+                    bin.Placeholder(); //Placeholder for name offset
 
-                    if (Header.Format == 0x74 || Header.Format == 0x54 || Header.Format == 0x2E)
+                    if (Header.Format == 0x74 ||
+                        Header.Format == 0x54 ||
+                        Header.Format == 0x2E ||
+                        Header.Format == 0x64)
                     {
                         //Write actual size
                         bin.Write(Entries[i].Size);
@@ -326,7 +358,9 @@ namespace MeowDSIO.DataFiles
                 bin.Position = OFF_EntryHeaders;
                 for (int i = 0; i < Entries.Count; i++)
                 {
-                    bin.Position += 4; //Size
+                    bin.Position += 4; //UnkFlag1 and 3 empty bytes
+
+                    bin.Position += 4; //Compressed Size
                     bin.Write(fileOffsets[i]);
 
                     if (Header.Format != 0x00)
@@ -335,12 +369,13 @@ namespace MeowDSIO.DataFiles
                         bin.Write(nameOffsets[i]);
                     }
 
-                    if (Header.Format == 0x74 || Header.Format == 0x54 || Header.Format == 0x2E)
+                    if (Header.Format == 0x74 ||
+                        Header.Format == 0x54 ||
+                        Header.Format == 0x2E ||
+                        Header.Format == 0x64)
                     {
-                        bin.Position += 4; //Unknown1
+                        bin.Position += 4; //Uncompressed Size
                     }
-
-                    bin.Position += 4; //Padding
 
                     prog_cur += ProgEst_Header;
                     prog?.Report((prog_cur, prog_max));

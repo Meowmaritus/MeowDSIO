@@ -9,6 +9,9 @@ namespace MeowDSIO.DataTypes.BND
 {
     public class BNDEntry : IDisposable
     {
+        public byte? UnkFlag1 { get; set; } = null;
+        public bool IsCompressed { get; set; } = false;
+
         public int ID { get; set; }
         public string Name { get; set; }
         public long? BND4_Unknown1 = null;
