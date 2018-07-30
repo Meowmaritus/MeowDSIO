@@ -271,7 +271,16 @@ namespace MeowDSIO.DataFiles
 
                 var mesh = new FlverSubmesh(this);
 
-                mesh.IsDynamicFlag = bin.ReadInt32();
+
+                int isDynamicValue = bin.ReadInt32();
+
+                if (isDynamicValue < 0 || isDynamicValue > 1)
+                {
+                    throw new Exceptions.DSReadException(bin, $"Invalid FLVER Mesh 'IsDynamic' value " +
+                        $"found (should be 0 or 1): '{isDynamicValue}'");
+                }
+
+                mesh.IsDynamic = isDynamicValue != 0;
 
                 int materialIndex = bin.ReadInt32();
 
@@ -291,47 +300,38 @@ namespace MeowDSIO.DataFiles
                 mesh.UnknownInt1 = bin.ReadInt32();
 
                 int boneIndicesOffset = bin.ReadInt32();
-                if (boneIndicesOffset > -1)
+                bin.StepIn(boneIndicesOffset);
                 {
-                    bin.StepIn(boneIndicesOffset);
+                    for (int j = 0; j < boneIndexCount; j++)
                     {
-                        for (int j = 0; j < boneIndexCount; j++)
-                        {
-                            mesh.BoneIndices.Add(bin.ReadInt32());
-                        }
+                        mesh.BoneIndices.Add(bin.ReadInt32());
                     }
-                    bin.StepOut();
                 }
+                bin.StepOut();
 
                 var faceSetIndices = new List<int>();
                 int faceSetIndicesCount = bin.ReadInt32();
                 int faceSetIndicesOffset = bin.ReadInt32();
-                if (faceSetIndicesOffset > -1)
+                bin.StepIn(faceSetIndicesOffset);
                 {
-                    bin.StepIn(faceSetIndicesOffset);
+                    for (int j = 0; j < faceSetIndicesCount; j++)
                     {
-                        for (int j = 0; j < faceSetIndicesCount; j++)
-                        {
-                            faceSetIndices.Add(bin.ReadInt32());
-                        }
+                        faceSetIndices.Add(bin.ReadInt32());
                     }
-                    bin.StepOut();
                 }
+                bin.StepOut();
 
                 var vertexGroupIndices = new List<int>();
                 int vertexGroupIndicesCount = bin.ReadInt32();
                 int vertexGroupIndicesOffset = bin.ReadInt32();
-                if (vertexGroupIndicesOffset > -1)
+                bin.StepIn(vertexGroupIndicesOffset);
                 {
-                    bin.StepIn(vertexGroupIndicesOffset);
+                    for (int j = 0; j < vertexGroupIndicesCount; j++)
                     {
-                        for (int j = 0; j < vertexGroupIndicesCount; j++)
-                        {
-                            vertexGroupIndices.Add(bin.ReadInt32());
-                        }
+                        vertexGroupIndices.Add(bin.ReadInt32());
                     }
-                    bin.StepOut();
                 }
+                bin.StepOut();
 
                 INFO_mesh.Add((materialIndex, faceSetIndices, vertexGroupIndices));
 
@@ -946,7 +946,10 @@ namespace MeowDSIO.DataFiles
                 var mesh = Submeshes[i];
                 var meshInfo = INFO_submeshes[i];
 
-                bin.Write(mesh.IsDynamicFlag);
+                if (mesh.IsDynamic)
+                    bin.Write(1u);
+                else
+                    bin.Write(0u);
 
                 bin.Write(meshInfo.MaterialIndex);
 

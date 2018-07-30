@@ -267,18 +267,16 @@ namespace MeowDSIO
 
         public float ReadFlver8BitFloat()
         {
-            return (ReadByte() - 127) / 127f;
+            return (ReadByte() - 127.0f) / 127.0f;
         }
 
         public FlverPackedVector4 ReadFlverPackedVector4()
         {
-            return new FlverPackedVector4()
-            {
-                X = (sbyte)(ReadByte() - 127),
-                Y = (sbyte)(ReadByte() - 127),
-                Z = (sbyte)(ReadByte() - 127),
-                W = (sbyte)(ReadByte() - 127),
-            };
+            byte x = ReadByte();
+            byte y = ReadByte();
+            byte z = ReadByte();
+            byte w = ReadByte();
+            return new FlverPackedVector4(x, y, z, w);
         }
 
         public double ReadFlverVersion()

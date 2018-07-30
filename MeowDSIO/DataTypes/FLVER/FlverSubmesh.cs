@@ -77,7 +77,7 @@ namespace MeowDSIO.DataTypes.FLVER
 
         }
 
-        public int IsDynamicFlag { get; set; } = 0;
+        public bool IsDynamic { get; set; }
 
         public FlverMaterial Material { get; set; }
 
