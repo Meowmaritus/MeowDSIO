@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataFiles
 {
-    public class PARAMBND : DataFile, IList<PARAMBNDEntry>
+    public class PARAMBND_RemasterHotfix : DataFile, IList<PARAMBNDEntry>
     {
-        const string PARAM_DIR = @"N:\FRPG\data\INTERROOT_win32\param";
+        const string PARAM_DIR = @"N:\FRPG\data\INTERROOT_x64\param";
 
         private List<PARAMBNDEntry> entries { get; set; } = new List<PARAMBNDEntry>();
         private Dictionary<string, PARAMBNDEntry> entryQuickLookup = new Dictionary<string, PARAMBNDEntry>();
@@ -47,10 +47,23 @@ namespace MeowDSIO.DataFiles
             }
         }
 
-        public void ApplyParamDefBND(PARAMDEFBND pdbnd)
+        //public void ApplyParamDefBND(PARAMDEFBND pdbnd)
+        //{
+        //    foreach (var entry in this)
+        //    {
+        //        entry.Param.ApplyPARAMDEFTemplate(pdbnd[entry.Param.ID]);
+        //    }
+        //}
+
+        public void ApplyParamDefBND_RemasterHotfix(PARAMDEFBND_RemasterHotfix pdbnd)
         {
             foreach (var entry in this)
             {
+                if (entry.Param.ID == "LEVELSYNC_PARAM_ST"
+                    || entry.Param.ID == "TONE_MAP_BANK" 
+                    || entry.Param.ID == "TONE_CORRECT_BANK")
+                    continue;
+
                 entry.Param.ApplyPARAMDEFTemplate(pdbnd[entry.Param.ID]);
             }
         }
