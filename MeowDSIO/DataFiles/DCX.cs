@@ -11,6 +11,7 @@ namespace MeowDSIO.DataFiles
     //Special thanks to TKGP for doing the Read/Write
     public class DCX : DataFile
     {
+        //public bool IsDarkSouls3 { get; set; } = false;
         public byte[] Data;
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)

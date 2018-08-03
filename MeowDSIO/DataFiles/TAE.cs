@@ -24,6 +24,22 @@ namespace MeowDSIO.DataFiles
             }
         }
 
+        public AnimationRef this[int animID]
+        {
+            get
+            {
+                var possibleAnims = Animations.Where(x => x.ID == animID);
+                if (possibleAnims.Any())
+                {
+                    return possibleAnims.First();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public TAEHeader Header { get; set; }
         public string SkeletonName { get; set; }
         public string SibName { get; set; }

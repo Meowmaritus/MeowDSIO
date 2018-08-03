@@ -51,7 +51,7 @@ namespace MeowDSIO.DataTypes.BND
 
             return new BNDEntry(FileID, fileName, bytes)
             {
-                IsCompressed = IsCompressed,
+                IsCompressed = this.IsCompressed,
                 UnkFlag1 = this.UnkFlag1
             };
         }

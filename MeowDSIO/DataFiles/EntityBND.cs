@@ -122,7 +122,7 @@ namespace MeowDSIO.DataFiles
                     {
                         tpf.Add(new DataTypes.TPF.TPFEntry(tex.Key, mdl.TextureFlags[tex.Key], 0, tex.Value));
                     }
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.tpf", DataFile.SaveAsBytes(tpf, $"{ShortName}.tpf")));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.tpf", DataFile.SaveAsBytes(tpf, $"{ShortName}{idx()}.tpf")));
                 }
 
                 ID++;
@@ -132,7 +132,7 @@ namespace MeowDSIO.DataFiles
             foreach (var mdl in Models)
             {
                 if (mdl.Mesh != null)
-                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.flver", DataFile.SaveAsBytes(mdl.Mesh, $"{ShortName}.flver")));
+                    BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.flver", DataFile.SaveAsBytes(mdl.Mesh, $"{ShortName}{idx()}.flver")));
 
                 ID++;
             }

@@ -19,7 +19,7 @@ namespace MeowDSIO.DataTypes.FLVER
             this.ContainingFlver = ContainingFlver;
         }
 
-        public Vector3 Translation { get; set; } = Vector3.Zero;
+        public FlverVector3 Translation { get; set; } = Vector3.Zero;
 
         public string Name { get; set; } = null;
 
