@@ -220,18 +220,18 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromDs3EncDcxFile<T>(string filePath, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var dcx = LoadFromFile<DCX>(filePath);
-            var data = LoadFromBytes<T>(dcx.Data, filePath, prog);
-            data.FilePath = filePath;
-            if (data.FilePath.ToUpper().EndsWith(".DCX"))
-            {
-                data.VirtualUri = data.FilePath.Substring(0, data.FilePath.Length - ".DCX".Length);
-            }
-            return data;
-        }
+        //public static T LoadFromDs3EncDcxFile<T>(string filePath, IProgress<(int, int)> prog = null)
+        //    where T : DataFile, new()
+        //{
+        //    var dcx = LoadFromFile<DCX>(filePath);
+        //    var data = LoadFromBytes<T>(dcx.Data, filePath, prog);
+        //    data.FilePath = filePath;
+        //    if (data.FilePath.ToUpper().EndsWith(".DCX"))
+        //    {
+        //        data.VirtualUri = data.FilePath.Substring(0, data.FilePath.Length - ".DCX".Length);
+        //    }
+        //    return data;
+        //}
 
         public static T LoadFromDcxFile<T>(string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
