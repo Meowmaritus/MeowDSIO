@@ -358,6 +358,32 @@ namespace MeowDSIO
             }
         }
 
+        public string ReadPaddedStringUnicode(int paddedRegionLength, byte? padding)
+        {
+            byte[] data = ReadBytes(paddedRegionLength);
+            int strEndIndex = -1;
+            int currentIndex = 0;
+            while (currentIndex < data.Length)
+            {
+                if (data[currentIndex] != 0)
+                {
+                    currentIndex++;
+                    continue;
+                }
+                strEndIndex = currentIndex;
+                break;
+            }
+            if (strEndIndex > 0)
+            {
+                return Encoding.Unicode.GetString(data, 0, strEndIndex);
+            }
+            if (strEndIndex == 0)
+            {
+                return string.Empty;
+            }
+            return Encoding.Unicode.GetString(data);
+        }
+
         public TData ReadAsDataFile<TData>(string virtualUri = null, int dataSizeInBytes = -1)
             where TData: DataFile, new()
         {

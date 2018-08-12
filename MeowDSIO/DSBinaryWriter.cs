@@ -95,6 +95,28 @@ namespace MeowDSIO
             Write(jis);
         }
 
+        public void WritePaddedStringUnicode(string str, int paddedRegionLength, byte? padding, bool forceTerminateAtMaxLength = false)
+        {
+            byte[] bytes = Encoding.Unicode.GetBytes(str);
+            int num = bytes.Length;
+            Array.Resize(ref bytes, paddedRegionLength);
+            if (paddedRegionLength > num)
+            {
+                if (padding.HasValue)
+                {
+                    for (int i = num + 1; i < paddedRegionLength; i++)
+                    {
+                        bytes[i] = padding.Value;
+                    }
+                }
+            }
+            else if (paddedRegionLength < num & forceTerminateAtMaxLength)
+            {
+                bytes[bytes.Length - 1] = 0;
+            }
+            ((BinaryWriter)this).Write(bytes);
+        }
+
         public void Write(Vector2 value)
         {
             Write(value.X);

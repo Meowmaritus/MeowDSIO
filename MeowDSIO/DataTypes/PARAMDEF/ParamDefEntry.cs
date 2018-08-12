@@ -12,6 +12,12 @@ namespace MeowDSIO.DataTypes.PARAMDEF
     {
         public string DisplayName { get; set; }
 
+        //public int BB_UnknownInt1 { get; set; } = 0;
+        //public int BB_UnknownInt2 { get; set; } = 0;
+        //public int BB_UnknownInt3 { get; set; } = 0;
+
+        public byte[] UNMAPPED_DATA { get; set; } = new byte[0];
+
         private ParamTypeDef __guiValueType;
         public ParamTypeDef GuiValueType
         {
@@ -28,6 +34,8 @@ namespace MeowDSIO.DataTypes.PARAMDEF
                     case ParamTypeDef.u16:
                     case ParamTypeDef.u32:
                     case ParamTypeDef.dummy8:
+                    case ParamTypeDef.fixstr:
+                    case ParamTypeDef.fixstrW:
                         __guiValueType = value;
                         break;
                     default:

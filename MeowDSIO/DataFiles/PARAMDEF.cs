@@ -12,11 +12,20 @@ namespace MeowDSIO.DataFiles
     {
         public string ID { get; set; } = null;
         public ushort Unknown1 { get; set; } = 1;
-        public ushort Unknown2 { get; set; } = 0;
+        //public ushort Unknown2 { get; set; } = 0;
+
         public List<ParamDefEntry> Entries { get; set; } = new List<ParamDefEntry>();
 
         public const ushort ENTRY_LENGTH = 0x00B0;
         public const ushort DESC_OFFSET_OFFSET = 0x0068;
+
+        public short Version { get; set; } = 48;
+        public bool BB_IsUnicode { get; set; } = false;
+        public int BB_Unknown1 { get; set; } = 56;
+        public int BB_Unknown2 { get; set; } = 0;
+        public short EntryLength { get; set; } = 156;
+        public byte UnknownFlag01 { get; set; } = 0;
+        public ushort Unknown3 { get; set; } = 0;
 
         public ParamDefEntry GetEntry(string entryName)
         {
@@ -99,31 +108,55 @@ namespace MeowDSIO.DataFiles
                 }
             }
 
-            // Always 0x30
-            var firstEntryOffset = bin.CheckConsumeValue("First Entry Offset", bin.ReadUInt16, (ushort)0x30);
+            Version = bin.ReadInt16();
 
             Unknown1 = bin.ReadUInt16();
 
             var entryCount = bin.ReadUInt16();
 
-            bin.CheckConsumeValue("Entry length", bin.ReadUInt16, ENTRY_LENGTH);
+            EntryLength = bin.ReadInt16();
 
             ID = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
 
-            Unknown2 = bin.CheckConsumeValue($"{nameof(Unknown2)} (HeaderTerminator?)", bin.ReadUInt16, (ushort)0);
-            bin.CheckConsumeValue("Relative Offset To Offset Of Description", bin.ReadUInt16, DESC_OFFSET_OFFSET);
+            UnknownFlag01 = bin.ReadByte();
+            BB_IsUnicode = bin.ReadBoolean();
+            Unknown3 = bin.ReadUInt16();
 
-            var descriptionOffsets = new List<uint>();
+            if (Version != 0x30 && Version == 0xFF)
+            {
+                BB_Unknown1 = bin.ReadInt32();
+                BB_Unknown2 = bin.ReadInt32();
+            }
+
+            var descriptionOffsets = new List<long>();
 
             Entries.Clear();
 
+            var OFF_EntryStart = bin.Position;
+
             for (int i = 0; i < entryCount; i++)
             {
-                var entry = new ParamDefEntry();
+                var currentEntryStart = bin.Position = OFF_EntryStart + (EntryLength * i);
+
+                var paramDefEntry = new ParamDefEntry();
 
                 try
                 {
-                    entry.DisplayName = bin.ReadPaddedStringShiftJIS(0x40, padding: null);
+                    if (Version == 0x30)
+                    {
+                        paramDefEntry.DisplayName = bin.ReadPaddedStringShiftJIS(0x40, null);
+                    }
+                    else if (Version == 0xFF)
+                    {
+                        if (BB_IsUnicode)
+                        {
+                            paramDefEntry.DisplayName = bin.ReadPaddedStringUnicode(0x40, null);
+                        }
+                        else
+                        {
+                            paramDefEntry.DisplayName = bin.ReadPaddedStringShiftJIS(0x40, null);
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -137,18 +170,27 @@ namespace MeowDSIO.DataFiles
                         $"{nameof(ParamDefEntry)}.{nameof(ParamDefEntry.GuiValueType)}] " +
                         $"value string found in PARAMDEF entry: '{_guiValueType_str}'.");
                 }
-                entry.GuiValueType = guiValueType;
+                paramDefEntry.GuiValueType = guiValueType;
 
-                entry.GuiValueStringFormat = bin.ReadPaddedStringShiftJIS(0x8, padding: null);
-                entry.DefaultValue = bin.ReadSingle();
-                entry.Min = bin.ReadSingle();
-                entry.Max = bin.ReadSingle();
-                entry.Increment = bin.ReadSingle();
-                entry.GuiValueDisplayMode = bin.ReadInt32();
-                entry.GuiValueByteCount = bin.ReadInt32();
+                paramDefEntry.GuiValueStringFormat = bin.ReadPaddedStringShiftJIS(0x8, padding: null);
+                paramDefEntry.DefaultValue = bin.ReadSingle();
+                paramDefEntry.Min = bin.ReadSingle();
+                paramDefEntry.Max = bin.ReadSingle();
+                paramDefEntry.Increment = bin.ReadSingle();
+                paramDefEntry.GuiValueDisplayMode = bin.ReadInt32();
+                paramDefEntry.GuiValueByteCount = bin.ReadInt32();
 
-                uint descriptionOffset = bin.ReadUInt32();
-                descriptionOffsets.Add(descriptionOffset);
+                if (Version == 0x30)
+                {
+                    uint descriptionOffset = bin.ReadUInt32();
+                    descriptionOffsets.Add(descriptionOffset);
+                }
+                else if (Version == 0xFF)
+                {
+                    long descriptionOffset = bin.ReadInt64();
+                    descriptionOffsets.Add(descriptionOffset);
+                }
+                
 
                 string _internalValueType_str = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
                 if (!Enum.TryParse(_internalValueType_str, out ParamTypeDef internalValueType))
@@ -157,53 +199,85 @@ namespace MeowDSIO.DataFiles
                         $"{nameof(ParamDefEntry)}.{nameof(ParamDefEntry.InternalValueType)}] " +
                         $"value string found in PARAMDEF entry: '{_internalValueType_str}'.");
                 }
-                entry.InternalValueType = internalValueType;
+                paramDefEntry.InternalValueType = internalValueType;
 
-                entry.Name = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
-                entry.ID = bin.ReadInt32();
+                paramDefEntry.Name = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
+                paramDefEntry.ID = bin.ReadInt32();
 
-                if (entry.Name.Contains(":"))
+                if (paramDefEntry.Name.Contains(":"))
                 {
-                    entry.ValueBitCount = int.Parse(entry.Name.Split(':')[1]);
+                    paramDefEntry.ValueBitCount = int.Parse(paramDefEntry.Name.Split(':')[1]);
 
                     //if (entry.ValueBitCount > 1)
                     //{
                     //    entry.InternalValueType = ParamTypeDef.u8;
                     //}
                 }
-                else if (entry.InternalValueType == ParamTypeDef.dummy8)
+                else if (paramDefEntry.InternalValueType == ParamTypeDef.dummy8)
                 {
-                    var lbrack = entry.Name.LastIndexOf("[");
+                    var lbrack = paramDefEntry.Name.LastIndexOf("[");
 
                     if (lbrack == -1)
                     {
-                        entry.ValueBitCount = 8;
+                        paramDefEntry.ValueBitCount = 8;
                     }
                     else
                     {
-                        var rbrack = entry.Name.LastIndexOf("]");
+                        var rbrack = paramDefEntry.Name.LastIndexOf("]");
 
-                        var padSizeStr = entry.Name.Substring(lbrack + 1, rbrack - lbrack - 1);
+                        var padSizeStr = paramDefEntry.Name.Substring(lbrack + 1, rbrack - lbrack - 1);
 
-                        entry.ValueBitCount = int.Parse(padSizeStr) * 8;
+                        paramDefEntry.ValueBitCount = int.Parse(padSizeStr) * 8;
                     }
 
                 }
                 else
                 {
-                    entry.ValueBitCount = entry.GuiValueByteCount * 8;
+                    paramDefEntry.ValueBitCount = paramDefEntry.GuiValueByteCount * 8;
 
                 }
 
-                Entries.Add(entry);
+
+                var currentOffsetPastEntryStart = bin.Position - currentEntryStart;
+
+                var leftoverUnmappedByteCount = EntryLength - currentOffsetPastEntryStart;
+
+                if (leftoverUnmappedByteCount > 0)
+                {
+                    paramDefEntry.UNMAPPED_DATA = bin.ReadBytes((int)leftoverUnmappedByteCount);
+                }
+
+
+                Entries.Add(paramDefEntry);
 
                 prog?.Report((i, entryCount * 2));
             }
 
             for (int i = 0; i < entryCount; i++)
             {
-                bin.Position = descriptionOffsets[i];
-                Entries[i].Description = bin.ReadStringShiftJIS();
+                if (descriptionOffsets[i] > 0)
+                {
+                    bin.Position = descriptionOffsets[i];
+                    if (Version == 0x30)
+                    {
+                        Entries[i].Description = bin.ReadStringShiftJIS(-1, true);
+                    }
+                    else if (Version == 0xFF)
+                    {
+                        if (BB_IsUnicode)
+                        {
+                            Entries[i].Description = bin.ReadStringUnicode(null);
+                        }
+                        else
+                        {
+                            Entries[i].Description = bin.ReadStringShiftJIS(-1, true);
+                        }
+                    }
+                }
+                else
+                {
+                    Entries[i].Description = null;
+                }
 
                 prog?.Report((entryCount + i, entryCount * 2));
             }
@@ -214,18 +288,24 @@ namespace MeowDSIO.DataFiles
         {
             // Placeholder - file length
             bin.Placeholder();
-            // First entry offset
-            bin.Write((ushort)0x30);
+            // Version
+            bin.Write(Version);
             bin.Write(Unknown1);
             bin.Write((ushort)Entries.Count);
             // Entry length
-            bin.Write(ENTRY_LENGTH);
+            bin.Write(EntryLength);
             bin.WritePaddedStringShiftJIS(ID, 0x20, padding: 0x20);
-            bin.Write(Unknown2);
-            // The offset relative to each entry's start that points to that entry's description offset value
-            bin.Write(DESC_OFFSET_OFFSET);
+            bin.Write(UnknownFlag01);
+            bin.Write(BB_IsUnicode);
+            bin.Write(Unknown3);
 
-            var descriptionOffsets = new List<uint>();
+            if (Version != 0x30 && Version == 0xFF)
+            {
+                bin.Write(BB_Unknown1);
+                bin.Write(BB_Unknown2);
+            }
+
+            var descriptionOffsets = new List<long>();
 
             var OFF_Entries = bin.Position;
 
@@ -233,8 +313,23 @@ namespace MeowDSIO.DataFiles
 
             for (int i = 0; i < Entries.Count; i++)
             {
-                descriptionOffsets.Add((uint)bin.Position);
-                bin.WriteStringShiftJIS(Entries[i].Description, true);
+                descriptionOffsets.Add(bin.Position);
+
+                if (Version == 0x30)
+                {
+                    bin.WriteStringShiftJIS(Entries[i].Description, true);
+                }
+                else if (Version == 0xFF)
+                {
+                    if (BB_IsUnicode)
+                    {
+                        bin.WriteStringUnicode(Entries[i].Description, true);
+                    }
+                    else
+                    {
+                        bin.WriteStringShiftJIS(Entries[i].Description, true);
+                    }
+                }
 
                 prog?.Report((i, Entries.Count * 2));
             }
@@ -247,7 +342,24 @@ namespace MeowDSIO.DataFiles
 
             for (int i = 0; i < Entries.Count; i++)
             {
-                bin.WritePaddedStringShiftJIS(Entries[i].DisplayName, 0x40, padding: null);
+                bin.Position = OFF_Entries + (i * EntryLength);
+
+                if (Version == 48)
+                {
+                    bin.WritePaddedStringShiftJIS(Entries[i].DisplayName, 0x40, null, false);
+                }
+                else if (Version == 255)
+                {
+                    if (BB_IsUnicode)
+                    {
+                        bin.WritePaddedStringUnicode(Entries[i].DisplayName, 0x40, null, false);
+                    }
+                    else
+                    {
+                        bin.WritePaddedStringShiftJIS(Entries[i].DisplayName, 0x40, null, false);
+                    }
+                }
+
                 bin.WritePaddedStringShiftJIS(Entries[i].GuiValueType.ToString(), 0x8, padding: 0x20);
                 bin.WritePaddedStringShiftJIS(Entries[i].GuiValueStringFormat, 0x8, padding: 0x20);
                 bin.Write(Entries[i].DefaultValue);
@@ -256,10 +368,24 @@ namespace MeowDSIO.DataFiles
                 bin.Write(Entries[i].Increment);
                 bin.Write(Entries[i].GuiValueDisplayMode);
                 bin.Write(Entries[i].GuiValueByteCount);
-                bin.Write(descriptionOffsets[i]);
+
+                if (Version == 0x30)
+                {
+                    bin.Write((uint)(descriptionOffsets[i]));
+                }
+                else if (Version == 0xFF)
+                {
+                    bin.Write(descriptionOffsets[i]);
+                }
+
                 bin.WritePaddedStringShiftJIS(Entries[i].InternalValueType.ToString(), 0x20, padding: 0x20);
                 bin.WritePaddedStringShiftJIS(Entries[i].Name, 0x20, padding: 0x20);
                 bin.Write(Entries[i].ID);
+
+                if (Entries[i].UNMAPPED_DATA != null && Entries[i].UNMAPPED_DATA.Length > 0)
+                {
+                    bin.Write(Entries[i].UNMAPPED_DATA);
+                }
 
                 prog?.Report((Entries.Count + i, Entries.Count * 2));
             }
