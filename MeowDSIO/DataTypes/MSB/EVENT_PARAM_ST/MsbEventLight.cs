@@ -8,7 +8,14 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
 {
     public class MsbEventLight : MsbEventBase
     {
-        public int SUx00 { get; set; } = 0;
+        internal override void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict)
+        {
+            subtypeName = "Light";
+
+            dict.Add(nameof(SubUnk1), SubUnk1);
+        }
+
+        public int SubUnk1 { get; set; } = 0;
 
         protected override EventParamSubtype GetSubtypeValue()
         {
@@ -17,12 +24,12 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
 
         protected override void SubtypeRead(DSBinaryReader bin)
         {
-            SUx00 = bin.ReadInt32();
+            SubUnk1 = bin.ReadInt32();
         }
 
         protected override void SubtypeWrite(DSBinaryWriter bin)
         {
-            bin.Write(SUx00);
+            bin.Write(SubUnk1);
         }
     }
 }

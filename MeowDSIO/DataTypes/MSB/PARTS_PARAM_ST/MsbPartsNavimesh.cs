@@ -8,15 +8,25 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 {
     public class MsbPartsNavimesh : MsbPartsBase
     {
+        internal override void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict)
+        {
+            subtypeName = "Navimesh";
+
+            dict.Add(nameof(SUB_CONST_1), SUB_CONST_1);
+            dict.Add(nameof(SUB_CONST_2), SUB_CONST_2);
+            dict.Add(nameof(SUB_CONST_3), SUB_CONST_3);
+            dict.Add(nameof(SUB_CONST_4), SUB_CONST_4);
+        }
+
         public int NaviMeshGroup1 { get; set; } = 0;
         public int NaviMeshGroup2 { get; set; } = 0;
         public int NaviMeshGroup3 { get; set; } = 0;
         public int NaviMeshGroup4 { get; set; } = 0;
 
-        public int UNK1 { get; set; } = 0;
-        public int UNK2 { get; set; } = 0;
-        public int UNK3 { get; set; } = 0;
-        public int UNK4 { get; set; } = 0;
+        internal int SUB_CONST_1 { get; set; } = 0;
+        internal int SUB_CONST_2 { get; set; } = 0;
+        internal int SUB_CONST_3 { get; set; } = 0;
+        internal int SUB_CONST_4 { get; set; } = 0;
 
         internal override PartsParamSubtype GetSubtypeValue()
         {
@@ -30,10 +40,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
             NaviMeshGroup3 = bin.ReadInt32();
             NaviMeshGroup4 = bin.ReadInt32();
 
-            UNK1 = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
-            UNK3 = bin.ReadInt32();
-            UNK4 = bin.ReadInt32();
+            SUB_CONST_1 = bin.ReadInt32();
+            SUB_CONST_2 = bin.ReadInt32();
+            SUB_CONST_3 = bin.ReadInt32();
+            SUB_CONST_4 = bin.ReadInt32();
         }
 
         protected override void SubtypeWrite(DSBinaryWriter bin)
@@ -43,10 +53,10 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
             bin.Write(NaviMeshGroup3);
             bin.Write(NaviMeshGroup4);
 
-            bin.Write(UNK1);
-            bin.Write(UNK2);
-            bin.Write(UNK3);
-            bin.Write(UNK4);
+            bin.Write(SUB_CONST_1);
+            bin.Write(SUB_CONST_2);
+            bin.Write(SUB_CONST_3);
+            bin.Write(SUB_CONST_4);
         }
     }
 }

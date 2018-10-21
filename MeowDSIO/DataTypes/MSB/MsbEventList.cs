@@ -33,10 +33,10 @@ namespace MeowDSIO.DataTypes.MSB
             = new List<MsbEventMapOffset>();
         public List<MsbEventNavimesh> Navimeshes { get; set; }
             = new List<MsbEventNavimesh>();
-        public List<MsbEventEnvironment> EnvironmentEvents { get; set; }
+        public List<MsbEventEnvironment> EnvLightMapSpot { get; set; }
             = new List<MsbEventEnvironment>();
-        public List<MsbEventBlackEyeOrbInvasion> BlackEyeOrbInvasion { get; set; } 
-            = new List<MsbEventBlackEyeOrbInvasion>();
+        public List<MsbEventNpcWorldInvitation> NpcWorldInvitations { get; set; } 
+            = new List<MsbEventNpcWorldInvitation>();
 
         private void CheckIndexDictRegister(Dictionary<int, MsbEventBase> indexDict, MsbEventBase thing)
         {
@@ -57,8 +57,8 @@ namespace MeowDSIO.DataTypes.MSB
             .Concat(SpawnPoints)
             .Concat(MapOffsets)
             .Concat(Navimeshes)
-            .Concat(EnvironmentEvents)
-            .Concat(BlackEyeOrbInvasion)
+            .Concat(EnvLightMapSpot)
+            .Concat(NpcWorldInvitations)
             .ToList();
 
         public int Count => GlobalList.Count;
@@ -70,10 +70,21 @@ namespace MeowDSIO.DataTypes.MSB
         public string NameOf(int index)
         {
             if (index == -1)
-            {
                 return "";
-            }
+            else if (index >= GlobalList.Count)
+                return $"[INVALID GLOBAL EVENT INDEX: {index}]";
+
             return GlobalList[index].Name;
+        }
+
+        public string EnvLightMapSpotNameOf(int index)
+        {
+            if (index == -1)
+                return "";
+            else if (index >= EnvLightMapSpot.Count)
+                return $"[INVALID LOCAL ENVIRONMENT EVENT INDEX: {index}]";
+
+            return EnvLightMapSpot[index].Name;
         }
 
         public int GetNextIndex()
@@ -96,6 +107,25 @@ namespace MeowDSIO.DataTypes.MSB
             {
                 return eventOfType.Last().Index + 1;
             }
+        }
+
+        public int EnvLightMapSpotIndexOf(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return -1;
+            }
+            var matches = EnvLightMapSpot.Where(x => x.Name == name);
+            var matchCount = matches.Count();
+            if (matchCount == 0)
+            {
+                throw new Exception($"MSB LightMapSpot Event \"{name}\" does not exist!");
+            }
+            else if (matchCount > 1)
+            {
+                throw new Exception($"More than one MSB LightMapSpot Event found named \"{name}\"!");
+            }
+            return EnvLightMapSpot.IndexOf(matches.First());
         }
 
         public int IndexOf(string name)

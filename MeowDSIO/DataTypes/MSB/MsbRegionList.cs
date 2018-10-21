@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,32 +12,33 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public class MsbRegionList : IList<MsbRegionBase>
     {
-        public List<MsbRegionPoint> Points { get; set; }
-        = new List<MsbRegionPoint>();
+        public ObservableCollection<MsbRegionPoint> Points { get; set; }
+        = new ObservableCollection<MsbRegionPoint>();
 
-        public List<MsbRegionSphere> Spheres { get; set; }
-        = new List<MsbRegionSphere>();
+        public ObservableCollection<MsbRegionSphere> Spheres { get; set; }
+        = new ObservableCollection<MsbRegionSphere>();
 
-        public List<MsbRegionCylinder> Cylinders { get; set; }
-        = new List<MsbRegionCylinder>();
+        public ObservableCollection<MsbRegionCylinder> Cylinders { get; set; }
+        = new ObservableCollection<MsbRegionCylinder>();
 
-        public List<MsbRegionBox> Boxes { get; set; }
-        = new List<MsbRegionBox>();
+        public ObservableCollection<MsbRegionBox> Boxes { get; set; }
+        = new ObservableCollection<MsbRegionBox>();
 
         private void CheckIndexDictRegister(Dictionary<int, MsbRegionBase> indexDict, MsbRegionBase thing)
         {
-            if (indexDict.ContainsKey(thing.Index))
-                throw new InvalidDataException($"Two regions found with {nameof(thing.Index)} == {thing.Index} in this MSB!");
+            if (indexDict.ContainsKey(thing.SolvedIndex))
+                throw new InvalidDataException($"Two regions found with {nameof(thing.SolvedIndex)} == {thing.SolvedIndex} in this MSB!");
             else
-                indexDict.Add(thing.Index, thing);
+                indexDict.Add(thing.SolvedIndex, thing);
         }
 
         public string NameOf(int index)
         {
             if (index == -1)
-            {
                 return "";
-            }
+            else if (index >= GlobalList.Count)
+                return $"[INVALID REGION INDEX: {index}]";
+
             return GlobalList[index].Name;
         }
 
@@ -44,6 +46,7 @@ namespace MeowDSIO.DataTypes.MSB
             .Concat(Spheres)
             .Concat(Cylinders)
             .Concat(Boxes)
+            .OrderBy(x => x.SolvedIndex)
             .ToList();
 
         public int Count => GlobalList.Count;
@@ -73,12 +76,12 @@ namespace MeowDSIO.DataTypes.MSB
 
         public int GetNextIndex()
         {
-            var orderedRegions = GlobalList.OrderBy(x => x.Index);
+            var orderedRegions = GlobalList.OrderBy(x => x.SolvedIndex);
             if (!orderedRegions.Any())
             {
                 return 0;
             }
-            return orderedRegions.Last().Index + 1;
+            return orderedRegions.Last().SolvedIndex + 1;
         }
 
         //public int GetNextIndex(PointParamSubtype type)

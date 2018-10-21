@@ -8,10 +8,18 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
 {
     public class MsbEventMapOffset : MsbEventBase
     {
+        internal override void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict)
+        {
+            subtypeName = "MapOffset";
+
+            dict.Add(nameof(SUB_CONST_1), SUB_CONST_1);
+        }
+
         public float X { get; set; } = 0;
         public float Y { get; set; } = 0;
         public float Z { get; set; } = 0;
-        public float SUx0C { get; set; } = 0; //TODO: Confirm Float/Int
+
+        internal float SUB_CONST_1 { get; set; } = 0;
 
         protected override EventParamSubtype GetSubtypeValue()
         {
@@ -23,7 +31,7 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
             X = bin.ReadSingle();
             Y = bin.ReadSingle();
             Z = bin.ReadSingle();
-            SUx0C = bin.ReadSingle();
+            SUB_CONST_1 = bin.ReadSingle();
         }
 
         protected override void SubtypeWrite(DSBinaryWriter bin)
@@ -31,7 +39,7 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
             bin.Write(X);
             bin.Write(Y);
             bin.Write(Z);
-            bin.Write(SUx0C);
+            bin.Write(SUB_CONST_1);
         }
     }
 }

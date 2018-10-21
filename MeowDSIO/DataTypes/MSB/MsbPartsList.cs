@@ -19,16 +19,16 @@ namespace MeowDSIO.DataTypes.MSB
             = new List<MsbPartsNPC>();
         public List<MsbPartsPlayer> Players { get; set; }
             = new List<MsbPartsPlayer>();
-        public List<MsbPartsCollision> Collisions { get; set; }
-            = new List<MsbPartsCollision>();
+        public List<MsbPartsHit> Hits { get; set; }
+            = new List<MsbPartsHit>();
         public List<MsbPartsNavimesh> Navimeshes { get; set; }
             = new List<MsbPartsNavimesh>();
-        public List<MsbPartsObjectUnused> UnusedObjects { get; set; }
-            = new List<MsbPartsObjectUnused>();
-        public List<MsbPartsNPCUnused> UnusedNPCs { get; set; }
-            = new List<MsbPartsNPCUnused>();
-        public List<MsbPartsCollisionUnused> UnusedCollisions { get; set; }
-            = new List<MsbPartsCollisionUnused>();
+        public List<MsbPartsObjectDummy> DummyObjects { get; set; }
+            = new List<MsbPartsObjectDummy>();
+        public List<MsbPartsNPCDummy> DummyNPCs { get; set; }
+            = new List<MsbPartsNPCDummy>();
+        public List<MsbPartsConnectHit> ConnectHits { get; set; }
+            = new List<MsbPartsConnectHit>();
 
         private void CheckIndexDictRegister(List<MsbPartsBase> indexDict, MsbPartsBase thing)
         {
@@ -39,11 +39,11 @@ namespace MeowDSIO.DataTypes.MSB
             .Concat(Objects)
             .Concat(NPCs)
             .Concat(Players)
-            .Concat(Collisions)
+            .Concat(Hits)
             .Concat(Navimeshes)
-            .Concat(UnusedObjects)
-            .Concat(UnusedNPCs)
-            .Concat(UnusedCollisions)
+            .Concat(DummyObjects)
+            .Concat(DummyNPCs)
+            .Concat(ConnectHits)
             .ToList();
 
         public int Count => GlobalList.Count;
@@ -55,9 +55,10 @@ namespace MeowDSIO.DataTypes.MSB
         public string NameOf(int index)
         {
             if (index == -1)
-            {
                 return "";
-            }
+            else if (index >= GlobalList.Count)
+                return $"[INVALID PART INDEX: {index}]";
+
             return GlobalList[index].Name;
         }
 

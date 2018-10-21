@@ -42,7 +42,7 @@ namespace MeowDSIO.DataFiles
             Unknown2 = bin.ReadUInt16();
             ushort rowCount = bin.ReadUInt16();
 
-            byte namePad = 0;
+            //byte namePad = 0;
             ID = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
 
             Unknown3 = bin.ReadInt32();

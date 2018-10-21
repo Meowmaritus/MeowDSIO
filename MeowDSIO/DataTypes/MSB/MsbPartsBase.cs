@@ -8,11 +8,85 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public abstract class MsbPartsBase : MsbStruct
     {
+        private static List<string> _baseFieldNames;
+        public static List<string> BaseFieldNames
+        {
+            get
+            {
+                if (_baseFieldNames == null)
+                {
+                    _baseFieldNames = new List<string>
+                    {
+                        nameof(Name),
+                        nameof(Index),
+                        nameof(ModelName),
+                        nameof(PlaceholderModel),
+                        nameof(PosX),
+                        nameof(PosY),
+                        nameof(PosZ),
+
+                        nameof(RotX),
+                        nameof(RotY),
+                        nameof(RotZ),
+
+                        nameof(ScaleX),
+                        nameof(ScaleY),
+                        nameof(ScaleZ),
+
+                        nameof(DrawGroup1),
+                        nameof(DrawGroup2),
+                        nameof(DrawGroup3),
+                        nameof(DrawGroup4),
+
+                        nameof(DispGroup1),
+                        nameof(DispGroup2),
+                        nameof(DispGroup3),
+                        nameof(DispGroup4),
+
+                        nameof(EntityID),
+
+                        nameof(LightID),
+                        nameof(FogID),
+                        nameof(ScatterID),
+                        nameof(LensFlareID),
+                        nameof(ShadowID),
+                        nameof(DofID),
+                        nameof(ToneMapID),
+                        nameof(ToneCorrectID),
+                        nameof(LanternID),
+                        nameof(LodParamID),
+
+                        nameof(IsShadowSrc),
+                        nameof(IsShadowDest),
+                        nameof(IsShadowOnly),
+                        nameof(DrawByReflectCam),
+                        nameof(DrawOnlyReflectCam),
+                        nameof(IsUseDepthBiasFloat),
+                        nameof(DisablePointLightEffect),
+                    };
+                }
+                return _baseFieldNames;
+            }
+        }
+
+        internal abstract void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict);
+
+        public void DebugPushUnknownFieldReport(out string basetypeName, out string subtypeName, Dictionary<string, object> dict, Dictionary<string, object> dict_Subtype)
+        {
+            dict.Add(nameof(BASE_CONST_1), BASE_CONST_1);
+            dict.Add(nameof(BASE_CONST_2), BASE_CONST_2);
+            dict.Add(nameof(BASE_CONST_3), BASE_CONST_3);
+            dict.Add(nameof(BASE_CONST_4), BASE_CONST_4);
+
+            DebugPushUnknownFieldReport_Subtype(out string sn, dict_Subtype);
+            basetypeName = "PARTS_PARAM_ST";
+            subtypeName = sn;
+        }
+
         public string Name { get; set; } = "";
         public int Index { get; set; } = 0;
 
-        internal int ModelIndex { get; set; } = 0;
-
+        internal int i_ModelName { get; set; } = -1;
         public string ModelName { get; set; }  = "";
 
         public string PlaceholderModel { get; set; } = "";
@@ -39,28 +113,34 @@ namespace MeowDSIO.DataTypes.MSB
         public int DispGroup3 { get; set; } = 0;
         public int DispGroup4 { get; set; } = 0;
 
-        public int Ux60 { get; set; } = 0;
+        internal int BASE_CONST_1 { get; set; } = 0;
 
         //BASE DATA
 
-        public int EventEntityID { get; set; } = -1;
-        public byte LightID { get; set; } = 0;
-        public byte FogID { get; set; } = 0;
-        public byte ScatterID { get; set; } = 0;
+        public int EntityID { get; set; } = -1;
+        public sbyte LightID { get; set; } = 0;
+        public sbyte FogID { get; set; } = 0;
+        public sbyte ScatterID { get; set; } = 0;
+        public sbyte LensFlareID { get; set; } = 0;
+        public sbyte ShadowID { get; set; } = 0;
+        public sbyte DofID { get; set; } = 0;
+        public sbyte ToneMapID { get; set; } = 0;
+        public sbyte ToneCorrectID { get; set; } = 0;
+        public sbyte LanternID { get; set; } = 0;
+        public sbyte LodParamID { get; set; } = 0;
 
-        public byte BUx07 { get; set; } = 0;
-        public byte BUx08 { get; set; } = 0;
-        public byte BUx09 { get; set; } = 0;
-        public byte BUx0A { get; set; } = 0;
-        public byte BUx0B { get; set; } = 0;
+        internal byte BASE_CONST_2 { get; set; }
 
-        public short BUx0C { get; set; } = 0;
-        public short BUx0E { get; set; } = 0;
-        public short BUx10 { get; set; } = 0;
-        public short BUx12 { get; set; } = 0;
+        public bool IsShadowSrc { get; set; } = false;
+        public bool IsShadowDest { get; set; } = false;
+        public bool IsShadowOnly { get; set; } = false;
+        public bool DrawByReflectCam { get; set; } = false;
+        public bool DrawOnlyReflectCam { get; set; } = false;
+        public bool IsUseDepthBiasFloat { get; set; } = false;
+        public bool DisablePointLightEffect { get; set; } = false;
 
-        public int BUx14 { get; set; } = 0;
-        //public int BUx18 { get; set; } = 0;
+        internal byte BASE_CONST_3 { get; set; }
+        internal byte BASE_CONST_4 { get; set; }
 
         protected abstract void SubtypeRead(DSBinaryReader bin);
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
@@ -74,7 +154,7 @@ namespace MeowDSIO.DataTypes.MSB
             bin.AssertInt32((int)Type);
 
             Index = bin.ReadInt32();
-            ModelIndex = bin.ReadInt32();
+            i_ModelName = bin.ReadInt32();
 
             PlaceholderModel = bin.ReadMsbString();
 
@@ -103,29 +183,32 @@ namespace MeowDSIO.DataTypes.MSB
             int baseDataOffset = bin.ReadInt32();
             int subtypeDataOffset = bin.ReadInt32();
 
-            Ux60 = bin.ReadInt32();
+            BASE_CONST_1 = bin.ReadInt32();
 
             bin.StepInMSB(baseDataOffset);
             {
-                EventEntityID = bin.ReadInt32();
-
-                LightID = bin.ReadByte();
-                FogID = bin.ReadByte();
-                ScatterID = bin.ReadByte();
-
-                BUx07 = bin.ReadByte();
-                BUx08 = bin.ReadByte();
-                BUx09 = bin.ReadByte();
-                BUx0A = bin.ReadByte();
-                BUx0B = bin.ReadByte();
-
-                BUx0C = bin.ReadInt16();
-                BUx0E = bin.ReadInt16();
-                BUx10 = bin.ReadInt16();
-                BUx12 = bin.ReadInt16();
-
-                BUx14 = bin.ReadInt32();
-                //BUx18 = bin.ReadInt32();
+                EntityID = bin.ReadInt32();
+                LightID = bin.ReadSByte();
+                FogID = bin.ReadSByte();
+                ScatterID = bin.ReadSByte();
+                LensFlareID = bin.ReadSByte();
+                ShadowID = bin.ReadSByte();
+                DofID = bin.ReadSByte();
+                ToneMapID = bin.ReadSByte();
+                ToneCorrectID = bin.ReadSByte();
+                LanternID = bin.ReadSByte();
+                LodParamID = bin.ReadSByte();
+                BASE_CONST_2 = bin.ReadByte();
+                IsShadowSrc = bin.ReadBoolean();
+                IsShadowDest = bin.ReadBoolean();
+                IsShadowOnly = bin.ReadBoolean();
+                DrawByReflectCam = bin.ReadBoolean();
+                DrawOnlyReflectCam = bin.ReadBoolean();
+                IsUseDepthBiasFloat = bin.ReadBoolean();
+                DisablePointLightEffect = bin.ReadBoolean();
+                
+                BASE_CONST_3 = bin.ReadByte();
+                BASE_CONST_4 = bin.ReadByte();
 
             }
             bin.StepOut();
@@ -144,7 +227,7 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Write((int)Type);
 
             bin.Write(Index);
-            bin.Write(ModelIndex);
+            bin.Write(i_ModelName);
 
             bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|{nameof(PlaceholderModel)}");
 
@@ -173,7 +256,7 @@ namespace MeowDSIO.DataTypes.MSB
             bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|(BASE DATA OFFSET)");
             bin.Placeholder($"PARTS_PARAM_ST|{Type}|{Index}|(SUBTYPE DATA OFFSET)");
 
-            bin.Write(Ux60);
+            bin.Write(BASE_CONST_1);
 
             int nameByteCount = DSBinaryWriter.ShiftJISEncoding.GetByteCount(Name);
             int placeholderModelByteCount = DSBinaryWriter.ShiftJISEncoding.GetByteCount(PlaceholderModel);
@@ -198,24 +281,30 @@ namespace MeowDSIO.DataTypes.MSB
             bin.EndMSBStrings(blockSize);
 
             bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|(BASE DATA OFFSET)", bin.MsbOffset);
-            bin.Write(EventEntityID);
+
+            bin.Write(EntityID);
             bin.Write(LightID);
             bin.Write(FogID);
             bin.Write(ScatterID);
+            bin.Write(LensFlareID);
+            bin.Write(ShadowID);
+            bin.Write(DofID);
+            bin.Write(ToneMapID);
+            bin.Write(ToneCorrectID);
+            bin.Write(LanternID);
+            bin.Write(LodParamID);
+            bin.Write(BASE_CONST_2);
+            bin.Write(IsShadowSrc);
+            bin.Write(IsShadowDest);
+            bin.Write(IsShadowOnly);
+            bin.Write(DrawByReflectCam);
+            bin.Write(DrawOnlyReflectCam);
+            bin.Write(IsUseDepthBiasFloat);
+            bin.Write(DisablePointLightEffect);
+            
+            bin.Write(BASE_CONST_3);
+            bin.Write(BASE_CONST_4);
 
-            bin.Write(BUx07);
-            bin.Write(BUx08);
-            bin.Write(BUx09);
-            bin.Write(BUx0A);
-            bin.Write(BUx0B);
-
-            bin.Write(BUx0C);
-            bin.Write(BUx0E);
-            bin.Write(BUx10);
-            bin.Write(BUx12);
-
-            bin.Write(BUx14);
-            //bin.Write(BUx18);
 
 
             bin.Replace($"PARTS_PARAM_ST|{Type}|{Index}|(SUBTYPE DATA OFFSET)", bin.MsbOffset);

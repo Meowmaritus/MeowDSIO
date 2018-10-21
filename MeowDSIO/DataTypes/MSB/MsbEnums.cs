@@ -55,11 +55,20 @@ namespace MeowDSIO.DataTypes.MSB
         Objects = 1,
         NPCs = 2,
         Players = 4,
-        Collisions = 5,
+        Hits = 5,
         Navimeshes = 8,
-        UnusedObjects = 9,
-        UnusedNPCs = 10,
-        UnusedCollisions = 11,
+        DummyObjects = 9,
+        DummyNPCs = 10,
+        ConnectHits = 11,
+    }
+
+    public enum PartsCollisionSoundSpaceType : byte
+    {
+        Field = 0,
+        RoomSmall = 1,
+        RoomMedium = 2,
+        RoomLarge = 3,
+        RoomExtraLarge = 4,
     }
 
     public enum ModelParamSubtype : int

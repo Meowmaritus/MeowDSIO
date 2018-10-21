@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 {
-    public class MsbPartsObjectUnused : MsbPartsObject
+    public class MsbPartsObjectDummy : MsbPartsObject
     {
         internal override PartsParamSubtype GetSubtypeValue()
         {
-            return PartsParamSubtype.UnusedObjects;
+            return PartsParamSubtype.DummyObjects;
         }
     }
 }

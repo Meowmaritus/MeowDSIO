@@ -8,6 +8,11 @@ namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
 {
     public class MsbEventSound : MsbEventBase
     {
+        internal override void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict)
+        {
+            subtypeName = "Sound";
+        }
+
         public MsbSoundType SoundType { get; set; } = MsbSoundType.Environment;
         public int SoundID { get; set; } = 0;
 

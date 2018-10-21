@@ -8,19 +8,36 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 {
     public class MsbPartsObject : MsbPartsBase
     {
-        public int UNK1 { get; set; } = 0;
+        internal override void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict)
+        {
+            subtypeName = "Object";
 
-        internal int PartIndex { get; set; } = 0;
+            dict.Add(nameof(SUB_CONST_1), SUB_CONST_1);
+            dict.Add(nameof(SubUnk1), SubUnk1);
+            dict.Add(nameof(SubUnk2), SubUnk2);
+            dict.Add(nameof(SUB_CONST_2), SUB_CONST_2);
+            dict.Add(nameof(SUB_CONST_3), SUB_CONST_3);
+            dict.Add(nameof(SubUnk3), SubUnk3);
+            dict.Add(nameof(SubUnk4), SubUnk4);
+            dict.Add(nameof(SubUnk5), SubUnk5);
+            dict.Add(nameof(SUB_CONST_4), SUB_CONST_4);
+        }
 
-        public string CollisionName { get; set; } = "";
+        internal int SUB_CONST_1 { get; set; } = 0;
 
-        public int UNK2 { get; set; } = 0;
+        internal int i_PartName { get; set; } = 0;
+        public string PartName { get; set; } = MiscUtil.BAD_REF;
 
-        public short UNK3 { get; set; } = 0;
-        public short UNK4 { get; set; } = 0;
+        public byte SubUnk1 { get; set; } = 0;
+        public byte SubUnk2 { get; set; } = 0;
+        internal byte SUB_CONST_2 { get; set; } = 0;
+        internal byte SUB_CONST_3 { get; set; } = 0;
 
-        public int UNK5 { get; set; } = 0;
-        public int UNK6 { get; set; } = 0;
+        public short SubUnk3 { get; set; } = 0;
+        public short SubUnk4 { get; set; } = 0;
+
+        public int SubUnk5 { get; set; } = 0;
+        internal int SUB_CONST_4 { get; set; } = 0;
 
 
         internal override PartsParamSubtype GetSubtypeValue()
@@ -30,29 +47,37 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 
         protected override void SubtypeRead(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
-            PartIndex = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
+            SUB_CONST_1 = bin.ReadInt32();
+            i_PartName = bin.ReadInt32();
 
-            UNK3 = bin.ReadInt16();
-            UNK4 = bin.ReadInt16();
+            SubUnk1 = bin.ReadByte();
+            SubUnk2 = bin.ReadByte();
+            SUB_CONST_2 = bin.ReadByte();
+            SUB_CONST_3 = bin.ReadByte();
 
-            UNK5 = bin.ReadInt32();
-            UNK6 = bin.ReadInt32();
+            SubUnk3 = bin.ReadInt16();
+            SubUnk4 = bin.ReadInt16();
+
+            SubUnk5 = bin.ReadInt32();
+            SUB_CONST_4 = bin.ReadInt32();
 
         }
 
         protected override void SubtypeWrite(DSBinaryWriter bin)
         {
-            bin.Write(UNK1);
-            bin.Write(PartIndex);
-            bin.Write(UNK2);
+            bin.Write(SUB_CONST_1);
+            bin.Write(i_PartName);
 
-            bin.Write(UNK3);
-            bin.Write(UNK4);
+            bin.Write(SubUnk1);
+            bin.Write(SubUnk2);
+            bin.Write(SUB_CONST_2);
+            bin.Write(SUB_CONST_3);
 
-            bin.Write(UNK5);
-            bin.Write(UNK6);
+            bin.Write(SubUnk3);
+            bin.Write(SubUnk4);
+
+            bin.Write(SubUnk5);
+            bin.Write(SUB_CONST_4);
         }
     }
 }

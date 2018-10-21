@@ -6,43 +6,41 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MSB.EVENT_PARAM_ST
 {
-    public class MsbEventNavimesh : MsbEventBase
+    public class MsbEventNpcWorldInvitation : MsbEventBase
     {
         internal override void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict)
         {
-            subtypeName = "Navimesh";
+            subtypeName = "NpcWorldInvitation";
 
             dict.Add(nameof(SUB_CONST_1), SUB_CONST_1);
-            dict.Add(nameof(SUB_CONST_2), SUB_CONST_2);
-            dict.Add(nameof(SUB_CONST_3), SUB_CONST_3);
         }
 
-        public int i_NvmRegion { get; set; } = 0;
-        public string NvmRegion { get; set; } = MiscUtil.BAD_REF;
+        public int NPCHostEntityID { get; set; } = 0;
+        public int EventFlagID { get; set; } = 0;
+        internal int i_SpawnPoint { get; set; } = 0;
+        public string SpawnPoint { get; set; } = MiscUtil.BAD_REF;
 
         internal int SUB_CONST_1 { get; set; } = 0;
-        internal int SUB_CONST_2 { get; set; } = 0;
-        internal int SUB_CONST_3 { get; set; } = 0;
 
         protected override EventParamSubtype GetSubtypeValue()
         {
-            return EventParamSubtype.Navimesh;
+            return EventParamSubtype.BlackEyeOrbInvasions;
         }
 
         protected override void SubtypeRead(DSBinaryReader bin)
         {
-            i_NvmRegion = bin.ReadInt32();
+            NPCHostEntityID = bin.ReadInt32();
+            EventFlagID = bin.ReadInt32();
+            i_SpawnPoint = bin.ReadInt32();
             SUB_CONST_1 = bin.ReadInt32();
-            SUB_CONST_2 = bin.ReadInt32();
-            SUB_CONST_3 = bin.ReadInt32();
         }
 
         protected override void SubtypeWrite(DSBinaryWriter bin)
         {
-            bin.Write(i_NvmRegion);
+            bin.Write(NPCHostEntityID);
+            bin.Write(EventFlagID);
+            bin.Write(i_SpawnPoint);
             bin.Write(SUB_CONST_1);
-            bin.Write(SUB_CONST_2);
-            bin.Write(SUB_CONST_3);
         }
     }
 }

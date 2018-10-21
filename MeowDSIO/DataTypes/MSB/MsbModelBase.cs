@@ -8,6 +8,25 @@ namespace MeowDSIO.DataTypes.MSB.MODEL_PARAM_ST
 {
     public abstract class MsbModelBase : MsbStruct
     {
+        private static List<string> _baseFieldNames;
+        public static List<string> BaseFieldNames
+        {
+            get
+            {
+                if (_baseFieldNames == null)
+                {
+                    _baseFieldNames = new List<string>
+                    {
+                        nameof(Name),
+                        nameof(PlaceholderModel),
+                        nameof(Index),
+                        nameof(InstanceCount),
+                    };
+                }
+                return _baseFieldNames;
+            }
+        }
+
         public string Name { get; set; } = null;
 
         internal ModelParamSubtype ModelType => GetSubtypeValue();
@@ -17,9 +36,9 @@ namespace MeowDSIO.DataTypes.MSB.MODEL_PARAM_ST
         public string PlaceholderModel { get; set; } = null;
         public int Index { get; set; } = 0;
         public int InstanceCount { get; set; } = 0;
-        public int Ux14 { get; set; } = 0;
-        public int Ux18 { get; set; } = 0;
-        public int Ux1C { get; set; } = 0;
+        internal int BASE_CONST_1 { get; set; } = 0;
+        internal int BASE_CONST_2 { get; set; } = 0;
+        internal int BASE_CONST_3 { get; set; } = 0;
 
         protected override void InternalRead(DSBinaryReader bin)
         {
@@ -28,9 +47,9 @@ namespace MeowDSIO.DataTypes.MSB.MODEL_PARAM_ST
             Index = bin.ReadInt32();
             PlaceholderModel = bin.ReadMsbString();
             InstanceCount = bin.ReadInt32();
-            Ux14 = bin.ReadInt32();
-            Ux18 = bin.ReadInt32();
-            Ux1C = bin.ReadInt32();
+            BASE_CONST_1 = bin.ReadInt32();
+            BASE_CONST_2 = bin.ReadInt32();
+            BASE_CONST_3 = bin.ReadInt32();
         }
 
         protected override void InternalWrite(DSBinaryWriter bin)
@@ -40,9 +59,9 @@ namespace MeowDSIO.DataTypes.MSB.MODEL_PARAM_ST
             bin.Write(Index);
             bin.Placeholder($"MODEL_PARAM_ST|0|{nameof(PlaceholderModel)}");
             bin.Write(InstanceCount);
-            bin.Write(Ux14);
-            bin.Write(Ux18);
-            bin.Write(Ux1C);
+            bin.Write(BASE_CONST_1);
+            bin.Write(BASE_CONST_2);
+            bin.Write(BASE_CONST_3);
 
             bin.Replace($"MODEL_PARAM_ST|0|{nameof(Name)}", bin.MsbOffset);
             bin.WriteMsbString(Name, terminate: true);

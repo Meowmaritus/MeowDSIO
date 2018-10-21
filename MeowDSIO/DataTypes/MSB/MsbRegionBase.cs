@@ -8,9 +8,49 @@ namespace MeowDSIO.DataTypes.MSB
 {
     public abstract class MsbRegionBase : MsbStruct
     {
+        private static List<string> _baseFieldNames;
+        public static List<string> BaseFieldNames
+        {
+            get
+            {
+                if (_baseFieldNames == null)
+                {
+                    _baseFieldNames = new List<string>
+                    {
+                        nameof(Name),
+                        nameof(Index),
+
+                        nameof(PosX),
+                        nameof(PosY),
+                        nameof(PosZ),
+
+                        nameof(RotX),
+                        nameof(RotY),
+                        nameof(RotZ),
+                    };
+                }
+                return _baseFieldNames;
+            }
+        }
+
+        internal abstract void DebugPushUnknownFieldReport_Subtype(out string subtypeName, Dictionary<string, object> dict);
+
+        public void DebugPushUnknownFieldReport(out string basetypeName, out string subtypeName, Dictionary<string, object> dict, Dictionary<string, object> dict_Subtype)
+        {
+            dict.Add(nameof(BASE_CONST_1), BASE_CONST_1);
+
+            DebugPushUnknownFieldReport_Subtype(out string sn, dict_Subtype);
+            basetypeName = "POINT_PARAM_ST";
+            subtypeName = sn;
+        }
+
         public string Name { get; set; } = "";
-        public int Ux04 { get; set; } = 0;
-        public int Index { get; set; } = 0;
+
+        internal int BASE_CONST_1 { get; set; } = 0;
+
+        internal int SolvedIndex { get; set; } = 0;
+
+        public int Index { get; set; } = -1;
 
         public float PosX { get; set; } = 0;
         public float PosY { get; set; } = 0;
@@ -38,8 +78,8 @@ namespace MeowDSIO.DataTypes.MSB
         protected override void InternalRead(DSBinaryReader bin)
         {
             Name = bin.ReadMsbString();
-            Ux04 = bin.ReadInt32();
-            Index = bin.ReadInt32();
+            BASE_CONST_1 = bin.ReadInt32();
+            SolvedIndex = bin.ReadInt32();
             bin.AssertInt32((int)Type);
 
             PosX = bin.ReadSingle();
@@ -69,8 +109,8 @@ namespace MeowDSIO.DataTypes.MSB
         protected override void InternalWrite(DSBinaryWriter bin)
         {
             bin.Placeholder($"POINT_PARAM_ST|{Type}|{nameof(Name)}");
-            bin.Write(Ux04);
-            bin.Write(Index);
+            bin.Write(BASE_CONST_1);
+            bin.Write(SolvedIndex);
             bin.Write((int)Type);
 
             bin.Write(PosX);

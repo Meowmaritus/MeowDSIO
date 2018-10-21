@@ -8,6 +8,8 @@ namespace MeowDSIO
 {
     public static class MiscUtil
     {
+        public const string BAD_REF = "?MeowDSIO_BAD_REFERENCE?";
+
         //Yes that's a GameBoy Color reference
         public static void PrintDX(string txt, ConsoleColor? foreColor = null, ConsoleColor? backColor = null)
         {
