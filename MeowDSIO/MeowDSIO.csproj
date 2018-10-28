@@ -63,7 +63,9 @@
     <Compile Include="DataFiles\GenericBinaryFile.cs" />
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
+    <Compile Include="DataFiles\MCG.cs" />
     <Compile Include="DataFiles\MSB.cs" />
+    <Compile Include="DataFiles\MSGBND.cs" />
     <Compile Include="DataFiles\MTD.cs" />
     <Compile Include="DataFiles\MtdBND.cs" />
     <Compile Include="DataFiles\PARAM.cs" />
@@ -105,9 +107,9 @@
     <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMemberSemantic.cs" />
     <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMemberValueType.cs" />
     <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMember.cs" />
+    <Compile Include="DataTypes\FMGBND\FMGBNDEnums.cs" />
     <Compile Include="DataTypes\FMG\FMGChunk.cs" />
     <Compile Include="DataTypes\FMG\FMGChunkHeaderBuffer.cs" />
-    <Compile Include="DataTypes\FMG\FMGEntryRef.cs" />
     <Compile Include="DataTypes\FMG\FMGHeader.cs" />
     <Compile Include="DataTypes\FMG\VanillaFMG.cs" />
     <Compile Include="DataTypes\LUAINFO\Goal.cs" />

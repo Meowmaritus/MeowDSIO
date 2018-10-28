@@ -32,6 +32,15 @@ namespace MeowDSIO.DataFiles
             }
         }
 
+        public ParamRow GetRow(int id)
+        {
+            var possibleRows = Entries.Where(x => x.ID == id);
+            if (possibleRows.Any())
+                return possibleRows.First();
+            else
+                return null;
+        }
+
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             int stringsOffset = bin.ReadInt32();

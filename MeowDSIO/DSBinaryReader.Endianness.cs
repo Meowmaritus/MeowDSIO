@@ -120,6 +120,5 @@ namespace MeowDSIO
             return BitConverter.ToUInt64(GetPreparedBytes(4), 0);
         }
 
-
     }
 }

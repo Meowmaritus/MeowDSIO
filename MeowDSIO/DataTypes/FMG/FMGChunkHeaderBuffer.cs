@@ -29,7 +29,7 @@ namespace MeowDSIO.DataTypes.FMG
             buffer = new int[64];
         }
 
-        public void ReadEntries(DSBinaryReader bin, ObservableCollection<FMGEntryRef> entries)
+        public void ReadEntries(DSBinaryReader bin, Dictionary<int, string> _entries)
         {
             count = (LastStringID - FirstStringID) + 1;
 
@@ -67,7 +67,7 @@ namespace MeowDSIO.DataTypes.FMG
                         throw new Exception(":trashcat:");
                     }
 
-                    entries.Add(new FMGEntryRef(FirstStringID + i, stringContents));
+                    _entries.Add(FirstStringID + i, stringContents);
                 }
             }
             bin.StepOut();
