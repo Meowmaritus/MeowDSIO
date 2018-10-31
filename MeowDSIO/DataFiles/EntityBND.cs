@@ -71,7 +71,10 @@ namespace MeowDSIO.DataFiles
                 }
                 else if (entry.ID >= ID_ANIBND_START && entry.ID <= ID_ANIBND_END)
                 {
-                    Models[modelIdx].AnimContainer = entry.ReadDataAs<ANIBND>();
+                    if (entry.Name == "N:\\FRPG\\data\\Action\\chrbnd.dmy")
+                        Models[modelIdx].HasActionDmy = true;
+                    else
+                        Models[modelIdx].AnimContainer = entry.ReadDataAs<ANIBND>();
 
                 }
                 else if (entry.ID >= ID_HKXPWV_START && entry.ID <= ID_HKXPWV_END)
@@ -147,6 +150,10 @@ namespace MeowDSIO.DataFiles
             ID = ID_ANIBND_START;
             foreach (var mdl in Models)
             {
+                if (mdl.HasActionDmy)
+                {
+                    throw new NotImplementedException("TODO: Get byte array of the action dummy file in order to write it here.");
+                }
                 if (mdl.AnimContainer != null)
                     BND.Add(new BNDEntry(ID, $"{ShortName}{idx()}.anibnd", DataFile.SaveAsBytes(mdl.AnimContainer, $"{ShortName}{idx()}.anibnd")));
             }

@@ -13,6 +13,7 @@ namespace MeowDSIO.DataTypes.EntityBND
         public Dictionary<string, uint> TextureFlags { get; set; } = new Dictionary<string, uint>();
         public DataFiles.FLVER Mesh { get; set; } = null;
         public byte[] BodyHKX { get; set; } = null;
+        public bool HasActionDmy { get; set; } = false;
         public DataFiles.ANIBND AnimContainer { get; set; } = null;
         public bool IncludesAnimDummy { get; set; } = false;
         public byte[] HKXPWV { get; set; } = null;
