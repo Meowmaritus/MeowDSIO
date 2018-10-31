@@ -10,6 +10,36 @@ namespace MeowDSIO.DataTypes.FLVER
     {
         public FlverFaceSetFlags Flags { get; set; } = FlverFaceSetFlags.None;
 
+        public bool GetFlag(FlverFaceSetFlags flag)
+        {
+            return (Flags & flag) == flag;
+        }
+
+        public void SetFlag(FlverFaceSetFlags flag, bool value)
+        {
+            if (value)
+            {
+                Flags |= flag;
+            }
+            else
+            {
+                Flags &= (~flag);
+            }
+            
+        }
+
+        public bool FlagsLOD1
+        {
+            get => GetFlag(FlverFaceSetFlags.LOD1);
+            set => SetFlag(FlverFaceSetFlags.LOD1, value);
+        }
+
+        public bool FlagsLOD2
+        {
+            get => GetFlag(FlverFaceSetFlags.LOD2);
+            set => SetFlag(FlverFaceSetFlags.LOD2, value);
+        }
+
         public bool IsTriangleStrip { get; set; } = false;
 
         public bool CullBackfaces { get; set; } = true;
