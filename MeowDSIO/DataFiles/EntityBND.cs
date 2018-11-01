@@ -59,6 +59,7 @@ namespace MeowDSIO.DataFiles
                     foreach (var tex in tpf)
                     {
                         Models[modelIdx].Textures.Add(tex.Name, tex.GetBytes());
+                        Models[modelIdx].TextureFlags.Add(tex.Name, tex.FlagsA);
                     }
                 }
                 else if (entry.ID >= ID_FLVER_START && entry.ID <= ID_FLVER_END)
@@ -79,19 +80,19 @@ namespace MeowDSIO.DataFiles
                 }
                 else if (entry.ID >= ID_HKXPWV_START && entry.ID <= ID_HKXPWV_END)
                 {
-                    Models[modelIdx].BodyHKX = entry.GetBytes();
+                    Models[modelIdx].HKXPWV = entry.GetBytes();
                 }
                 else if (entry.ID >= ID_BSIPWV_START && entry.ID <= ID_BSIPWV_END)
                 {
-                    Models[modelIdx].BodyHKX = entry.GetBytes();
+                    Models[modelIdx].BSIPWV = entry.GetBytes();
                 }
                 else if (entry.ID >= ID_ClothHKX_START && entry.ID <= ID_ClothHKX_END)
                 {
-                    Models[modelIdx].BodyHKX = entry.GetBytes();
+                    Models[modelIdx].ClothHKX = entry.GetBytes();
                 }
                 else if (entry.ID >= ID_CHRTPFBHD_START && entry.ID <= ID_CHRTPFBHD_END)
                 {
-                    Models[modelIdx].BodyHKX = entry.GetBytes();
+                    Models[modelIdx].CHRTPFBHD = entry.GetBytes();
                 }
                 else
                 {
@@ -104,7 +105,7 @@ namespace MeowDSIO.DataFiles
         {
             string ShortName = (FilePath ?? VirtualUri);
             ShortName = ShortName.Substring(ShortName.LastIndexOfAny(pathSep) + 1);
-            ShortName = ShortName.Substring(0, ShortName.IndexOf('.'));
+            ShortName = ShortName.Substring(0, ShortName.LastIndexOf('.'));
 
             var BND = new BND()
             {
