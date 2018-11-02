@@ -18,9 +18,9 @@ namespace MeowDSIO.DataTypes.MSB.POINT_PARAM_ST
 
         internal int SUB_CONST_1 { get; set; } = 0;
         internal int SUB_CONST_2 { get; set; } = 0;
-        public float Length { get; set; } = 1;
-        public float Width { get; set; } = 1;
-        public float Height { get; set; } = 1;
+        public float WidthX { get; set; } = 1;
+        public float DepthZ { get; set; } = 1;
+        public float HeightY { get; set; } = 1;
         public int EntityID { get; set; } = -1;
 
         public MsbRegionBox(MsbRegionList parentList)
@@ -42,9 +42,9 @@ namespace MeowDSIO.DataTypes.MSB.POINT_PARAM_ST
         {
             SUB_CONST_1 = bin.ReadInt32();
             SUB_CONST_2 = bin.ReadInt32();
-            Length = bin.ReadSingle();
-            Width = bin.ReadSingle();
-            Height = bin.ReadSingle();
+            WidthX = bin.ReadSingle();
+            DepthZ = bin.ReadSingle();
+            HeightY = bin.ReadSingle();
             EntityID = bin.ReadInt32();
         }
 
@@ -52,9 +52,9 @@ namespace MeowDSIO.DataTypes.MSB.POINT_PARAM_ST
         {
             bin.Write(SUB_CONST_1);
             bin.Write(SUB_CONST_2);
-            bin.Write(Length);
-            bin.Write(Width);
-            bin.Write(Height);
+            bin.Write(WidthX);
+            bin.Write(DepthZ);
+            bin.Write(HeightY);
             bin.Write(EntityID);
         }
     }
