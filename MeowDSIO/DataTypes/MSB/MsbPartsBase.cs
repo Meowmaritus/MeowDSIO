@@ -144,7 +144,7 @@ namespace MeowDSIO.DataTypes.MSB
 
         protected abstract void SubtypeRead(DSBinaryReader bin);
         protected abstract void SubtypeWrite(DSBinaryWriter bin);
-        internal abstract PartsParamSubtype GetSubtypeValue();
+        public abstract PartsParamSubtype GetSubtypeValue();
         internal PartsParamSubtype Type => GetSubtypeValue();
 
         protected override void InternalRead(DSBinaryReader bin)

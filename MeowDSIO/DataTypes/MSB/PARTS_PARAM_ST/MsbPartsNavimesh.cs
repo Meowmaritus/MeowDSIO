@@ -28,7 +28,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         internal int SUB_CONST_3 { get; set; } = 0;
         internal int SUB_CONST_4 { get; set; } = 0;
 
-        internal override PartsParamSubtype GetSubtypeValue()
+        public override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.Navimeshes;
         }

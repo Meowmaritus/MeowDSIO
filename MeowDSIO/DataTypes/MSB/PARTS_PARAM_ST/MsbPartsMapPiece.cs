@@ -19,7 +19,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
         internal int SUB_CONST_1 { get; set; } = 0;
         internal int SUB_CONST_2 { get; set; } = 0;
 
-        internal override PartsParamSubtype GetSubtypeValue()
+        public override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.MapPieces;
         }

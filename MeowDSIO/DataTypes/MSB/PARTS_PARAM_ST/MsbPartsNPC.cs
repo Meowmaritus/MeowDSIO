@@ -79,7 +79,7 @@ namespace MeowDSIO.DataTypes.MSB.PARTS_PARAM_ST
 
 
 
-        internal override PartsParamSubtype GetSubtypeValue()
+        public override PartsParamSubtype GetSubtypeValue()
         {
             return PartsParamSubtype.NPCs;
         }
