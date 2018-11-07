@@ -11,6 +11,9 @@ namespace MeowDSIO.DataFiles
     //Special thanks to TKGP for doing the Read/Write
     public class DCX : DataFile
     {
+        public int UnkA { get; set; } = 0x24;
+        public int UnkB { get; set; } = 0x24;
+        
         //public bool IsDarkSouls3 { get; set; } = false;
         public byte[] Data;
 
@@ -21,8 +24,10 @@ namespace MeowDSIO.DataFiles
             bin.AssertStringAscii("DCX\0", 4);
             bin.AssertInt32(0x10000);
             bin.AssertInt32(0x18);
-            bin.AssertInt32(0x24);
-            bin.AssertInt32(0x24);
+            //bin.AssertInt32(0x24);
+            //bin.AssertInt32(0x24);
+            UnkA = bin.ReadInt32();
+            UnkB = bin.ReadInt32();
             int headerLength = bin.ReadInt32();
             bin.AssertStringAscii("DCS\0", 4);
             int uncompressedSize = bin.ReadInt32();
@@ -73,8 +78,8 @@ namespace MeowDSIO.DataFiles
             bin.WriteStringAscii("DCX\0", terminate: false);
             bin.Write(0x10000);
             bin.Write(0x18);
-            bin.Write(0x24);
-            bin.Write(0x24);
+            bin.Write(UnkA);
+            bin.Write(UnkB);
             bin.Write(0x2C);
             bin.WriteStringAscii("DCS\0", terminate: false);
             bin.Write(Data.Length);

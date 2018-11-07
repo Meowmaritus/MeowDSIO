@@ -6,38 +6,68 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataFiles
 {
-    public class McgUnkStructA
+    public class McgPoint
     {
-        //public int UnkA { get; set; }
-        public float UnkB  { get; set; }
-        public float UnkC  { get; set; }
-        public float UnkD  { get; set; }
-        public List<int> IndicesA { get; set; } = new List<int>();
-        public List<int> IndicesB { get; set; } = new List<int>();
+        public float PosX  { get; set; }
+        public float PosY  { get; set; }
+        public float PosZ  { get; set; }
+
+        // These lists are synced.
+        // NearbyPathIndices[1] is the path that leads to NearbyPointIndices[1]
+        // NearbyPathIndices[2] is the path that leads to NearbyPointIndices[2]
+        // etc
+        public List<int> NearbyPointIndices { get; set; } = new List<int>();
+        public List<int> NearbyPathIndices { get; set; } = new List<int>();
+
         public int UnkE  { get; set; }
         public int UnkF  { get; set; }
+
+        public string GetDebugReport()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"{nameof(UnkE)} = {UnkE}");
+            sb.AppendLine($"{nameof(UnkF)} = {UnkF}");
+
+            return sb.ToString();
+        }
     }
 
-    public class McgUnkStructB
+    public class McgPath
     {
         public int UnkA  { get; set; }
-        //public int UnkB  { get; set; }
-        public List<int> IndicesA { get; set; } = new List<int>();
+        public List<int> IndicesNotInMcgA { get; set; } = new List<int>();
         public int UnkC  { get; set; }
-        //public int UnkD  { get; set; }
-        public List<int> IndicesB  { get; set; } = new List<int>();
+        public List<int> IndicesNotInMcgB  { get; set; } = new List<int>();
         public int UnkE  { get; set; }
         public byte UnkF { get; set; }
         public byte UnkG { get; set; }
         public byte UnkH { get; set; }
         public byte UnkI { get; set; }
-        public float UnkJ  { get; set; }
+        public float UnkFloat  { get; set; }
+
+        public string GetDebugReport()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{nameof(UnkA)} = {UnkA}");
+            sb.AppendLine($"{nameof(IndicesNotInMcgA)} = {{{string.Join(", ", IndicesNotInMcgA)}}}");
+            sb.AppendLine($"{nameof(UnkC)} = {UnkC}");
+            sb.AppendLine($"{nameof(IndicesNotInMcgB)} = {{{string.Join(", ", IndicesNotInMcgB)}}}");
+            sb.AppendLine($"{nameof(UnkE)} = {UnkE}");
+            sb.AppendLine($"{nameof(UnkF)} = {UnkF}");
+            sb.AppendLine($"{nameof(UnkG)} = {UnkG}");
+            sb.AppendLine($"{nameof(UnkH)} = {UnkH}");
+            sb.AppendLine($"{nameof(UnkI)} = {UnkI}");
+            sb.AppendLine($"{nameof(UnkFloat)} = {UnkFloat}");
+
+            return sb.ToString();
+        }
     }
 
     public class MCG : DataFile
     {
-        public List<McgUnkStructA> McgUnkStructA_List = new List<McgUnkStructA>();
-        public List<McgUnkStructB> McgUnkStructB_List = new List<McgUnkStructB>();
+        public List<McgPoint> Points = new List<McgPoint>();
+        public List<McgPath> Paths = new List<McgPath>();
 
         List<(long Offset, string VariableName)> DEBUG_IndexMap = 
             new List<(long Offset, string VariableName)>();
@@ -78,39 +108,39 @@ namespace MeowDSIO.DataFiles
             return result;
         }
 
-        private McgUnkStructA ReadMcgUnkStructA(DSBinaryReader bin, int DEBUG_ArrayIndex)
+        private McgPoint ReadMcgPoint(DSBinaryReader bin, int DEBUG_ArrayIndex)
         {
-            var result = new McgUnkStructA();
+            var result = new McgPoint();
 
             //result.UnkA = bin.ReadInt32();
             int indicesCount = bin.ReadInt32();
-            result.UnkB = bin.ReadSingle();
-            result.UnkC = bin.ReadSingle();
-            result.UnkD = bin.ReadSingle();
-            result.IndicesA = ReadIndices(bin, $"McgUnkStructA[{DEBUG_ArrayIndex}].IndicesA", indicesCount);
-            result.IndicesB = ReadIndices(bin, $"McgUnkStructA[{DEBUG_ArrayIndex}].IndicesB", indicesCount);
+            result.PosX = bin.ReadSingle();
+            result.PosY = bin.ReadSingle();
+            result.PosZ = bin.ReadSingle();
+            result.NearbyPointIndices = ReadIndices(bin, $"{nameof(McgPoint)}[{DEBUG_ArrayIndex}].{nameof(McgPoint.NearbyPointIndices)}", indicesCount);
+            result.NearbyPathIndices = ReadIndices(bin, $"{nameof(McgPoint)}[{DEBUG_ArrayIndex}].{nameof(McgPoint.NearbyPathIndices)}", indicesCount);
             result.UnkE = bin.ReadInt32();
             result.UnkF = bin.ReadInt32();
 
             return result;
         }
 
-        private McgUnkStructB ReadMcgUnkStructB(DSBinaryReader bin, int DEBUG_ArrayIndex)
+        private McgPath ReadMcgPath(DSBinaryReader bin, int DEBUG_ArrayIndex)
         {
-            var result = new McgUnkStructB();
+            var result = new McgPath();
 
             result.UnkA = bin.ReadInt32();
             int indicesA_Count = bin.ReadInt32();
-            result.IndicesA = ReadIndices(bin, $"McgUnkStructB[{DEBUG_ArrayIndex}].IndicesA", indicesA_Count);
+            result.IndicesNotInMcgA = ReadIndices(bin, $"{nameof(McgPath)}[{DEBUG_ArrayIndex}].{nameof(McgPath.IndicesNotInMcgA)}", indicesA_Count);
             result.UnkC = bin.ReadInt32();
             int indicesB_Count = bin.ReadInt32();
-            result.IndicesB = ReadIndices(bin, $"McgUnkStructB[{DEBUG_ArrayIndex}].IndicesB", indicesB_Count);
+            result.IndicesNotInMcgB = ReadIndices(bin, $"{nameof(McgPath)}[{DEBUG_ArrayIndex}].{nameof(McgPath.IndicesNotInMcgB)}", indicesB_Count);
             result.UnkE = bin.ReadInt32();
             result.UnkF = bin.ReadByte();
             result.UnkG = bin.ReadByte();
             result.UnkH = bin.ReadByte();
             result.UnkI = bin.ReadByte();
-            result.UnkJ = bin.ReadSingle();
+            result.UnkFloat = bin.ReadSingle();
 
             return result;
         }
@@ -121,30 +151,30 @@ namespace MeowDSIO.DataFiles
 
             bin.AssertInt32(1);
             bin.AssertInt32(0);
-            int McgUnkStructA_Count = bin.ReadInt32();
-            int McgUnkStructA_Offset = bin.ReadInt32();
-            int McgUnkStructB_Count = bin.ReadInt32();
-            int McgUnkStructB_Offset = bin.ReadInt32();
+            int pointCount = bin.ReadInt32();
+            int pointOffset = bin.ReadInt32();
+            int pathCount = bin.ReadInt32();
+            int pathOffset = bin.ReadInt32();
             bin.AssertInt32(0);
             bin.AssertInt32(0);
 
-            McgUnkStructA_List = new List<McgUnkStructA>();
-            McgUnkStructB_List = new List<McgUnkStructB>();
+            Points = new List<McgPoint>();
+            Paths = new List<McgPath>();
 
-            bin.StepIn(McgUnkStructA_Offset);
+            bin.StepIn(pointOffset);
             {
-                for (int i = 0; i < McgUnkStructA_Count; i++)
+                for (int i = 0; i < pointCount; i++)
                 {
-                    McgUnkStructA_List.Add(ReadMcgUnkStructA(bin, i));
+                    Points.Add(ReadMcgPoint(bin, i));
                 }
             }
             bin.StepOut();
 
-            bin.StepIn(McgUnkStructB_Offset);
+            bin.StepIn(pathOffset);
             {
-                for (int i = 0; i < McgUnkStructB_Count; i++)
+                for (int i = 0; i < pathCount; i++)
                 {
-                    McgUnkStructB_List.Add(ReadMcgUnkStructB(bin, i));
+                    Paths.Add(ReadMcgPath(bin, i));
                 }
             }
             bin.StepOut();
