@@ -39,7 +39,7 @@ namespace MeowDSIO.DataFiles
         public List<int> IndicesNotInMcgA { get; set; } = new List<int>();
         public int UnkC  { get; set; }
         public List<int> IndicesNotInMcgB  { get; set; } = new List<int>();
-        public int UnkE  { get; set; }
+        public int MCPBoxIndex  { get; set; }
         public byte UnkF { get; set; }
         public byte UnkG { get; set; }
         public byte UnkH { get; set; }
@@ -53,7 +53,7 @@ namespace MeowDSIO.DataFiles
             sb.AppendLine($"{nameof(IndicesNotInMcgA)} = {{{string.Join(", ", IndicesNotInMcgA)}}}");
             sb.AppendLine($"{nameof(UnkC)} = {UnkC}");
             sb.AppendLine($"{nameof(IndicesNotInMcgB)} = {{{string.Join(", ", IndicesNotInMcgB)}}}");
-            sb.AppendLine($"{nameof(UnkE)} = {UnkE}");
+            sb.AppendLine($"{nameof(MCPBoxIndex)} = {MCPBoxIndex}");
             sb.AppendLine($"{nameof(UnkF)} = {UnkF}");
             sb.AppendLine($"{nameof(UnkG)} = {UnkG}");
             sb.AppendLine($"{nameof(UnkH)} = {UnkH}");
@@ -135,7 +135,7 @@ namespace MeowDSIO.DataFiles
             result.UnkC = bin.ReadInt32();
             int indicesB_Count = bin.ReadInt32();
             result.IndicesNotInMcgB = ReadIndices(bin, $"{nameof(McgPath)}[{DEBUG_ArrayIndex}].{nameof(McgPath.IndicesNotInMcgB)}", indicesB_Count);
-            result.UnkE = bin.ReadInt32();
+            result.MCPBoxIndex = bin.ReadInt32();
             result.UnkF = bin.ReadByte();
             result.UnkG = bin.ReadByte();
             result.UnkH = bin.ReadByte();

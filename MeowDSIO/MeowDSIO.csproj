@@ -84,6 +84,7 @@
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MCG.cs" />
+    <Compile Include="DataFiles\MCP.cs" />
     <Compile Include="DataFiles\MSB.cs" />
     <Compile Include="DataFiles\MSGBND.cs" />
     <Compile Include="DataFiles\MTD.cs" />
