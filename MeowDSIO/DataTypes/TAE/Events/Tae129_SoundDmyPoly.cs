@@ -6,19 +6,12 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae128 : TimeActEventBase
+    public class Tae129_SoundDmyPoly : TimeActEventBase
     {
-        public Tae128(float StartTime, float EndTime)
+        public Tae129_SoundDmyPoly(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
-        }
-
-        public Tae128(float StartTime, float EndTime, MSB.MsbSoundType SoundType, int SoundID)
-            : this(StartTime, EndTime)
-        {
-            this.SoundType = SoundType;
-            this.SoundID = SoundID;
         }
 
         public override IList<object> Parameters
@@ -27,32 +20,35 @@ namespace MeowDSIO.DataTypes.TAE.Events
             {
                 SoundType,
                 SoundID,
+                Dmy,
+                SpawnSlot,
             };
-            set
-            {
-                SoundType = (MSB.MsbSoundType)value[0];
-                SoundID = (int)value[1];
-            }
         }
 
         public MSB.MsbSoundType SoundType { get; set; } = 0;
         public int SoundID { get; set; } = 0;
+        public int Dmy { get; set; } = 0;
+        public int SpawnSlot { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
             SoundType = (MSB.MsbSoundType)bin.ReadInt32();
             SoundID = bin.ReadInt32();
+            Dmy = bin.ReadInt32();
+            SpawnSlot = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
             bin.Write((int)SoundType);
             bin.Write(SoundID);
+            bin.Write(Dmy);
+            bin.Write(SpawnSlot);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type128;
+            return TimeActEventType.SoundDmyPoly;
         }
     }
 }

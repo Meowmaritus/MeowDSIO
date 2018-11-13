@@ -6,51 +6,41 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae099 : TimeActEventBase
+    public class Tae000_DoCommand : TimeActEventBase
     {
-        public Tae099(float StartTime, float EndTime)
+        public Tae000_DoCommand(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
-        }
-
-        public Tae099(float StartTime, float EndTime, int UNK1, int UNK2, int UNK3)
-            : this(StartTime, EndTime)
-        {
-            this.UNK1 = UNK1;
-            this.UNK2 = UNK2;
-            this.UNK3 = UNK3;
         }
 
         public override IList<object> Parameters
         {
             get => new List<object>
             {
+                CommandType,
                 UNK1,
                 UNK2,
                 UNK3,
             };
-            set
-            {
-                UNK1 = (int)value[0];
-                UNK2 = (int)value[1];
-                UNK3 = (int)value[2];
-            }
         }
 
-        public int UNK1 { get; set; } = 0;
-        public int UNK2 { get; set; } = 0;
+        public TaeGeneralCommandType CommandType { get; set; } = 0;
+        public short UNK1 { get; set; } = 0;
+        public float UNK2 { get; set; } = 0;
         public int UNK3 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
+            CommandType = (TaeGeneralCommandType)bin.ReadInt16();
+            UNK1 = bin.ReadInt16();
+            UNK2 = bin.ReadSingle();
             UNK3 = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
+            bin.Write((short)CommandType);
             bin.Write(UNK1);
             bin.Write(UNK2);
             bin.Write(UNK3);
@@ -58,7 +48,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type099;
+            return TimeActEventType.DoCommand;
         }
     }
 }

@@ -14,14 +14,6 @@ namespace MeowDSIO.DataTypes.TAE.Events
             this.EndTime = EndTime;
         }
 
-        public Tae236(float StartTime, float EndTime, int UNK1, int UNK2, int UNK3)
-            : this(StartTime, EndTime)
-        {
-            this.UNK1 = UNK1;
-            this.UNK2 = UNK2;
-            this.UNK3 = UNK3;
-        }
-
         public override IList<object> Parameters
         {
             get => new List<object>
@@ -30,12 +22,6 @@ namespace MeowDSIO.DataTypes.TAE.Events
                 UNK2,
                 UNK3,
             };
-            set
-            {
-                UNK1 = (int)value[0];
-                UNK2 = (int)value[1];
-                UNK3 = (int)value[2];
-            }
         }
 
         public int UNK1 { get; set; } = 0;

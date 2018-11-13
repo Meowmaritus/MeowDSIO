@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae228 : TimeActEventBase
+    public class Tae145_CameraShakeGeneric : TimeActEventBase
     {
-        public Tae228(float StartTime, float EndTime)
+        public Tae145_CameraShakeGeneric(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -18,33 +18,25 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                UNK1,
-                UNK2,
-                UNK3,
+                Intensity,
             };
         }
 
-        public int UNK1 { get; set; } = 0;
-        public int UNK2 { get; set; } = 0;
-        public int UNK3 { get; set; } = 0;
+        public float Intensity { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
-            UNK3 = bin.ReadInt32();
+            Intensity = bin.ReadSingle();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(UNK1);
-            bin.Write(UNK2);
-            bin.Write(UNK3);
+            bin.Write(Intensity);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type228;
+            return TimeActEventType.CameraShakeGeneric;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace MeowDSIO.DataTypes.TAE
         public int ID { get; set; } = -1;
         public Animation Anim { get; set; } = new Animation();
 
+        public bool IsModified = false;
+
         public AnimationRef() { }
 
         public AnimationRef(int ID)

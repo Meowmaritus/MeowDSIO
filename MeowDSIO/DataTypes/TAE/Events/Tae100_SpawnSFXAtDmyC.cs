@@ -6,47 +6,45 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae066 : TimeActEventBase
+    public class Tae100_SpawnSFXAtDmyC : TimeActEventBase
     {
-        public Tae066(float StartTime, float EndTime)
+        public Tae100_SpawnSFXAtDmyC(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
-        }
-
-        public Tae066(float StartTime, float EndTime, int UNK1)
-            : this(StartTime, EndTime)
-        {
-            this.UNK1 = UNK1;
         }
 
         public override IList<object> Parameters
         {
             get => new List<object>
             {
-                UNK1,
+                SFX,
+                Dmy,
+                SpawnSlot,
             };
-            set
-            {
-                UNK1 = (int)value[0];
-            }
         }
 
-        public int UNK1 { get; set; } = 0;
+        public int SFX { get; set; } = 0;
+        public int Dmy { get; set; } = 0;
+        public int SpawnSlot { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
+            SFX = bin.ReadInt32();
+            Dmy = bin.ReadInt32();
+            SpawnSlot = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(UNK1);
+            bin.Write(SFX);
+            bin.Write(Dmy);
+            bin.Write(SpawnSlot);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type066;
+            return TimeActEventType.SpawnSFXAtDmyC;
         }
     }
 }

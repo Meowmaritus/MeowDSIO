@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae114 : TimeActEventBase
+    public class Tae118_WeaponTrail : TimeActEventBase
     {
-        public Tae114(float StartTime, float EndTime)
+        public Tae118_WeaponTrail(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -18,37 +18,41 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                UNK1,
+                SFX,
                 UNK2,
-                UNK3,
-                UNK4,
+                StartDmy,
+                EndDmy,
+                SpawnSlot,
             };
         }
 
-        public int UNK1 { get; set; } = 0;
+        public int SFX { get; set; } = 0;
         public short UNK2 { get; set; } = 0;
-        public short UNK3 { get; set; } = 0;
-        public int UNK4 { get; set; } = 0;
+        public short StartDmy { get; set; } = 0;
+        public short EndDmy { get; set; } = 0;
+        public short SpawnSlot { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
+            SFX = bin.ReadInt32();
             UNK2 = bin.ReadInt16();
-            UNK3 = bin.ReadInt16();
-            UNK4 = bin.ReadInt32();
+            StartDmy = bin.ReadInt16();
+            EndDmy = bin.ReadInt16();
+            SpawnSlot = bin.ReadInt16();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(UNK1);
+            bin.Write(SFX);
             bin.Write(UNK2);
-            bin.Write(UNK3);
-            bin.Write(UNK4);
+            bin.Write(StartDmy);
+            bin.Write(EndDmy);
+            bin.Write(SpawnSlot);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type114;
+            return TimeActEventType.WeaponTrail;
         }
     }
 }

@@ -14,26 +14,6 @@ namespace MeowDSIO.DataTypes.TAE.Events
             this.EndTime = EndTime;
         }
 
-        public Tae008(float StartTime, float EndTime, 
-            float UNK1, float UNK2, float UNK3, float UNK4,
-            float UNK5, float UNK6, float UNK7, float UNK8,
-            float UNK9, float UNK10, float UNK11, float UNK12)
-            : this(StartTime, EndTime)
-        {
-            this.UNK1 = UNK1;
-            this.UNK2 = UNK2;
-            this.UNK3 = UNK3;
-            this.UNK4 = UNK4;
-            this.UNK5 = UNK5;
-            this.UNK6 = UNK6;
-            this.UNK7 = UNK7;
-            this.UNK8 = UNK8;
-            this.UNK9 = UNK9;
-            this.UNK10 = UNK10;
-            this.UNK11 = UNK11;
-            this.UNK12 = UNK12;
-        }
-
         public override IList<object> Parameters
         {
             get => new List<object>
@@ -51,21 +31,6 @@ namespace MeowDSIO.DataTypes.TAE.Events
                 UNK11,
                 UNK12,
             };
-            set
-            {
-                UNK1 = (float)value[0];
-                UNK2 = (float)value[1];
-                UNK3 = (float)value[2];
-                UNK4 = (float)value[3];
-                UNK5 = (float)value[4];
-                UNK6 = (float)value[5];
-                UNK7 = (float)value[6];
-                UNK8 = (float)value[7];
-                UNK9 = (float)value[8];
-                UNK10 = (float)value[9];
-                UNK11 = (float)value[10];
-                UNK12 = (float)value[11];
-            }
         }
 
         public float UNK1 { get; set; } = 0;
