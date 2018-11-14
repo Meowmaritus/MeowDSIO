@@ -28,7 +28,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
         public TaeGeneralCommandType CommandType { get; set; } = 0;
         public short UNK1 { get; set; } = 0;
         public float UNK2 { get; set; } = 0;
-        public int UNK3 { get; set; } = 0;
+        public int UNK3 { get; set; } = -1;
 
         public override void ReadParameters(DSBinaryReader bin)
         {

@@ -245,7 +245,7 @@
     <Compile Include="DataTypes\TAE\Events\Tae067_ApplySpEffectB.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae066_ApplySpEffect.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae065.cs" />
-    <Compile Include="DataTypes\TAE\Events\Tae064.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae064_CastSelectedSpell.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae033.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae024.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae032.cs" />

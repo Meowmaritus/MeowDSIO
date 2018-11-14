@@ -27,7 +27,7 @@ namespace MeowDSIO.DataTypes.TAE
         [System.ComponentModel.Browsable(false)]
         public float EndTime { get; set; } = 0;
 
-        const double FRAME = 0.0333333333333333;
+        public const double FRAME = 0.0333333333333333;
 
         [System.ComponentModel.Browsable(false)]
         public float StartTimeFr => (float)(Math.Round(StartTime / FRAME) * FRAME);
@@ -93,7 +93,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.Type024: return new Tae024(startTime, endTime);
                 case TimeActEventType.Type032: return new Tae032(startTime, endTime);
                 case TimeActEventType.Type033: return new Tae033(startTime, endTime);
-                case TimeActEventType.Type064: return new Tae064(startTime, endTime);
+                case TimeActEventType.CastSelectedSpell: return new Tae064_CastSelectedSpell(startTime, endTime);
                 case TimeActEventType.Type065: return new Tae065(startTime, endTime);
                 case TimeActEventType.ApplySpEffect: return new Tae066_ApplySpEffect(startTime, endTime); 
                 case TimeActEventType.ApplySpEffectB: return new Tae067_ApplySpEffectB(startTime, endTime);
