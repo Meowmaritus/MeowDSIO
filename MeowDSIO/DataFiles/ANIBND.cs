@@ -28,6 +28,21 @@ namespace MeowDSIO.DataFiles
         public byte[] PlayerSkeletonHKX { get; set; } = null;
         public Dictionary<int, TAE> PlayerTAE { get; set; } = new Dictionary<int, TAE>();
 
+        public IEnumerable<TAE> AllTAE
+        {
+            get
+            {
+                if (StandardTAE != null && PlayerTAE != null)
+                    return new List<TAE>() { StandardTAE }.Concat(PlayerTAE.Select(x => x.Value));
+                else if (StandardTAE == null && PlayerTAE != null)
+                    return PlayerTAE.Select(x => x.Value);
+                else if (StandardTAE != null && PlayerTAE == null)
+                    return new List<TAE>() { StandardTAE };
+                else
+                    return new List<TAE>();
+            }
+        }
+
         public bool IsPlayerAnibndFormat { get; set; } = false;
         public bool IsSplitData { get; set; } = false;
 
