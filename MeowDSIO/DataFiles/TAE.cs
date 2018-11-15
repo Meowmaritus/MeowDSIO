@@ -59,12 +59,12 @@ namespace MeowDSIO.DataFiles
             }
         }
 
-        private Animation LoadAnimationFromOffset(DSBinaryReader bin, int offset, int animID_ForDebug)
+        private AnimationRef LoadAnimationFromOffset(DSBinaryReader bin, int offset, int id)
         {
             int oldOffset = (int)bin.BaseStream.Position;
             bin.BaseStream.Seek(offset, SeekOrigin.Begin);
-            var anim = new Animation();
-
+            var anim = new AnimationRef();
+            anim.ID = id;
             try
             {
                 int eventCount = bin.ReadInt32();
@@ -124,8 +124,12 @@ namespace MeowDSIO.DataFiles
 
                     int nameOffset = bin.ReadInt32();
 
-                    anim.Unk1 = bin.ReadInt32();
-                    anim.Unk2 = bin.ReadInt32();
+                    anim.IsLoopingObjAnim = bin.ReadBoolean();
+                    anim.UseHKXOnly = bin.ReadBoolean();
+                    anim.TAEDataOnly = bin.ReadBoolean();
+                    bin.AssertByte(0);
+
+                    anim.OriginalAnimID = bin.ReadInt32();
 
                     if (nameOffset <= 0)
                     {
@@ -157,7 +161,7 @@ namespace MeowDSIO.DataFiles
             }
             catch (EndOfStreamException)
             {
-                MiscUtil.PrintlnDX($"Warning: reached end of file while parsing animation {animID_ForDebug}; data may not be complete.", ConsoleColor.Yellow);
+                MiscUtil.PrintlnDX($"Warning: reached end of file while parsing animation {id}; data may not be complete.", ConsoleColor.Yellow);
                 //if (!MiscUtil.ConsolePrompYesNo("Would you like to continue loading the file and run the risk of " + 
                 //    "accidentally outputting a file that might be missing some of its original data?"))
                 //{
@@ -235,10 +239,8 @@ namespace MeowDSIO.DataFiles
                 {
                     var animID = bin.ReadInt32();
                     var animOffset = bin.ReadInt32();
-                    var anim = LoadAnimationFromOffset(bin, animOffset, animID);
-                    var animRef = new AnimationRef() { ID = animID, Anim = anim };
 
-                    Animations.Add(animRef);
+                    Animations.Add(LoadAnimationFromOffset(bin, animOffset, animID));
                 }
             });
 
@@ -347,14 +349,14 @@ namespace MeowDSIO.DataFiles
             foreach (var anim in Animations)
             {
                 animationOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
-                bin.Write(anim.Anim.EventList.Count);
+                bin.Write(anim.EventList.Count);
                 bin.Placeholder(); //PLACEHOLDER: animation event headers offset
                 //Println($"Wrote Anim{anim.Key} event header offset placeholder value (0xDEADD00D) at address {(bin.BaseStream.Position-4):X8}");
                 bin.Write(0); //Null 1
                 bin.Write(0); //Null 2
                 animationTimeConstantLists.Add(anim.ID, new List<float>());
                 //Populate all of the time constants used:
-                foreach (var e in anim.Anim.EventList)
+                foreach (var e in anim.EventList)
                 {
                     if (!animationTimeConstantLists[anim.ID].Contains(e.StartTimeFr))
                         animationTimeConstantLists[anim.ID].Add(e.StartTimeFr);
@@ -402,18 +404,21 @@ namespace MeowDSIO.DataFiles
                     {
                         //Write anim file struct:
                         animationFileOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
-                        if (!anim.Anim.IsReference)
+                        if (!anim.IsReference)
                         {
                             bin.Write(0x00000000); //type 0 - named
                             bin.Write((int)(bin.BaseStream.Position + 0x04)); //offset pointing to next dword for some reason.
                             bin.Write((int)(bin.BaseStream.Position + 0x10)); //offset pointing to name start
-                            bin.Write(anim.Anim.Unk1); //Unknown
-                            bin.Write(anim.Anim.Unk2); //Unknown
+                            bin.Write(anim.IsLoopingObjAnim);
+                            bin.Write(anim.UseHKXOnly);
+                            bin.Write(anim.TAEDataOnly);
+                            bin.Write((byte)0);
+                            bin.Write(anim.OriginalAnimID);
                             bin.Write(0x00000000); //Null
                             //name start:
-                            if (anim.Anim.FileName.Length > 0)
+                            if (anim.FileName.Length > 0)
                             {
-                                bin.Write(Encoding.Unicode.GetBytes(anim.Anim.FileName));
+                                bin.Write(Encoding.Unicode.GetBytes(anim.FileName));
                             }
                             bin.Write((short)0); //string terminator
                         }
@@ -422,7 +427,7 @@ namespace MeowDSIO.DataFiles
                             bin.Write(0x00000001); //type 1 - nameless
                             bin.Write((int)(bin.BaseStream.Position + 0x04)); //offset pointing to next dword for some reason.
                             bin.Write((int)(bin.BaseStream.Position + 0x14)); //offset pointing to start of next anim file struct
-                            bin.Write(anim.Anim.RefAnimID); //Last named animation ID, to which this one is linked.
+                            bin.Write(anim.RefAnimID); //Last named animation ID, to which this one is linked.
                             bin.Write(0x00000000); //Null 1
                             bin.Write(0x00000000); //Null 2
                             bin.Write(0x00000000); //Null 3
@@ -440,7 +445,7 @@ namespace MeowDSIO.DataFiles
 
                     //Event headers (note: all event headers are (EventHeaderSize) long):
                     eventHeaderStartOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
-                    foreach (var e in anim.Anim.EventList)
+                    foreach (var e in anim.EventList)
                     {
                         long currentEventHeaderStart = bin.Position;
                         bin.Write((int)animTimeConstantOffsets[anim.ID][e.StartTimeFr]); //offset of start time in time constants.
@@ -455,7 +460,7 @@ namespace MeowDSIO.DataFiles
 
                     //Event bodies
                     var eventBodyOffsets = new Dictionary<TimeActEventBase, int>();
-                    foreach (var e in anim.Anim.EventList)
+                    foreach (var e in anim.EventList)
                     {
                         eventBodyOffsets.Add(e, (int)bin.BaseStream.Position);
 
@@ -484,7 +489,7 @@ namespace MeowDSIO.DataFiles
                     //Event headers pass 2:
                     bin.DoAt(eventHeaderStartOffsets[anim.ID], () =>
                     {
-                        foreach (var e in anim.Anim.EventList)
+                        foreach (var e in anim.EventList)
                         {
                             //skip to event body offset field:
                             bin.Seek(8, SeekOrigin.Current);
@@ -504,7 +509,7 @@ namespace MeowDSIO.DataFiles
                 {
                     bin.Seek(animationOffsets[anim.ID] + 4, SeekOrigin.Begin);
                     //event header start offset:
-                    if (anim.Anim.EventList.Count > 0)
+                    if (anim.EventList.Count > 0)
                         bin.Write(eventHeaderStartOffsets[anim.ID]);
                     else
                         bin.Write(0x00000000);
