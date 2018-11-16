@@ -136,6 +136,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.Type306: return new Tae306(startTime, endTime);
                 case TimeActEventType.Type307: return new Tae307(startTime, endTime);
                 case TimeActEventType.Type308: return new Tae308(startTime, endTime);
+                case TimeActEventType.Type400: return new Tae400(startTime, endTime);
                 case TimeActEventType.Type401: return new Tae401(startTime, endTime);
                 case TimeActEventType.Type500: return new Tae500(startTime, endTime);
             }
