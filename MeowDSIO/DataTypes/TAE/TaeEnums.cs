@@ -75,7 +75,7 @@ namespace MeowDSIO.DataTypes.TAE
         InvincibilityFrames = 8,
         Command9 = 9,
         Command10 = 10,
-        AllowCancelByTurningCamera = 11,
+        AllowCancelByLeftStick = 11,
         ForceDeath = 12,
         Command13 = 13,
         Command15 = 15,
