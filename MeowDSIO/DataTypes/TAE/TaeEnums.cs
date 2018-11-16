@@ -60,6 +60,7 @@ namespace MeowDSIO.DataTypes.TAE
         Type306 = 306,
         Type307 = 307,
         Type308 = 308,
+        Type400 = 400,
         Type401 = 401,
         Type500 = 500,
     }

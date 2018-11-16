@@ -201,6 +201,7 @@
     <Compile Include="DataTypes\PARAM\ParamRow.cs" />
     <Compile Include="DataTypes\PARAM\ParamCellValueRef.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae119.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae400.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae500.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae401.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae308.cs" />
