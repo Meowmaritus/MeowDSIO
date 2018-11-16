@@ -59,7 +59,7 @@ namespace MeowDSIO.DataFiles
             }
         }
 
-        private AnimationRef LoadAnimationFromOffset(DSBinaryReader bin, int offset, int id)
+        private AnimationRef LoadAnimationFromOffset(DSBinaryReader bin, int offset, int id, Dictionary<int, List<int>> debugUnkTypesReport)
         {
             int oldOffset = (int)bin.BaseStream.Position;
             bin.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -98,14 +98,50 @@ namespace MeowDSIO.DataFiles
 
                     bin.StepIn(eventBodyOffset);
                     {
-                        TimeActEventType eventType = (TimeActEventType)bin.ReadInt32();
+                        int eventTypeInt = bin.ReadInt32();
+                        TimeActEventType eventType = (TimeActEventType)eventTypeInt;
                         int eventParamOffset = bin.ReadInt32();
                         bin.StepIn(eventParamOffset);
                         {
                             var newEvent = TimeActEventBase.GetNewEvent(eventType, startTime, endTime);
-                            newEvent.ReadParameters(bin);
-                            newEvent.Index = anim.EventList.Count;
-                            anim.EventList.Add(newEvent);
+                            if (newEvent == null)
+                            {
+                                if (!debugUnkTypesReport.ContainsKey(eventTypeInt))
+                                {
+                                    debugUnkTypesReport.Add(eventTypeInt, new List<int>());
+                                }
+
+                                if (i < eventCount - 1)
+                                {
+                                    bin.StepIn(eventHeadersOffset + (EventHeaderSize * (i + 1)));
+                                    {
+                                        bin.ReadInt32(); //startTimeOffset
+                                        bin.ReadInt32(); //endTimeOffset
+                                        var nextEventBodyOffset = bin.ReadInt32();
+                                        bin.StepIn(nextEventBodyOffset);
+                                        {
+                                            bin.ReadInt32();//eventType
+                                            var nextEventParamOffset = bin.ReadInt32();
+
+                                            int thisUnkParamByteCount = nextEventParamOffset - eventParamOffset;
+
+                                            debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
+                                        }
+                                        bin.StepOut();
+                                    }
+                                    bin.StepOut();
+                                }
+                                else
+                                {
+                                    debugUnkTypesReport[eventTypeInt].Add(-1);
+                                }
+                            }
+                            else
+                            {
+                                newEvent.ReadParameters(bin);
+                                newEvent.Index = anim.EventList.Count;
+                                anim.EventList.Add(newEvent);
+                            }
                         }
                         bin.StepOut();
                     }
@@ -229,7 +265,9 @@ namespace MeowDSIO.DataFiles
             Header.UnknownFlags = bin.ReadBytes(TAEHeader.UnknownFlagsLength);
 
             Header.FileID = bin.ReadInt32();
-            
+
+            Dictionary<int, List<int>> debugUnkEventReport = new Dictionary<int, List<int>>();
+
             //Animation IDs
             var animCount = bin.ReadInt32();
             int OFF_AnimID = bin.ReadInt32();
@@ -240,9 +278,20 @@ namespace MeowDSIO.DataFiles
                     var animID = bin.ReadInt32();
                     var animOffset = bin.ReadInt32();
 
-                    Animations.Add(LoadAnimationFromOffset(bin, animOffset, animID));
+                    Animations.Add(LoadAnimationFromOffset(bin, animOffset, animID, debugUnkEventReport));
                 }
             });
+
+            if (debugUnkEventReport.Count > 0)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Unknown event types found. Attempted to retrieve byte counts automatically:");
+                foreach (var kvp in debugUnkEventReport)
+                {
+                    sb.AppendLine($"    Event Type {kvp.Key} possible byte counts: {string.Join(", ", kvp.Value)}");
+                }
+                throw new Exception(sb.ToString());
+            }
 
             //Anim Groups
             int OFF_AnimGroups = bin.ReadInt32();
