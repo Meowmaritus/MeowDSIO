@@ -18,26 +18,26 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                HitType,
+                AtkType,
                 AttackIndex,
                 BehaviorJudgeID,
             };
         }
 
-        public int HitType { get; set; } = 0;
+        public AttackType AtkType { get; set; } = 0;
         public int AttackIndex { get; set; } = 0;
         public int BehaviorJudgeID { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            HitType = bin.ReadInt32();
+            AtkType = (AttackType)bin.ReadInt32();
             AttackIndex = bin.ReadInt32();
             BehaviorJudgeID = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(HitType);
+            bin.Write((int)AtkType);
             bin.Write(AttackIndex);
             bin.Write(BehaviorJudgeID);
         }
