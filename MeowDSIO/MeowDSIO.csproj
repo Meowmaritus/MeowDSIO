@@ -205,7 +205,7 @@
     <Compile Include="DataTypes\TAE\Events\Tae500.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae401.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae308.cs" />
-    <Compile Include="DataTypes\TAE\Events\Tae307.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae307_DoBehaviorKnockback.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae306.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae304_DoThrowDamage.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae303_PlayAnimation.cs" />

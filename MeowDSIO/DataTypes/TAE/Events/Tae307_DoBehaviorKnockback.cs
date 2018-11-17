@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae307 : TimeActEventBase
+    public class Tae307_DoBehaviorKnockback : TimeActEventBase
     {
-        public Tae307(float StartTime, float EndTime)
+        public Tae307_DoBehaviorKnockback(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -20,35 +20,35 @@ namespace MeowDSIO.DataTypes.TAE.Events
             {
                 UNK1,
                 UNK2,
-                UNK3,
-                UNK4,
+                Dmy,
+                BehaviorParamID,
             };
         }
 
         public short UNK1 { get; set; } = 0;
         public short UNK2 { get; set; } = 0;
-        public int UNK3 { get; set; } = 0;
-        public int UNK4 { get; set; } = 0;
+        public int Dmy { get; set; } = 0;
+        public int BehaviorParamID { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
             UNK1 = bin.ReadInt16();
             UNK2 = bin.ReadInt16();
-            UNK3 = bin.ReadInt32();
-            UNK4 = bin.ReadInt32();
+            Dmy = bin.ReadInt32();
+            BehaviorParamID = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
             bin.Write(UNK1);
             bin.Write(UNK2);
-            bin.Write(UNK3);
-            bin.Write(UNK4);
+            bin.Write(Dmy);
+            bin.Write(BehaviorParamID);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type307;
+            return TimeActEventType.DoBehaviorKnockback;
         }
     }
 }

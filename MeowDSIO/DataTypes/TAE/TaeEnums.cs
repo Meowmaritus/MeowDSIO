@@ -58,7 +58,7 @@ namespace MeowDSIO.DataTypes.TAE
         PlayAnimation = 303,
         DoThrowDamage = 304,
         Type306 = 306,
-        Type307 = 307,
+        DoBehaviorKnockback = 307,
         Type308 = 308,
         Type400 = 400,
         Type401 = 401,

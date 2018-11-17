@@ -134,7 +134,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.PlayAnimation: return new Tae303_PlayAnimation(startTime, endTime);
                 case TimeActEventType.DoThrowDamage: return new Tae304_DoThrowDamage(startTime, endTime);
                 case TimeActEventType.Type306: return new Tae306(startTime, endTime);
-                case TimeActEventType.Type307: return new Tae307(startTime, endTime);
+                case TimeActEventType.DoBehaviorKnockback: return new Tae307_DoBehaviorKnockback(startTime, endTime);
                 case TimeActEventType.Type308: return new Tae308(startTime, endTime);
                 case TimeActEventType.Type400: return new Tae400(startTime, endTime);
                 case TimeActEventType.Type401: return new Tae401(startTime, endTime);
