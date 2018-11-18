@@ -132,7 +132,7 @@ namespace MeowDSIO.DataFiles
 
                 bin.StepIn(offset);
                 {
-                    esf.Unk0 = bin.AssertInt32(1);
+                    esf.Unk0 = bin.ReadInt32();
                     esf.ID = bin.ReadInt32();
                     int paramOffset = bin.ReadInt32();
                     int paramCount = bin.ReadInt32();
@@ -230,16 +230,12 @@ namespace MeowDSIO.DataFiles
 
                     if (transOffsetA != -1)
                     {
-                        bin.StepIn(transOffsetA);
+                        bin.StepIn(FILE_OFFSET + transOffsetA);
                         {
                             for (int i = 0; i < transCountA; i++)
                             {
                                 int substateOffset = bin.ReadInt32();
-                                bin.StepIn(FILE_OFFSET + substateOffset);
-                                {
-                                    s.SubstatesA.Add(GetEzSubState(FILE_OFFSET + substateOffset));
-                                }
-                                bin.StepOut();
+                                s.SubstatesA.Add(GetEzSubState(FILE_OFFSET + substateOffset));
                             }
                         }
                         bin.StepOut();
@@ -263,16 +259,12 @@ namespace MeowDSIO.DataFiles
 
                     if (transOffsetB != -1)
                     {
-                        bin.StepIn(transOffsetB);
+                        bin.StepIn(FILE_OFFSET + transOffsetB);
                         {
                             for (int i = 0; i < transCountB; i++)
                             {
                                 int substateOffset = bin.ReadInt32();
-                                bin.StepIn(FILE_OFFSET + substateOffset);
-                                {
-                                    s.SubstatesB.Add(GetEzSubState(FILE_OFFSET + substateOffset));
-                                }
-                                bin.StepOut();
+                                s.SubstatesB.Add(GetEzSubState(FILE_OFFSET + substateOffset));
                             }
                         }
                         bin.StepOut();
@@ -360,14 +352,14 @@ namespace MeowDSIO.DataFiles
 
             int realStatesAOffset = (int)bin.Position;
 
-            for (int i = 0; i < statesCount + 1; i++)
+            for (int i = 0; i < statesCount; i++)
             {
                 StatesA.Add(loader.GetEzState(realStatesAOffset + EzState.SIZE * i));
             }
 
             int realStatesBOffset = (int)bin.Position;
 
-            for (int i = 0; i < statesBCount + 1; i++)
+            for (int i = 0; i < statesBCount; i++)
             {
                 StatesB.Add(loader.GetEzState(realStatesBOffset + EzState.SIZE * i));
             }
