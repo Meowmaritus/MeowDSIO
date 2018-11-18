@@ -18,26 +18,30 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                SomeID,
+                RumbleCamID,
+                UNK1,
                 IntensityA,
                 IntensityB,
             };
         }
 
-        public int SomeID { get; set; } = 0;
+        public short RumbleCamID { get; set; } = 0;
+        public short UNK1 { get; set; } = 0;
         public float IntensityA { get; set; } = 0;
         public float IntensityB { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            SomeID = bin.ReadInt32();
+            RumbleCamID = bin.ReadInt16();
+            UNK1 = bin.ReadInt16();
             IntensityA = bin.ReadSingle();
             IntensityB = bin.ReadSingle();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(SomeID);
+            bin.Write(RumbleCamID);
+            bin.Write(UNK1);
             bin.Write(IntensityA);
             bin.Write(IntensityB);
         }

@@ -348,6 +348,39 @@ namespace MeowDSIO.DataFiles
             SibName = ReadUnicodeString(bin);
         }
 
+        private void RecreateAnimGroups()
+        {
+            AnimationGroups.Clear();
+            int currentAnimID = Animations[0].ID;
+            int thisGroupStart = Animations[0].ID;
+            foreach (var anim in Animations)
+            {
+                if (anim.ID != (currentAnimID + 1))
+                {
+                    AnimationGroups.Add(new AnimationGroup(0)
+                    {
+                        FirstID = thisGroupStart,
+                        LastID = currentAnimID,
+                    });
+                    thisGroupStart = anim.ID;
+                }
+
+                currentAnimID = anim.ID;
+            }
+
+            if (currentAnimID > thisGroupStart)
+            {
+                if (!AnimationGroups.Any(x => x.FirstID == thisGroupStart && x.LastID >= currentAnimID))
+                {
+                    AnimationGroups.Add(new AnimationGroup(0)
+                    {
+                        FirstID = thisGroupStart,
+                        LastID = currentAnimID,
+                    });
+                }
+            }
+        }
+
         //TODO: Measure real progress.
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
@@ -362,6 +395,8 @@ namespace MeowDSIO.DataFiles
             bin.Write((short)0); //string terminator
             bin.Write(Encoding.Unicode.GetBytes(SibName));
             bin.Write((short)0); //string terminator
+
+            RecreateAnimGroups();
 
             //Animation IDs - First Pass
             int OFF_AnimationIDs = (int)bin.BaseStream.Position;

@@ -18,20 +18,20 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                Intensity,
+                RumbleCamID,
             };
         }
 
-        public float Intensity { get; set; } = 0;
+        public int RumbleCamID { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            Intensity = bin.ReadSingle();
+            RumbleCamID = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(Intensity);
+            bin.Write(RumbleCamID);
         }
 
         protected override TimeActEventType GetEventType()

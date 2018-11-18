@@ -10,10 +10,9 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public class AnimationRef : Data
     {
-        [ReadOnly(true)]
         [Category("General")]
         [DisplayName("Anim ID")]
-        [Description("The internal ID of the animation. Not editable at this time.")]
+        [Description("The internal ID of the animation.")]
         public int ID { get; set; } = -1;
 
         [Category("General")]
