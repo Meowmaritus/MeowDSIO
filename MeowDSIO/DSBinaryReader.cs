@@ -407,6 +407,15 @@ namespace MeowDSIO
                 throw new InvalidDataException(string.Format(
                     "Read byte: 0x{0:X} | Expected byte: 0x{1:X}", b, value));
             }
+
+        }
+
+        public void AssertRepeatedBytes(byte value, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                AssertByte(value);
+            }
         }
 
         public void AssertBytes(params byte[] values)
@@ -422,7 +431,7 @@ namespace MeowDSIO
             }
         }
 
-        public void AssertInt32(int value)
+        public int AssertInt32(int value)
         {
             int i = ReadInt32();
             if (i != value)
@@ -430,6 +439,7 @@ namespace MeowDSIO
                 throw new InvalidDataException(string.Format(
                     "Read int: 0x{0:X} | Expected int: 0x{1:X}", i, value));
             }
+            return i;
         }
 
         public void AssertStringAscii(string value, int length)

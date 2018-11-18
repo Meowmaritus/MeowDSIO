@@ -104,9 +104,6 @@
     <Compile Include="DataTypes\BND\BNDHeader.cs" />
     <Compile Include="DataTypes\BND\BndVersion.cs" />
     <Compile Include="DataTypes\EntityBND\EntityModel.cs" />
-    <Compile Include="DataTypes\ESD\EzCondition.cs" />
-    <Compile Include="DataTypes\ESD\EzFunc.cs" />
-    <Compile Include="DataTypes\ESD\EzState.cs" />
     <Compile Include="DataTypes\FLVER\FlverGeometryBuffer.cs" />
     <Compile Include="DataTypes\FLVER\VertexPositionColorNormalTangentTexture.cs" />
     <Compile Include="DataTypes\FLVER\[Fields]\FlverVector3.cs" />
