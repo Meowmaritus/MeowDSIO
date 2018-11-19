@@ -50,10 +50,141 @@ namespace MeowDSIO.DataFiles
 
             public override string ToString()
             {
+                return Evaluate();
                 if (Bytes.Length <= 128)
                     return $"{{ {string.Join(" ", Bytes.Select(x => x.ToString("X2")))} }}";
                 else
                     return $"{{ {Bytes.Length} BYTES }}";
+            }
+
+            private static string GetComp(byte comp)
+            {
+                switch (comp)
+                {
+                    case 0x91: return "<=";
+                    case 0x92: return ">=";
+                    case 0x93: return "<";
+                    case 0x94: return ">";
+                    case 0x95: return "==";
+                    case 0x96: return "!=";
+                }
+                throw new ArgumentException("Not a valid comparison byte");
+            }
+
+            public string Evaluate()
+            {
+                Stack<object> stack = new Stack<object>();
+
+                object[] reg = new object[8];
+
+                for (int i = 0; i < Bytes.Length; i++)
+                {
+                    var b = Bytes[i];
+                    if (b >= 0x3F && b <= 0x7F)
+                    {
+                        stack.Push(b - 64);
+                    }
+                    else if (b == 0xA5)
+                    {
+                        var sb = new StringBuilder();
+                        char nextChar = '?';
+                        do
+                        {
+                            nextChar = BitConverter.ToChar(Bytes, i + 1);
+                            if (nextChar != (char)0)
+                                sb.Append(nextChar);
+                            i += 2;
+                        }
+                        while (nextChar != (char)0);
+                        stack.Push(sb.ToString());
+                    }
+                    else if (b == 0x80)
+                    {
+                        stack.Push(BitConverter.ToSingle(Bytes, i + 1));
+                        i += 4;
+                    }
+                    else if (b == 0x81)
+                    {
+                        stack.Push(BitConverter.ToDouble(Bytes, i + 1));
+                        i += 8;
+                    }
+                    else if (b == 0x82)
+                    {
+                        stack.Push(BitConverter.ToInt32(Bytes, i + 1));
+                        i += 4;
+                    }
+                    else if (b == 0x84)
+                    {
+                        var id = Convert.ToInt32(stack.Pop());
+                        stack.Push(EzCommand.GetString(id));
+                    }
+                    else if (b == 0x85)
+                    {
+                        var arg1 = stack.Pop();
+                        var id = Convert.ToInt32(stack.Pop());
+                        stack.Push(EzCommand.GetString(id, arg1));
+                    }
+                    else if (b == 0x86)
+                    {
+                        var arg2 = stack.Pop();
+                        var arg1 = stack.Pop();
+                        var id = Convert.ToInt32(stack.Pop());
+                        stack.Push(EzCommand.GetString(id, arg1, arg2));
+                    }
+                    else if (b >= 0x91 && b <= 0x96)
+                    {
+                        var item2 = stack.Pop();
+                        var item1 = stack.Pop();
+                        stack.Push($"({item1}) {GetComp(b)} ({item2})");
+                    }
+                    else if (b == 0x98)
+                    {
+                        var item2 = stack.Pop();
+                        var item1 = stack.Pop();
+                        stack.Push($"({item1}) && ({item2})");
+                    }
+                    else if (b == 0x99)
+                    {
+                        var item2 = stack.Pop();
+                        var item1 = stack.Pop();
+                        stack.Push($"({item1}) || ({item2})");
+                    }
+                    else if (b == 0xA6)
+                    {
+                        stack.Push($"[CONT.]");
+                    }
+                    else if (b >= 0xA7 && b <= 0xAE)
+                    {
+                        byte regIndex = (byte)(b - 0xA7);
+                        var item = stack.Peek();
+                        stack.Push($"{item} => REG[{regIndex}]");
+                        reg[regIndex] = item;
+                    }
+                    else if (b >= 0xAF && b <= 0xB6)
+                    {
+                        byte regIndex = (byte)(b - 0xAF);
+                        stack.Push($"REG[{regIndex}] => {reg[regIndex]}");
+                    }
+                    else if (b == 0xB7)
+                    {
+                        stack.Push($"[STOP IF FALSE]");
+                    }
+                    else if (b == 0xA1)
+                    {
+                        //stack.Push("\n");
+                    }
+                    else if (b >= 0x8C && b <= 0x8F)
+                    {
+                        var item2 = stack.Pop();
+                        var item1 = stack.Pop();
+                        stack.Push($"({item1}) <op 0x{b:X2}> ({item2})");
+                    }
+                    else
+                    {
+                        stack.Push($"<?0x{b:X2}?>");
+                    }
+                }
+                return string.Join(", ", stack);
             }
         }
 
@@ -61,13 +192,18 @@ namespace MeowDSIO.DataFiles
         {
             public const int SIZE = sizeof(int) * 4;
 
+            public static string GetString(int id, params object[] args)
+            {
+                return $"{nameof(EzCommand)}<{id}>({string.Join(", ", args)})";
+            }
+
             public int Unk0 = 1;
             public int ID;
             public List<EzCommandArg> Args = new List<EzCommandArg>();
 
             public override string ToString()
             {
-                return $"{nameof(EzCommand)}<{ID}>({string.Join(", ", Args)}) [{nameof(Unk0)}: {Unk0}]";
+                return $"{nameof(EzCommand)}<{ID}>({string.Join(", ", Args)})";
             }
         }
 
