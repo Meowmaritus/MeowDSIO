@@ -77,8 +77,8 @@ namespace MeowDSIO.DataFiles
 
             public int Index;
             public List<EzSubState> SubStatesA = new List<EzSubState>();
-            public List<EzCommand> CommandsA = new List<EzCommand>();
-            public List<EzCommand> CommandsB = new List<EzCommand>();
+            public List<EzCommand> OnCommands = new List<EzCommand>();
+            public List<EzCommand> OffCommands = new List<EzCommand>();
             public List<EzSubState> SubStatesB = new List<EzSubState>();
 
             public override string ToString()
@@ -113,10 +113,10 @@ namespace MeowDSIO.DataFiles
                 bin = b;
             }
 
-            Dictionary<int, EzCommand> DictEzCommand = new Dictionary<int, EzCommand>();
-            Dictionary<int, EzCommandArg> DictEzCommandArg = new Dictionary<int, EzCommandArg>();
-            Dictionary<int, EzState> DictEzState = new Dictionary<int, EzState>();
-            Dictionary<int, EzSubState> DictEzSubState = new Dictionary<int, EzSubState>();
+            public Dictionary<int, EzCommand> DictEzCommand = new Dictionary<int, EzCommand>();
+            public Dictionary<int, EzCommandArg> DictEzCommandArg = new Dictionary<int, EzCommandArg>();
+            public Dictionary<int, EzState> DictEzState = new Dictionary<int, EzState>();
+            public Dictionary<int, EzSubState> DictEzSubState = new Dictionary<int, EzSubState>();
 
             public EzCommandArg GetEzCommandArg(int offset)
             {
@@ -280,7 +280,7 @@ namespace MeowDSIO.DataFiles
                     {
                         for (int i = 0; i < cmdCountA; i++)
                         {
-                            s.CommandsA.Add(GetEzCommand(FILE_OFFSET + cmdOffsetA + EzCommand.SIZE * i));
+                            s.OnCommands.Add(GetEzCommand(FILE_OFFSET + cmdOffsetA + EzCommand.SIZE * i));
                         }
                     }
 
@@ -288,7 +288,7 @@ namespace MeowDSIO.DataFiles
                     {
                         for (int i = 0; i < cmdCountB; i++)
                         {
-                            s.CommandsB.Add(GetEzCommand(FILE_OFFSET + cmdOffsetB + EzCommand.SIZE * i));
+                            s.OffCommands.Add(GetEzCommand(FILE_OFFSET + cmdOffsetB + EzCommand.SIZE * i));
                         }
                     }
 
@@ -317,6 +317,10 @@ namespace MeowDSIO.DataFiles
 
         public List<EzState> StatesA { get; set; } = new List<EzState>();
         public List<EzState> StatesB { get; set; } = new List<EzState>();
+
+        public List<EzSubState> SubStateBank { get; set; } = new List<EzSubState>();
+        public List<EzCommand> CommandBank { get; set; } = new List<EzCommand>();
+        public List<EzCommandArg> CommandArgBank { get; set; } = new List<EzCommandArg>();
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
@@ -347,13 +351,18 @@ namespace MeowDSIO.DataFiles
             int transEntryOffset = bin.ReadInt32();
             int transEntryCount = bin.ReadInt32();
 
-            //if (transEntryOffset != -1)
-            //{
-            //    for (int i = 0; i < transEntryCount; i++)
-            //    {
-            //        Transitions.Add(loader.GetEzTransition(transEntryOffset + EzTransition.SIZE * i));
-            //    }
-            //}
+            if (transEntryOffset != -1)
+            {
+                bin.StepIn(FILE_OFFSET + transEntryOffset);
+                {
+                    for (int i = 0; i < transEntryCount; i++)
+                    {
+                        int substateOffset = bin.ReadInt32();
+                        SubStateBank.Add(loader.GetEzSubState(FILE_OFFSET + substateOffset));
+                    }
+                }
+                bin.StepOut();
+            }
 
             int endOfBS0Offset = bin.ReadInt32();
             bin.AssertInt32(0);
@@ -398,6 +407,9 @@ namespace MeowDSIO.DataFiles
             {
                 StatesB.Add(loader.GetEzState(realStatesBOffset + EzState.SIZE * i));
             }
+
+            CommandBank = loader.DictEzCommand.Values.ToList();
+            CommandArgBank = loader.DictEzCommandArg.Values.ToList();
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
