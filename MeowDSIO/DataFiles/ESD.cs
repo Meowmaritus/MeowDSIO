@@ -42,20 +42,33 @@ namespace MeowDSIO.DataFiles
             public byte[] UnkBytes;
         }
 
-        public class EzFunctionParam
+        public class EzCommandArg
         {
             public const int SIZE = sizeof(int) * 2;
 
-            public byte[] Params;
+            public byte[] Bytes;
+
+            public override string ToString()
+            {
+                if (Bytes.Length <= 128)
+                    return $"{{ {string.Join(" ", Bytes.Select(x => x.ToString("X2")))} }}";
+                else
+                    return $"{{ {Bytes.Length} BYTES }}";
+            }
         }
 
-        public class EzFunction
+        public class EzCommand
         {
             public const int SIZE = sizeof(int) * 4;
 
             public int Unk0 = 1;
             public int ID;
-            public List<EzFunctionParam> Parameters = new List<EzFunctionParam>();
+            public List<EzCommandArg> Args = new List<EzCommandArg>();
+
+            public override string ToString()
+            {
+                return $"{nameof(EzCommand)}<{ID}>({string.Join(", ", Args)}) [{nameof(Unk0)}: {Unk0}]";
+            }
         }
 
         public class EzState
@@ -63,10 +76,15 @@ namespace MeowDSIO.DataFiles
             public const int SIZE = sizeof(int) * 9;
 
             public int Index;
-            public List<EzSubState> SubstatesA = new List<EzSubState>();
-            public List<EzFunction> FunctionsA = new List<EzFunction>();
-            public List<EzFunction> FunctionsB = new List<EzFunction>();
-            public List<EzSubState> SubstatesB = new List<EzSubState>();
+            public List<EzSubState> SubStatesA = new List<EzSubState>();
+            public List<EzCommand> CommandsA = new List<EzCommand>();
+            public List<EzCommand> CommandsB = new List<EzCommand>();
+            public List<EzSubState> SubStatesB = new List<EzSubState>();
+
+            public override string ToString()
+            {
+                return $"{nameof(EzState)} <IDX {Index}>";
+            }
         }
 
         public class EzSubState
@@ -74,10 +92,14 @@ namespace MeowDSIO.DataFiles
             public const int SIZE = sizeof(int) * 7;
 
             public EzState NextState;
-            public int FunctionID;
-            public int Unk1;
-            public List<EzFunctionParam> Params = new List<EzFunctionParam>();
+            public List<EzCommand> Commands = new List<EzCommand>();
+            public List<EzSubState> SubStates = new List<EzSubState>();
             public byte[] PackedData;
+
+            public override string ToString()
+            {
+                return $"--> {NextState?.ToString() ?? "<NULL>"}";
+            }
         }
 
         const int FILE_OFFSET = 0x6C;
@@ -91,19 +113,19 @@ namespace MeowDSIO.DataFiles
                 bin = b;
             }
 
-            Dictionary<int, EzFunction> DictEzFunction = new Dictionary<int, EzFunction>();
-            Dictionary<int, EzFunctionParam> DictEzFunctionParam = new Dictionary<int, EzFunctionParam>();
+            Dictionary<int, EzCommand> DictEzCommand = new Dictionary<int, EzCommand>();
+            Dictionary<int, EzCommandArg> DictEzCommandArg = new Dictionary<int, EzCommandArg>();
             Dictionary<int, EzState> DictEzState = new Dictionary<int, EzState>();
             Dictionary<int, EzSubState> DictEzSubState = new Dictionary<int, EzSubState>();
 
-            public EzFunctionParam GetEzFunctionParam(int offset)
+            public EzCommandArg GetEzCommandArg(int offset)
             {
-                if (DictEzFunctionParam.ContainsKey(offset))
-                    return DictEzFunctionParam[offset];
+                if (DictEzCommandArg.ContainsKey(offset))
+                    return DictEzCommandArg[offset];
 
-                var esfp = new EzFunctionParam();
+                var esfp = new EzCommandArg();
 
-                DictEzFunctionParam.Add(offset, esfp);
+                DictEzCommandArg.Add(offset, esfp);
 
                 bin.StepIn(offset);
                 {
@@ -112,7 +134,7 @@ namespace MeowDSIO.DataFiles
 
                     bin.StepIn(FILE_OFFSET + bytesOffset);
                     {
-                        esfp.Params = bin.ReadBytes(bytesCount);
+                        esfp.Bytes = bin.ReadBytes(bytesCount);
                     }
                     bin.StepOut();
                 }
@@ -121,27 +143,27 @@ namespace MeowDSIO.DataFiles
                 return esfp;
             }
 
-            public EzFunction GetEzFunction(int offset)
+            public EzCommand GetEzCommand(int offset)
             {
-                if (DictEzFunction.ContainsKey(offset))
-                    return DictEzFunction[offset];
+                if (DictEzCommand.ContainsKey(offset))
+                    return DictEzCommand[offset];
 
-                var esf = new EzFunction();
+                var esf = new EzCommand();
 
-                DictEzFunction.Add(offset, esf);
+                DictEzCommand.Add(offset, esf);
 
                 bin.StepIn(offset);
                 {
                     esf.Unk0 = bin.ReadInt32();
                     esf.ID = bin.ReadInt32();
-                    int paramOffset = bin.ReadInt32();
-                    int paramCount = bin.ReadInt32();
+                    int argOffset = bin.ReadInt32();
+                    int argCount = bin.ReadInt32();
 
-                    if (paramOffset != -1)
+                    if (argOffset != -1)
                     {
-                        for (int i = 0; i < paramCount; i++)
+                        for (int i = 0; i < argCount; i++)
                         {
-                            esf.Parameters.Add(GetEzFunctionParam(FILE_OFFSET + paramOffset + EzFunctionParam.SIZE * i));
+                            esf.Args.Add(GetEzCommandArg(FILE_OFFSET + argOffset + EzCommandArg.SIZE * i));
                         }
                     }
                 }
@@ -163,11 +185,11 @@ namespace MeowDSIO.DataFiles
                 {
                     int nextStateOffset = bin.ReadInt32();
 
-                    ess.FunctionID = bin.ReadInt32();
-                    ess.Unk1 = bin.ReadInt32();
+                    int commandOffset = bin.ReadInt32();
+                    int commandCount = bin.ReadInt32();
 
-                    int funcParamOffset = bin.ReadInt32();
-                    int funcParamCount = bin.ReadInt32();
+                    int transitionOffset = bin.ReadInt32();
+                    int transitionCount = bin.ReadInt32();
 
                     int packedDataOffset = bin.ReadInt32();
                     int packedDataCount = bin.ReadInt32();
@@ -177,12 +199,25 @@ namespace MeowDSIO.DataFiles
                         ess.NextState = GetEzState(FILE_OFFSET + nextStateOffset);
                     }
 
-                    if (funcParamOffset != -1)
+                    if (commandOffset != -1)
                     {
-                        for (int i = 0; i < funcParamCount; i++)
+                        for (int i = 0; i < commandCount; i++)
                         {
-                            ess.Params.Add(GetEzFunctionParam(FILE_OFFSET + funcParamOffset + i * EzFunctionParam.SIZE));
+                            ess.Commands.Add(GetEzCommand(FILE_OFFSET + commandOffset + EzCommand.SIZE * i));
                         }
+                    }
+
+                    if (transitionOffset != -1)
+                    {
+                        bin.StepIn(FILE_OFFSET + transitionOffset);
+                        {
+                            for (int i = 0; i < transitionCount; i++)
+                            {
+                                int substateOffset = bin.ReadInt32();
+                                ess.SubStates.Add(GetEzSubState(FILE_OFFSET + substateOffset));
+                            }
+                        }
+                        bin.StepOut();
                     }
 
                     if (packedDataOffset != -1)
@@ -216,11 +251,11 @@ namespace MeowDSIO.DataFiles
                     int transOffsetA = bin.ReadInt32();
                     int transCountA = bin.ReadInt32();
 
-                    int funcOffsetA = bin.ReadInt32();
-                    int funcCountA = bin.ReadInt32();
+                    int cmdOffsetA = bin.ReadInt32();
+                    int cmdCountA = bin.ReadInt32();
 
-                    int funcOffsetB = bin.ReadInt32();
-                    int funcCountB = bin.ReadInt32();
+                    int cmdOffsetB = bin.ReadInt32();
+                    int cmdCountB = bin.ReadInt32();
 
                     int transOffsetB = bin.ReadInt32();
                     int transCountB = bin.ReadInt32();
@@ -235,25 +270,25 @@ namespace MeowDSIO.DataFiles
                             for (int i = 0; i < transCountA; i++)
                             {
                                 int substateOffset = bin.ReadInt32();
-                                s.SubstatesA.Add(GetEzSubState(FILE_OFFSET + substateOffset));
+                                s.SubStatesA.Add(GetEzSubState(FILE_OFFSET + substateOffset));
                             }
                         }
                         bin.StepOut();
                     }
 
-                    if (funcOffsetA != -1)
+                    if (cmdOffsetA != -1)
                     {
-                        for (int i = 0; i < funcCountA; i++)
+                        for (int i = 0; i < cmdCountA; i++)
                         {
-                            s.FunctionsA.Add(GetEzFunction(FILE_OFFSET + funcOffsetA + EzFunction.SIZE * i));
+                            s.CommandsA.Add(GetEzCommand(FILE_OFFSET + cmdOffsetA + EzCommand.SIZE * i));
                         }
                     }
 
-                    if (funcOffsetB != -1)
+                    if (cmdOffsetB != -1)
                     {
-                        for (int i = 0; i < funcCountB; i++)
+                        for (int i = 0; i < cmdCountB; i++)
                         {
-                            s.FunctionsB.Add(GetEzFunction(FILE_OFFSET + funcOffsetB + EzFunction.SIZE * i));
+                            s.CommandsB.Add(GetEzCommand(FILE_OFFSET + cmdOffsetB + EzCommand.SIZE * i));
                         }
                     }
 
@@ -264,7 +299,7 @@ namespace MeowDSIO.DataFiles
                             for (int i = 0; i < transCountB; i++)
                             {
                                 int substateOffset = bin.ReadInt32();
-                                s.SubstatesB.Add(GetEzSubState(FILE_OFFSET + substateOffset));
+                                s.SubStatesB.Add(GetEzSubState(FILE_OFFSET + substateOffset));
                             }
                         }
                         bin.StepOut();
