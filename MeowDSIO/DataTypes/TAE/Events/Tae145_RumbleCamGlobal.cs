@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae145_CameraShakeGeneric : TimeActEventBase
+    public class Tae145_RumbleCamGlobal : TimeActEventBase
     {
-        public Tae145_CameraShakeGeneric(float StartTime, float EndTime)
+        public Tae145_RumbleCamGlobal(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -36,7 +36,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.CameraShakeGeneric;
+            return TimeActEventType.RumbleCamGlobal;
         }
     }
 }

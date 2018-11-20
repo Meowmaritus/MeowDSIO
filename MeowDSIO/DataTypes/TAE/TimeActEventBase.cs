@@ -121,8 +121,8 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.SoundBody: return new Tae128_SoundBody(startTime, endTime);
                 case TimeActEventType.SoundDmyPoly: return new Tae129_SoundDmyPoly(startTime, endTime);
                 case TimeActEventType.SoundOther: return new Tae130_SoundOther(startTime, endTime);
-                case TimeActEventType.CameraShakeSpecific: return new Tae144_CameraShakeSpecific(startTime, endTime);
-                case TimeActEventType.CameraShakeGeneric: return new Tae145_CameraShakeGeneric(startTime, endTime);
+                case TimeActEventType.RumbleCamOnDmy: return new Tae144_RumbleCamOnDmy(startTime, endTime);
+                case TimeActEventType.RumbleCamGlobal: return new Tae145_RumbleCamGlobal(startTime, endTime);
                 case TimeActEventType.SetChrOpacity: return new Tae193_SetChrOpacity(startTime, endTime);
                 case TimeActEventType.SetChrTrackingSpeed: return new Tae224_SetChrTrackingSpeed(startTime, endTime);
                 case TimeActEventType.Type225: return new Tae225(startTime, endTime);
@@ -133,7 +133,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.Type232: return new Tae232(startTime, endTime);
                 case TimeActEventType.Type233: return new Tae233(startTime, endTime);
                 case TimeActEventType.Type236: return new Tae236(startTime, endTime);
-                case TimeActEventType.Type300: return new Tae300(startTime, endTime);
+                case TimeActEventType.DoCommandFancy: return new Tae300_DoCommandFancy(startTime, endTime);
                 case TimeActEventType.Type301: return new Tae301(startTime, endTime);
                 case TimeActEventType.Type302: return new Tae302(startTime, endTime);
                 case TimeActEventType.PlayAnimation: return new Tae303_PlayAnimation(startTime, endTime);

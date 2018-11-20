@@ -209,7 +209,7 @@
     <Compile Include="DataTypes\TAE\Events\Tae303_PlayAnimation.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae302.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae301.cs" />
-    <Compile Include="DataTypes\TAE\Events\Tae300.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae300_DoCommandFancy.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae236.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae233.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae232.cs" />
@@ -220,8 +220,8 @@
     <Compile Include="DataTypes\TAE\Events\Tae225.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae224_SetChrTrackingSpeed.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae193_SetChrOpacity.cs" />
-    <Compile Include="DataTypes\TAE\Events\Tae145_CameraShakeGeneric.cs" />
-    <Compile Include="DataTypes\TAE\Events\Tae144_CameraShakeSpecific.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae145_RumbleCamGlobal.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae144_RumbleCamOnDmy.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae130_SoundOther.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae129_SoundDmyPoly.cs" />
     <Compile Include="DataTypes\TAE\Events\Tae128_SoundBody.cs" />

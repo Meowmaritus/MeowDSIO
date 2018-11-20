@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae300 : TimeActEventBase
+    public class Tae300_DoCommandFancy : TimeActEventBase
     {
-        public Tae300(float StartTime, float EndTime)
+        public Tae300_DoCommandFancy(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -21,24 +21,24 @@ namespace MeowDSIO.DataTypes.TAE.Events
                 CommandType,
                 UNK2,
                 UNK3,
-                UNK4,
-                UNK5,
+                Parameter,
+                SomeID,
             };
         }
 
         public TaeGeneralCommandType CommandType { get; set; } = 0;
-        public short UNK2 { get; set; } = 0;
+        public short UNK2 { get; set; } = 1;
         public int UNK3 { get; set; } = 0;
-        public float UNK4 { get; set; } = 0;
-        public int UNK5 { get; set; } = 0;
+        public float Parameter { get; set; } = 1;
+        public int SomeID { get; set; } = -1;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
             CommandType = (TaeGeneralCommandType)bin.ReadInt16();
             UNK2 = bin.ReadInt16();
             UNK3 = bin.ReadInt32();
-            UNK4 = bin.ReadSingle();
-            UNK5 = bin.ReadInt32();
+            Parameter = bin.ReadSingle();
+            SomeID = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
@@ -46,13 +46,13 @@ namespace MeowDSIO.DataTypes.TAE.Events
             bin.Write((short)CommandType);
             bin.Write(UNK2);
             bin.Write(UNK3);
-            bin.Write(UNK4);
-            bin.Write(UNK5);
+            bin.Write(Parameter);
+            bin.Write(SomeID);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type300;
+            return TimeActEventType.DoCommandFancy;
         }
     }
 }

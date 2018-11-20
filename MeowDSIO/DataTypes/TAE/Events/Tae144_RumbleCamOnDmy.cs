@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae144_CameraShakeSpecific : TimeActEventBase
+    public class Tae144_RumbleCamOnDmy : TimeActEventBase
     {
-        public Tae144_CameraShakeSpecific(float StartTime, float EndTime)
+        public Tae144_RumbleCamOnDmy(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -19,36 +19,36 @@ namespace MeowDSIO.DataTypes.TAE.Events
             get => new List<object>
             {
                 RumbleCamID,
-                UNK1,
-                IntensityA,
-                IntensityB,
+                Dmy,
+                FalloffStart,
+                FalloffEnd,
             };
         }
 
         public short RumbleCamID { get; set; } = 0;
-        public short UNK1 { get; set; } = 0;
-        public float IntensityA { get; set; } = 0;
-        public float IntensityB { get; set; } = 0;
+        public short Dmy { get; set; } = 0;
+        public float FalloffStart { get; set; } = 0;
+        public float FalloffEnd { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
             RumbleCamID = bin.ReadInt16();
-            UNK1 = bin.ReadInt16();
-            IntensityA = bin.ReadSingle();
-            IntensityB = bin.ReadSingle();
+            Dmy = bin.ReadInt16();
+            FalloffStart = bin.ReadSingle();
+            FalloffEnd = bin.ReadSingle();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
             bin.Write(RumbleCamID);
-            bin.Write(UNK1);
-            bin.Write(IntensityA);
-            bin.Write(IntensityB);
+            bin.Write(Dmy);
+            bin.Write(FalloffStart);
+            bin.Write(FalloffEnd);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.CameraShakeSpecific;
+            return TimeActEventType.RumbleCamOnDmy;
         }
     }
 }
