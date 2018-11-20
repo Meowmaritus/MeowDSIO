@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae225 : TimeActEventBase
+    public class DeS_Tae230 : TimeActEventBase
     {
-        public Tae225(float StartTime, float EndTime)
+        public DeS_Tae230(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -19,28 +19,33 @@ namespace MeowDSIO.DataTypes.TAE.Events
             get => new List<object>
             {
                 UNK1,
-                UNK2,
             };
         }
 
-        public short UNK1 { get; set; } = 0;
-        public short UNK2 { get; set; } = 0;
+        public int UNK1 { get; set; } = 0;
+        public int UNK2 { get; set; } = 0;
+        public int UNK3 { get; set; } = 0;
+        public int UNK4 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt16();
-            UNK2 = bin.ReadInt16();
+            UNK1 = bin.ReadInt32();
+            UNK2 = bin.ReadInt32();
+            UNK3 = bin.ReadInt32();
+            UNK4 = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
             bin.Write(UNK1);
             bin.Write(UNK2);
+            bin.Write(UNK3);
+            bin.Write(UNK4);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.Type225;
+            return TimeActEventType.DeS_Type230;
         }
     }
 }

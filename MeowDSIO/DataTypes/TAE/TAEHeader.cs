@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,16 +10,15 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public class TAEHeader
     {
-        //"TAE "
-        [JsonConverter(typeof(Json.ByteArrayConverter))]
-        public byte[] Signature { get; set; } = { 0x54, 0x41, 0x45, 0x20 };
-
+        [ReadOnly(true)]
         public bool IsBigEndian { get; set; } = false;
 
         //3 Null bytes
 
-        public ushort VersionMajor { get; set; } = 11;
-        public ushort VersionMinor { get; set; } = 1;
+        public int Version = 0x1000B;
+
+        public const int VERSION_01_11 = 0x1000B;
+        public const int VERSION_00_01 = 0x1;
 
         //(uint FileLength)
 
@@ -48,19 +48,17 @@ namespace MeowDSIO.DataTypes.TAE
         public int FileID { get; set; } = 204100;
         public int UnknownC { get; set; } = 0x00000090;
 
-        public uint UnknownE00 = 0;
-        public uint UnknownE01 = 1;
-        public uint UnknownE02 = 128;
-        public uint UnknownE03 = 0;
-        public uint UnknownE04 = 0;
+        public uint UnknownE00 { get; set; } = 0;
+        public uint UnknownE01 { get; set; } = 1;
+        public uint UnknownE02 { get; set; } = 128;
+        public uint UnknownE03 { get; set; } = 0;
+        public uint UnknownE04 { get; set; } = 0;
 
-        public int FileID2 = 204100;
-        public int FileID3 = 204100;
+        public int FileID2 { get; set; } = 204100;
+        public int FileID3 { get; set; } = 204100;
 
-        public uint UnknownE07 = 0x00000050u;
-        public uint UnknownE08 = 0x00000000u;
-        public uint UnknownE09 = 0x00000000u;
-
-        
+        public uint UnknownE07 { get; set; } = 0x00000050u;
+        public uint UnknownE08 { get; set; } = 0x00000000u;
+        public uint UnknownE09 { get; set; } = 0x00000000u;
     }
 }

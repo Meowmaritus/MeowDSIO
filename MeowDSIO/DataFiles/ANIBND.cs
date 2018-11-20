@@ -23,7 +23,7 @@ namespace MeowDSIO.DataFiles
         public Dictionary<int, byte[]> AnimationHKXs { get; set; } = new Dictionary<int, byte[]>();
 
         public byte[] StandardSkeletonHKX { get; set; } = null;
-        public TAE StandardTAE { get; set; } = null;
+        public Dictionary<int, TAE> StandardTAE { get; set; } = new Dictionary<int, TAE>();
 
         public byte[] PlayerSkeletonHKX { get; set; } = null;
         public Dictionary<int, TAE> PlayerTAE { get; set; } = new Dictionary<int, TAE>();
@@ -32,14 +32,7 @@ namespace MeowDSIO.DataFiles
         {
             get
             {
-                if (StandardTAE != null && PlayerTAE != null)
-                    return new List<TAE>() { StandardTAE }.Concat(PlayerTAE.Select(x => x.Value));
-                else if (StandardTAE == null && PlayerTAE != null)
-                    return PlayerTAE.Select(x => x.Value);
-                else if (StandardTAE != null && PlayerTAE == null)
-                    return new List<TAE>() { StandardTAE };
-                else
-                    return new List<TAE>();
+                return StandardTAE.Values.Concat(PlayerTAE.Values);
             }
         }
 
@@ -76,7 +69,8 @@ namespace MeowDSIO.DataFiles
         public const int ID_PLAYER_ANIM_END = 3999999;
 
         public const int ID_SKELETON = 1000000;
-        public const int ID_STANDARD_TAE = 3000000;
+        public const int ID_STANDARD_TAE_START = 3000000;
+        public const int ID_STANDARD_TAE_END = 3999999;
 
         public const int ID_PLAYER_SKELETON = 4000000;
 
@@ -134,9 +128,9 @@ namespace MeowDSIO.DataFiles
                     {
                         StandardSkeletonHKX = entry.GetBytes();
                     }
-                    else if (entry.ID == ID_STANDARD_TAE)
+                    else if (entry.ID >= ID_STANDARD_TAE_START && entry.ID <= ID_STANDARD_TAE_END)
                     {
-                        StandardTAE = entry.ReadDataAs<TAE>();
+                        StandardTAE.Add(entry.ID - ID_STANDARD_TAE_START, entry.ReadDataAs<TAE>());
                     }
                 }
 
@@ -312,9 +306,13 @@ namespace MeowDSIO.DataFiles
 
                 if (StandardTAE != null)
                 {
-                    var taeEntry = new BNDEntry(ID_STANDARD_TAE, GetStandardTaeFileName(), new byte[] { });
-                    taeEntry.ReplaceData(StandardTAE);
-                    bnd.Add(taeEntry);
+                    foreach (var tae in StandardTAE)
+                    {
+                        var entry = new BNDEntry(tae.Key + ID_STANDARD_TAE_START,
+                            GetPlayerTaeFileName(tae.Key), new byte[] { });
+                        entry.ReplaceData(tae.Value);
+                        bnd.Add(entry);
+                    }
                 }
 
                 if (StandardSkeletonHKX != null)

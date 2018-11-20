@@ -50,12 +50,12 @@ namespace MeowDSIO.DataFiles
         {
             get
             {
-                if (Header.VersionMajor == 11 && Header.VersionMinor == 1)
-                    return 0x0C;
-                else if (Header.VersionMajor == 1 && Header.VersionMinor == 0)
+                if (Header.Version == TAEHeader.VERSION_01_11)
+                    return Header.IsBigEndian ? 0x10 : 0x0C;
+                else if (Header.Version == TAEHeader.VERSION_00_01)
                     return 0x10;
                 else
-                    throw new NotImplementedException($"Don't know event header size of TAE Version {Header.VersionMajor}.{Header.VersionMinor}");
+                    throw new NotImplementedException($"Don't know event header size of TAE Version {Header.Version:X8}");
             }
         }
 
@@ -69,83 +69,110 @@ namespace MeowDSIO.DataFiles
             {
                 int eventCount = bin.ReadInt32();
                 int eventHeadersOffset = bin.ReadInt32();
-                bin.BaseStream.Seek(0x10, SeekOrigin.Current); //skip shit we don't need
+                var weirdUnk1 = bin.ReadInt32();
+                bin.AssertInt32(0);
+                var timeConstantsCount = bin.ReadInt32();
+                var timeConstantsOffset = bin.ReadInt32();
                 int animFileOffset = bin.ReadInt32();
 
-                for (int i = 0; i < eventCount; i++)
+                if (Header.IsBigEndian)
                 {
-                    //lazily seek to the start of each event manually.
-                    bin.BaseStream.Seek(eventHeadersOffset + (EventHeaderSize * i), SeekOrigin.Begin);
+                    bin.AssertInt32(0);
+                    bin.AssertInt32(0);
+                    bin.AssertInt32(0);
+                    bin.AssertInt32(0);
+                    bin.AssertInt32(0);
+                }
 
-                    int startTimeOffset = bin.ReadInt32();
-                    int endTimeOffset = bin.ReadInt32();
-                    int eventBodyOffset = bin.ReadInt32();
-
-                    float startTime = -1;
-                    float endTime = -1;
-
-                    bin.StepIn(startTimeOffset);
+                if (eventCount > 0)
+                {
+                    for (int i = 0; i < eventCount; i++)
                     {
-                        startTime = bin.ReadSingle();
-                    }
-                    bin.StepOut();
+                        //lazily seek to the start of each event manually.
+                        bin.BaseStream.Seek(eventHeadersOffset + (EventHeaderSize * i), SeekOrigin.Begin);
 
-                    bin.StepIn(endTimeOffset);
-                    {
-                        endTime = bin.ReadSingle();
-                    }
-                    bin.StepOut();
+                        int startTimeOffset = bin.ReadInt32();
+                        int endTimeOffset = bin.ReadInt32();
+                        int eventBodyOffset = bin.ReadInt32();
 
-                    bin.StepIn(eventBodyOffset);
-                    {
-                        int eventTypeInt = bin.ReadInt32();
-                        TimeActEventType eventType = (TimeActEventType)eventTypeInt;
-                        int eventParamOffset = bin.ReadInt32();
-                        bin.StepIn(eventParamOffset);
+                        //if (EventHeaderSize >= 0x10)
+                        //{
+                        //    int unk = bin.ReadInt32();
+                        //    throw new Exception();
+                        //}
+
+                        float startTime = -1;
+                        float endTime = -1;
+
+                        bin.StepIn(startTimeOffset);
                         {
-                            var newEvent = TimeActEventBase.GetNewEvent(eventType, startTime, endTime);
-                            if (newEvent == null)
+                            startTime = bin.ReadSingle();
+                        }
+                        bin.StepOut();
+
+                        bin.StepIn(endTimeOffset);
+                        {
+                            endTime = bin.ReadSingle();
+                        }
+                        bin.StepOut();
+
+                        bin.StepIn(eventBodyOffset);
+                        {
+                            int eventTypeInt = bin.ReadInt32();
+                            TimeActEventType eventType = (TimeActEventType)eventTypeInt;
+                            int eventParamOffset = bin.ReadInt32();
+                            bin.StepIn(eventParamOffset);
                             {
-                                if (!debugUnkTypesReport.ContainsKey(eventTypeInt))
+                                var newEvent = TimeActEventBase.GetNewEvent(eventType, startTime, endTime);
+                                if (newEvent == null)
                                 {
-                                    debugUnkTypesReport.Add(eventTypeInt, new List<int>());
-                                }
-
-                                if (i < eventCount - 1)
-                                {
-                                    bin.StepIn(eventHeadersOffset + (EventHeaderSize * (i + 1)));
+                                    if (!debugUnkTypesReport.ContainsKey(eventTypeInt))
                                     {
-                                        bin.ReadInt32(); //startTimeOffset
-                                        bin.ReadInt32(); //endTimeOffset
-                                        var nextEventBodyOffset = bin.ReadInt32();
-                                        bin.StepIn(nextEventBodyOffset);
+                                        debugUnkTypesReport.Add(eventTypeInt, new List<int>());
+                                    }
+
+                                    if (i < eventCount - 1)
+                                    {
+                                        bin.StepIn(eventHeadersOffset + (EventHeaderSize * (i + 1)));
                                         {
-                                            bin.ReadInt32();//eventType
-                                            var nextEventParamOffset = bin.ReadInt32();
+                                            bin.ReadInt32(); //startTimeOffset
+                                            bin.ReadInt32(); //endTimeOffset
+                                            var nextEventBodyOffset = bin.ReadInt32();
 
-                                            int thisUnkParamByteCount = nextEventParamOffset - eventParamOffset;
+                                            int thisUnkParamByteCount = nextEventBodyOffset - eventParamOffset;
 
-                                            debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
+                                            if (!debugUnkTypesReport[eventTypeInt].Contains(thisUnkParamByteCount))
+                                                debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
+
+                                            //bin.StepIn(nextEventBodyOffset);
+                                            //{
+                                            //    bin.ReadInt32();//eventType
+                                            //    var nextEventParamOffset = bin.ReadInt32();
+
+                                            //    int thisUnkParamByteCount = nextEventParamOffset - eventParamOffset;
+
+                                            //    debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
+                                            //}
+                                            //bin.StepOut();
                                         }
                                         bin.StepOut();
                                     }
-                                    bin.StepOut();
+                                    else
+                                    {
+                                        //debugUnkTypesReport[eventTypeInt].Add(-1);
+                                    }
                                 }
                                 else
                                 {
-                                    debugUnkTypesReport[eventTypeInt].Add(-1);
+                                    newEvent.ReadParameters(bin);
+                                    newEvent.Index = anim.EventList.Count;
+                                    anim.EventList.Add(newEvent);
                                 }
                             }
-                            else
-                            {
-                                newEvent.ReadParameters(bin);
-                                newEvent.Index = anim.EventList.Count;
-                                anim.EventList.Add(newEvent);
-                            }
+                            bin.StepOut();
                         }
                         bin.StepOut();
                     }
-                    bin.StepOut();
                 }
 
                 bin.BaseStream.Seek(animFileOffset, SeekOrigin.Begin);
@@ -158,21 +185,45 @@ namespace MeowDSIO.DataFiles
                     int dataOffset = bin.ReadInt32();
                     //bin.BaseStream.Seek(dataOffset, SeekOrigin.Begin);
 
-                    int nameOffset = bin.ReadInt32();
+                    int nameOffset = -1;
 
-                    anim.IsLoopingObjAnim = bin.ReadBoolean();
-                    anim.UseHKXOnly = bin.ReadBoolean();
-                    anim.TAEDataOnly = bin.ReadBoolean();
-                    bin.AssertByte(0);
+                    if (Header.IsBigEndian)
+                    {
+                        anim.OriginalAnimID = bin.ReadInt32();
 
-                    anim.OriginalAnimID = bin.ReadInt32();
+                        bin.AssertByte(0);
+                        anim.TAEDataOnly = bin.ReadBoolean();
+                        anim.UseHKXOnly = bin.ReadBoolean();
+                        anim.IsLoopingObjAnim = bin.ReadBoolean();
+
+                        nameOffset = bin.ReadInt32();
+
+                        var secondaryNameOffset = bin.ReadInt32();
+                    }
+                    else
+                    {
+                        nameOffset = bin.ReadInt32();
+
+                        anim.IsLoopingObjAnim = bin.ReadBoolean();
+                        anim.UseHKXOnly = bin.ReadBoolean();
+                        anim.TAEDataOnly = bin.ReadBoolean();
+                        bin.AssertByte(0);
+
+                        anim.OriginalAnimID = bin.ReadInt32();
+
+                        bin.AssertInt32(0);
+                    }
 
                     if (nameOffset <= 0)
                     {
-                        throw new Exception("Anim file type was that of a named one but the name pointer was NULL.");
+                        //throw new Exception("Anim file type was that of a named one but the name pointer was NULL.");
+
                     }
-                    bin.BaseStream.Seek(nameOffset, SeekOrigin.Begin);
-                    anim.FileName = ReadUnicodeString(bin);
+                    else
+                    {
+                        bin.BaseStream.Seek(nameOffset, SeekOrigin.Begin);
+                        anim.FileName = ReadUnicodeString(bin);
+                    }
                 }
                 else if (fileType == 1)
                 {
@@ -180,13 +231,31 @@ namespace MeowDSIO.DataFiles
 
                     anim.FileName = null;
 
-                    bin.ReadInt32(); //offset pointing to next dword for some reason.
-                    bin.ReadInt32(); //offset pointing to start of next anim file struct
+                    if (Header.IsBigEndian)
+                    {
+                        var nullA = bin.ReadInt32();
+                        var nullB = bin.ReadInt32();
 
-                    anim.RefAnimID = bin.ReadInt32();
-                    //Null 1
-                    //Null 2
-                    //Null 3
+                        var offsetPointingToNextDword = bin.ReadInt32();
+                        var offsetPointingToStartOfNextAnimFileStruct = bin.ReadInt32();
+
+                        anim.RefAnimID = bin.ReadInt32();
+
+                        var nullC = bin.ReadInt32();
+                    }
+                    else
+                    {
+                        var offsetPointingToNextDword = bin.ReadInt32();
+                        var offsetPointingToStartOfNextAnimFileStruct = bin.ReadInt32();
+
+                        anim.RefAnimID = bin.ReadInt32();
+
+                        var nullA = bin.ReadInt32();
+                        var nullB = bin.ReadInt32();
+                        var nullC = bin.ReadInt32();
+                    }
+
+                    
                 }
                 else
                 {
@@ -223,7 +292,16 @@ namespace MeowDSIO.DataFiles
             bool endString = false;
             do
             {
-                next = bin.ReadBytes(2);
+                if (bin.BigEndian)
+                {
+                    next[1] = bin.ReadByte();
+                    next[0] = bin.ReadByte();
+                }
+                else
+                {
+                    next[0] = bin.ReadByte();
+                    next[1] = bin.ReadByte();
+                }
                 endString = (next[0] == 0 && next[1] == 0);
 
                 if (!endString)
@@ -239,21 +317,14 @@ namespace MeowDSIO.DataFiles
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             Header = new TAEHeader();
-            var fileSignature = bin.ReadBytes(4);
-            if (fileSignature.Where((x, i) => x != Header.Signature[i]).Any())
-            {
-                throw new Exception($"Invalid signature in this TAE file: " + 
-                    $"[{string.Join(",", fileSignature.Select(x => x.ToString("X8")))}] " + 
-                    $"(ASCII: '{Encoding.ASCII.GetString(fileSignature)}')");
-            }
+            bin.AssertStringAscii("TAE ", 4);
 
             Header.IsBigEndian = bin.ReadBoolean();
 
             bin.BigEndian = Header.IsBigEndian;
             bin.ReadBytes(3); //3 null bytes after big endian flag
 
-            Header.VersionMajor = bin.ReadUInt16();
-            Header.VersionMinor = bin.ReadUInt16();
+            Header.Version = bin.ReadInt32();
 
             var fileSize = bin.ReadInt32();
 
@@ -278,6 +349,12 @@ namespace MeowDSIO.DataFiles
                     var animID = bin.ReadInt32();
                     var animOffset = bin.ReadInt32();
 
+                    if (Header.IsBigEndian)
+                    {
+                        bin.AssertInt32(0);
+                        bin.AssertInt32(0);
+                    }
+
                     Animations.Add(LoadAnimationFromOffset(bin, animOffset, animID, debugUnkEventReport));
                 }
             });
@@ -286,7 +363,7 @@ namespace MeowDSIO.DataFiles
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("Unknown event types found. Attempted to retrieve byte counts automatically:");
-                foreach (var kvp in debugUnkEventReport)
+                foreach (var kvp in debugUnkEventReport.OrderBy(x => x.Key))
                 {
                     sb.AppendLine($"    Event Type {kvp.Key} possible byte counts: {string.Join(", ", kvp.Value)}");
                 }
@@ -308,6 +385,11 @@ namespace MeowDSIO.DataFiles
                     nextAnimGroup.FirstID = bin.ReadInt32();
                     nextAnimGroup.LastID = bin.ReadInt32();
                     var _firstIdOffset = bin.ReadInt32();
+
+                    if (Header.IsBigEndian)
+                    {
+                        bin.AssertInt32(0);
+                    }
 
                     AnimationGroups.Add(nextAnimGroup);
                 }
@@ -384,6 +466,9 @@ namespace MeowDSIO.DataFiles
         //TODO: Measure real progress.
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
+            if (Header.IsBigEndian)
+                throw new NotImplementedException();
+
             //SkeletonName, SibName:
             bin.Seek(0x94, SeekOrigin.Begin);
             bin.Write(0x00000098);
@@ -621,14 +706,13 @@ namespace MeowDSIO.DataFiles
             //final header write:
             bin.Seek(0, SeekOrigin.Begin);
 
-            bin.Write(Header.Signature);
+            bin.WriteStringAscii("TAE ", 4);
 
             bin.Write(Header.IsBigEndian);
             bin.BigEndian = Header.IsBigEndian;
             bin.Write(new byte[] { 0, 0, 0 }); //3 null bytes after big endian flag.
 
-            bin.Write(Header.VersionMajor);
-            bin.Write(Header.VersionMinor);
+            bin.Write(Header.Version);
 
             bin.Write((int)bin.BaseStream.Length); //File length
 

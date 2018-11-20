@@ -24,6 +24,8 @@ namespace MeowDSIO
         private byte[] GetPreparedBytes(int count)
         {
             byte[] b = base.ReadBytes(count);
+            if (b.Length != count)
+                throw new EndOfStreamException(); //lol microsoft
             return PrepareBytes(b);
         }
 

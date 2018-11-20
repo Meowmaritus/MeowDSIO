@@ -24,14 +24,14 @@ namespace MeowDSIO.DataTypes.TAE.Events
             };
         }
 
-        public int UNK1 { get; set; } = 0;
-        public int UNK2 { get; set; } = 0;
+        public float UNK1 { get; set; } = 0;
+        public float UNK2 { get; set; } = 0;
         public int UNK3 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
+            UNK1 = bin.ReadSingle();
+            UNK2 = bin.ReadSingle();
             UNK3 = bin.ReadInt32();
         }
 

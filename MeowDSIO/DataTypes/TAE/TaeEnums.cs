@@ -63,9 +63,11 @@ namespace MeowDSIO.DataTypes.TAE
         Type400 = 400,
         Type401 = 401,
         Type500 = 500,
+        // Demon's Souls Exclusive Events (may or may not still work)
+        DeS_Type230 = 230,
     }
 
-    public enum TaeGeneralCommandType : short
+    public enum TaeGeneralCommandType : int
     {
         Command0 = 0,
         Command1 = 1,

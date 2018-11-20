@@ -9,6 +9,8 @@ namespace MeowDSIO.DataTypes.TAE
 {
     public abstract class TimeActEventBase
     {
+        private const bool DEBUG_PRINT_A_SHITTON_OF_PARAM_SIZES = false;
+
         [System.ComponentModel.Browsable(false)]
         public int Index { get; set; } = -1;
 
@@ -82,6 +84,9 @@ namespace MeowDSIO.DataTypes.TAE
 
         public static TimeActEventBase GetNewEvent(TimeActEventType eventType, float startTime, float endTime)
         {
+            if (DEBUG_PRINT_A_SHITTON_OF_PARAM_SIZES)
+                return null;
+
             switch (eventType)
             {
                 case TimeActEventType.DoCommand: return new Tae000_DoCommand(startTime, endTime);
@@ -139,6 +144,8 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.Type400: return new Tae400(startTime, endTime);
                 case TimeActEventType.Type401: return new Tae401(startTime, endTime);
                 case TimeActEventType.Type500: return new Tae500(startTime, endTime);
+                // Demon's Souls Specific Event Types:
+                case TimeActEventType.DeS_Type230: return new DeS_Tae230(startTime, endTime);
             }
             return null;
         }
