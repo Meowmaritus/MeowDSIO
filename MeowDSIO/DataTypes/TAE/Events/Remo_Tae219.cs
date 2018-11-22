@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class DeS_Tae230 : TimeActEventBase
+    public class Remo_Tae219 : TimeActEventBase
     {
-        public DeS_Tae230(float StartTime, float EndTime)
+        public Remo_Tae219(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -18,10 +18,10 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                 UNK1,
-                 UNK2,
-                 UNK3,
-                 UNK4,
+                UNK1,
+                UNK2,
+                UNK3,
+                UNK4,
             };
         }
 
@@ -48,7 +48,7 @@ namespace MeowDSIO.DataTypes.TAE.Events
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.DeS_Type230;
+            return TimeActEventType.Remo_Type219;
         }
     }
 }

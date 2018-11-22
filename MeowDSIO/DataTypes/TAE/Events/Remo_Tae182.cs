@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class DeS_Tae230 : TimeActEventBase
+    public class Remo_Tae182 : TimeActEventBase
     {
-        public DeS_Tae230(float StartTime, float EndTime)
+        public Remo_Tae182(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -18,37 +18,45 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                 UNK1,
-                 UNK2,
-                 UNK3,
-                 UNK4,
+                UNK1A,
+                UNK1B,
+                UNK2A,
+                UNK2B,
+                UNK3,
+                UNK4,
             };
         }
 
-        public int UNK1 { get; set; } = 0;
-        public int UNK2 { get; set; } = 0;
+        public short UNK1A { get; set; } = 0;
+        public short UNK1B { get; set; } = 0;
+        public short UNK2A { get; set; } = 0;
+        public short UNK2B { get; set; } = 0;
         public int UNK3 { get; set; } = 0;
         public int UNK4 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            UNK1 = bin.ReadInt32();
-            UNK2 = bin.ReadInt32();
+            UNK1A = bin.ReadInt16();
+            UNK1B = bin.ReadInt16();
+            UNK2A = bin.ReadInt16();
+            UNK2B = bin.ReadInt16();
             UNK3 = bin.ReadInt32();
             UNK4 = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write(UNK1);
-            bin.Write(UNK2);
+            bin.Write(UNK1A);
+            bin.Write(UNK1B);
+            bin.Write(UNK2A);
+            bin.Write(UNK2B);
             bin.Write(UNK3);
             bin.Write(UNK4);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.DeS_Type230;
+            return TimeActEventType.Remo_Type182;
         }
     }
 }

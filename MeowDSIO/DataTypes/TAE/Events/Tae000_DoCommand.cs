@@ -19,26 +19,26 @@ namespace MeowDSIO.DataTypes.TAE.Events
             get => new List<object>
             {
                 CommandType,
-                Parameter,
+                ParamFloat,
                 SomeID,
             };
         }
 
         public TaeGeneralCommandType CommandType { get; set; } = 0;
-        public float Parameter { get; set; } = 0;
+        public float ParamFloat { get; set; } = 0;
         public int SomeID { get; set; } = -1;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
             CommandType = (TaeGeneralCommandType)bin.ReadInt32();
-            Parameter = bin.ReadSingle();
+            ParamFloat = bin.ReadSingle();
             SomeID = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
             bin.Write((int)CommandType);
-            bin.Write(Parameter);
+            bin.Write(ParamFloat);
             bin.Write(SomeID);
         }
 

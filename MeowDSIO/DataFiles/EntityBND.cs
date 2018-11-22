@@ -34,6 +34,17 @@ namespace MeowDSIO.DataFiles
         public const int ID_ClothHKX_END = 799;
         public const int ID_CHRTPFBHD_END = 899;
 
+        public IEnumerable<TAE> GetAllTAE()
+        {
+            IEnumerable<TAE> taes = new List<TAE>();
+            foreach (var m in Models)
+            {
+                if (m.AnimContainer != null)
+                    taes = taes.Concat(m.AnimContainer.AllTAE);
+            }
+            return taes;
+        }
+
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             var bnd = bin.ReadAsDataFile<BND>(FilePath ?? VirtualUri);

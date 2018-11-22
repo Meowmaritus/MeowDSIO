@@ -67,10 +67,12 @@ namespace MeowDSIO.DataFiles
             anim.ID = id;
             try
             {
+                Dictionary<int, TimeActEventBase> eventOffsetLookupForEventGroup = new Dictionary<int, TimeActEventBase>();
+
                 int eventCount = bin.ReadInt32();
                 int eventHeadersOffset = bin.ReadInt32();
-                var weirdUnk1 = bin.ReadInt32();
-                bin.AssertInt32(0);
+                int eventGroupCount = bin.ReadInt32();
+                int eventGroupOffset = bin.ReadInt32();
                 var timeConstantsCount = bin.ReadInt32();
                 var timeConstantsOffset = bin.ReadInt32();
                 int animFileOffset = bin.ReadInt32();
@@ -88,8 +90,9 @@ namespace MeowDSIO.DataFiles
                 {
                     for (int i = 0; i < eventCount; i++)
                     {
+                        var thisEventOffset = eventHeadersOffset + (EventHeaderSize * i);
                         //lazily seek to the start of each event manually.
-                        bin.BaseStream.Seek(eventHeadersOffset + (EventHeaderSize * i), SeekOrigin.Begin);
+                        bin.BaseStream.Seek(thisEventOffset, SeekOrigin.Begin);
 
                         int startTimeOffset = bin.ReadInt32();
                         int endTimeOffset = bin.ReadInt32();
@@ -121,58 +124,107 @@ namespace MeowDSIO.DataFiles
                             int eventTypeInt = bin.ReadInt32();
                             TimeActEventType eventType = (TimeActEventType)eventTypeInt;
                             int eventParamOffset = bin.ReadInt32();
-                            bin.StepIn(eventParamOffset);
+                            if (eventParamOffset <= 0)
                             {
                                 var newEvent = TimeActEventBase.GetNewEvent(eventType, startTime, endTime);
-                                if (newEvent == null)
+                                newEvent.Index = anim.EventList.Count;
+                                anim.EventList.Add(newEvent);
+                                eventOffsetLookupForEventGroup.Add(thisEventOffset, newEvent);
+                            }
+                            else
+                            {
+                                bin.StepIn(eventParamOffset);
                                 {
-                                    if (!debugUnkTypesReport.ContainsKey(eventTypeInt))
+                                    var newEvent = TimeActEventBase.GetNewEvent(eventType, startTime, endTime);
+                                    if (newEvent == null)
                                     {
-                                        debugUnkTypesReport.Add(eventTypeInt, new List<int>());
-                                    }
-
-                                    if (i < eventCount - 1)
-                                    {
-                                        bin.StepIn(eventHeadersOffset + (EventHeaderSize * (i + 1)));
+                                        if (!debugUnkTypesReport.ContainsKey(eventTypeInt))
                                         {
-                                            bin.ReadInt32(); //startTimeOffset
-                                            bin.ReadInt32(); //endTimeOffset
-                                            var nextEventBodyOffset = bin.ReadInt32();
-
-                                            int thisUnkParamByteCount = nextEventBodyOffset - eventParamOffset;
-
-                                            if (!debugUnkTypesReport[eventTypeInt].Contains(thisUnkParamByteCount))
-                                                debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
-
-                                            //bin.StepIn(nextEventBodyOffset);
-                                            //{
-                                            //    bin.ReadInt32();//eventType
-                                            //    var nextEventParamOffset = bin.ReadInt32();
-
-                                            //    int thisUnkParamByteCount = nextEventParamOffset - eventParamOffset;
-
-                                            //    debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
-                                            //}
-                                            //bin.StepOut();
+                                            debugUnkTypesReport.Add(eventTypeInt, new List<int>());
                                         }
-                                        bin.StepOut();
+
+                                        if (i < eventCount - 1)
+                                        {
+                                            bin.StepIn(eventHeadersOffset + (EventHeaderSize * (i + 1)));
+                                            {
+                                                bin.ReadInt32(); //startTimeOffset
+                                                bin.ReadInt32(); //endTimeOffset
+                                                var nextEventBodyOffset = bin.ReadInt32();
+
+                                                int thisUnkParamByteCount = nextEventBodyOffset - eventParamOffset;
+
+                                                if (!debugUnkTypesReport[eventTypeInt].Contains(thisUnkParamByteCount))
+                                                    debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
+
+                                                //bin.StepIn(nextEventBodyOffset);
+                                                //{
+                                                //    bin.ReadInt32();//eventType
+                                                //    var nextEventParamOffset = bin.ReadInt32();
+
+                                                //    int thisUnkParamByteCount = nextEventParamOffset - eventParamOffset;
+
+                                                //    debugUnkTypesReport[eventTypeInt].Add(thisUnkParamByteCount);
+                                                //}
+                                                //bin.StepOut();
+                                            }
+                                            bin.StepOut();
+                                        }
+                                        else
+                                        {
+                                            //debugUnkTypesReport[eventTypeInt].Add(-1);
+                                        }
                                     }
                                     else
                                     {
-                                        //debugUnkTypesReport[eventTypeInt].Add(-1);
+                                        newEvent.ReadParameters(bin);
+                                        newEvent.Index = anim.EventList.Count;
+                                        anim.EventList.Add(newEvent);
+                                        eventOffsetLookupForEventGroup.Add(thisEventOffset, newEvent);
                                     }
                                 }
-                                else
-                                {
-                                    newEvent.ReadParameters(bin);
-                                    newEvent.Index = anim.EventList.Count;
-                                    anim.EventList.Add(newEvent);
-                                }
+                                bin.StepOut();
                             }
-                            bin.StepOut();
+                            
                         }
                         bin.StepOut();
                     }
+                }
+
+                if (eventGroupCount > 0 && eventGroupOffset > 0)
+                {
+                    bin.StepIn(eventGroupOffset);
+                    {
+                        for (int i = 0; i < eventGroupCount; i++)
+                        {
+                            var group = new TimeActEventGroup();
+                            int groupEntryCount = bin.ReadInt32();
+                            int groupPointerOffset = bin.ReadInt32();
+                            int groupTypeOffset = bin.ReadInt32();
+
+                            bin.StepIn(groupPointerOffset);
+                            {
+                                for (int j = 0; j < groupEntryCount; j++)
+                                {
+                                    var groupEventOffset = bin.ReadInt32();
+                                    if (eventOffsetLookupForEventGroup.ContainsKey(groupEventOffset))
+                                    {
+                                        var thisGroupEvent = eventOffsetLookupForEventGroup[groupEventOffset];
+                                        group.Events.Add(thisGroupEvent);
+                                    }
+                                }
+                            }
+                            bin.StepOut();
+
+                            bin.StepIn(groupTypeOffset);
+                            {
+                                group.GeneralType = (TimeActEventType)bin.ReadInt32();
+                            }
+                            bin.StepOut();
+
+                            anim.EventGroupList.Add(group);
+                        }
+                    }
+                    bin.StepOut();
                 }
 
                 bin.BaseStream.Seek(animFileOffset, SeekOrigin.Begin);
@@ -467,6 +519,9 @@ namespace MeowDSIO.DataFiles
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             if (Header.IsBigEndian)
+                throw new NotImplementedException();
+
+            if (Animations.Any(a => a.EventGroupList.Count > 0))
                 throw new NotImplementedException();
 
             //SkeletonName, SibName:

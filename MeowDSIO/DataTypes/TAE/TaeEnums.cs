@@ -52,7 +52,7 @@ namespace MeowDSIO.DataTypes.TAE
         Type232 = 232,
         Type233 = 233,
         Type236 = 236,
-        DoCommandFancy = 300,
+        SetValue = 300,
         Type301 = 301,
         Type302 = 302,
         PlayAnimation = 303,
@@ -65,6 +65,31 @@ namespace MeowDSIO.DataTypes.TAE
         Type500 = 500,
         // Demon's Souls Exclusive Events (may or may not still work)
         DeS_Type230 = 230,
+        // Remo Events
+        Remo_Type020 = 020,
+        Remo_Type021 = 021,
+        Remo_Type102 = 102,
+        Remo_Type160 = 160,
+        Remo_Type161 = 161,
+        Remo_Type162 = 162,
+        Remo_Type176 = 176,
+        Remo_Type180 = 180,
+        Remo_Type181 = 181,
+        Remo_Type182 = 182,
+        Remo_Type183 = 183,
+        Remo_Type196 = 196,
+        Remo_Type197 = 197,
+        Remo_Type198 = 198,
+        Remo_Type199 = 199,
+        Remo_Type200 = 200,
+        Remo_Type208 = 208,
+        Remo_Type209 = 209,
+        Remo_Type210 = 210,
+        Remo_Type217 = 217,
+        Remo_Type218 = 218,
+        Remo_Type219 = 219,
+        Remo_Type234 = 234,
+        Remo_Type255 = 255,
     }
 
     public enum TaeGeneralCommandType : int
@@ -153,6 +178,20 @@ namespace MeowDSIO.DataTypes.TAE
         Command97 = 97,
     }
 
+    public enum TaeSetValueType : short
+    {
+        Value4,
+        Value16,
+        Value22,
+        Value11,
+        Value31,
+        Value29,
+        Value32,
+        Value26,
+        Value27,
+        Value93,
+    }
+
     public enum AttackType : int
     {
         Standard = 0,
@@ -160,6 +199,5 @@ namespace MeowDSIO.DataTypes.TAE
         ForwardR1 = 2,
         PlungingAttack = 62,
         Parry = 64,
-
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class Tae300_DoCommandFancy : TimeActEventBase
+    public class Remo_Tae255 : TimeActEventBase
     {
-        public Tae300_DoCommandFancy(float StartTime, float EndTime)
+        public Remo_Tae255(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -18,41 +18,37 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                CommandType,
+                SFX,
                 UNK2,
                 UNK3,
-                Parameter,
-                SomeID,
+                UNK4,
             };
         }
 
-        public TaeGeneralCommandType CommandType { get; set; } = 0;
-        public short UNK2 { get; set; } = 1;
+        public int SFX { get; set; } = 0;
+        public int UNK2 { get; set; } = 0;
         public int UNK3 { get; set; } = 0;
-        public float Parameter { get; set; } = 1;
-        public int SomeID { get; set; } = -1;
+        public int UNK4 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
-            CommandType = (TaeGeneralCommandType)bin.ReadInt16();
-            UNK2 = bin.ReadInt16();
+            SFX = bin.ReadInt32();
+            UNK2 = bin.ReadInt32();
             UNK3 = bin.ReadInt32();
-            Parameter = bin.ReadSingle();
-            SomeID = bin.ReadInt32();
+            UNK4 = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
         {
-            bin.Write((short)CommandType);
+            bin.Write(SFX);
             bin.Write(UNK2);
             bin.Write(UNK3);
-            bin.Write(Parameter);
-            bin.Write(SomeID);
+            bin.Write(UNK4);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.DoCommandFancy;
+            return TimeActEventType.Remo_Type255;
         }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.TAE.Events
 {
-    public class DeS_Tae230 : TimeActEventBase
+    public class Remo_Tae209 : TimeActEventBase
     {
-        public DeS_Tae230(float StartTime, float EndTime)
+        public Remo_Tae209(float StartTime, float EndTime)
         {
             this.StartTime = StartTime;
             this.EndTime = EndTime;
@@ -18,10 +18,14 @@ namespace MeowDSIO.DataTypes.TAE.Events
         {
             get => new List<object>
             {
-                 UNK1,
-                 UNK2,
-                 UNK3,
-                 UNK4,
+                UNK1,
+                UNK2,
+                UNK3,
+                UNK4,
+                UNK5,
+                UNK6,
+                UNK7,
+                UNK8,
             };
         }
 
@@ -29,6 +33,10 @@ namespace MeowDSIO.DataTypes.TAE.Events
         public int UNK2 { get; set; } = 0;
         public int UNK3 { get; set; } = 0;
         public int UNK4 { get; set; } = 0;
+        public int UNK5 { get; set; } = 0;
+        public int UNK6 { get; set; } = 0;
+        public int UNK7 { get; set; } = 0;
+        public int UNK8 { get; set; } = 0;
 
         public override void ReadParameters(DSBinaryReader bin)
         {
@@ -36,6 +44,10 @@ namespace MeowDSIO.DataTypes.TAE.Events
             UNK2 = bin.ReadInt32();
             UNK3 = bin.ReadInt32();
             UNK4 = bin.ReadInt32();
+            UNK5 = bin.ReadInt32();
+            UNK6 = bin.ReadInt32();
+            UNK7 = bin.ReadInt32();
+            UNK8 = bin.ReadInt32();
         }
 
         public override void WriteParameters(DSBinaryWriter bin)
@@ -44,11 +56,15 @@ namespace MeowDSIO.DataTypes.TAE.Events
             bin.Write(UNK2);
             bin.Write(UNK3);
             bin.Write(UNK4);
+            bin.Write(UNK5);
+            bin.Write(UNK6);
+            bin.Write(UNK7);
+            bin.Write(UNK8);
         }
 
         protected override TimeActEventType GetEventType()
         {
-            return TimeActEventType.DeS_Type230;
+            return TimeActEventType.Remo_Type209;
         }
     }
 }

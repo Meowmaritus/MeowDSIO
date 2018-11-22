@@ -133,7 +133,7 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.Type232: return new Tae232(startTime, endTime);
                 case TimeActEventType.Type233: return new Tae233(startTime, endTime);
                 case TimeActEventType.Type236: return new Tae236(startTime, endTime);
-                case TimeActEventType.DoCommandFancy: return new Tae300_DoCommandFancy(startTime, endTime);
+                case TimeActEventType.SetValue: return new Tae300_SetValue(startTime, endTime);
                 case TimeActEventType.Type301: return new Tae301(startTime, endTime);
                 case TimeActEventType.Type302: return new Tae302(startTime, endTime);
                 case TimeActEventType.PlayAnimation: return new Tae303_PlayAnimation(startTime, endTime);
@@ -146,6 +146,30 @@ namespace MeowDSIO.DataTypes.TAE
                 case TimeActEventType.Type500: return new Tae500(startTime, endTime);
                 // Demon's Souls Specific Event Types:
                 case TimeActEventType.DeS_Type230: return new DeS_Tae230(startTime, endTime);
+                case TimeActEventType.Remo_Type020: return new Remo_Tae020(startTime, endTime);
+                case TimeActEventType.Remo_Type021: return new Remo_Tae021(startTime, endTime);
+                case TimeActEventType.Remo_Type102: return new Remo_Tae102(startTime, endTime);
+                case TimeActEventType.Remo_Type160: return new Remo_Tae160(startTime, endTime);
+                case TimeActEventType.Remo_Type161: return new Remo_Tae161(startTime, endTime);
+                case TimeActEventType.Remo_Type162: return new Remo_Tae162(startTime, endTime);
+                case TimeActEventType.Remo_Type176: return new Remo_Tae176(startTime, endTime);
+                case TimeActEventType.Remo_Type180: return new Remo_Tae180(startTime, endTime);
+                case TimeActEventType.Remo_Type181: return new Remo_Tae181(startTime, endTime);
+                case TimeActEventType.Remo_Type182: return new Remo_Tae182(startTime, endTime);
+                case TimeActEventType.Remo_Type183: return new Remo_Tae183(startTime, endTime);
+                case TimeActEventType.Remo_Type196: return new Remo_Tae196(startTime, endTime);
+                case TimeActEventType.Remo_Type197: return new Remo_Tae197(startTime, endTime);
+                case TimeActEventType.Remo_Type198: return new Remo_Tae198(startTime, endTime);
+                case TimeActEventType.Remo_Type199: return new Remo_Tae199(startTime, endTime);
+                case TimeActEventType.Remo_Type200: return new Remo_Tae200(startTime, endTime);
+                case TimeActEventType.Remo_Type208: return new Remo_Tae208(startTime, endTime);
+                case TimeActEventType.Remo_Type209: return new Remo_Tae209(startTime, endTime);
+                case TimeActEventType.Remo_Type210: return new Remo_Tae210(startTime, endTime);
+                case TimeActEventType.Remo_Type217: return new Remo_Tae217(startTime, endTime);
+                case TimeActEventType.Remo_Type218: return new Remo_Tae218(startTime, endTime);
+                case TimeActEventType.Remo_Type219: return new Remo_Tae219(startTime, endTime);
+                case TimeActEventType.Remo_Type234: return new Remo_Tae234(startTime, endTime);
+                case TimeActEventType.Remo_Type255: return new Remo_Tae255(startTime, endTime);
             }
             return null;
         }

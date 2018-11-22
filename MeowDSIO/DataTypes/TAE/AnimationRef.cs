@@ -40,6 +40,10 @@ namespace MeowDSIO.DataTypes.TAE
         public ObservableCollection<TimeActEventBase> EventList { get; set; }
             = new ObservableCollection<TimeActEventBase>();
 
+        [Browsable(false)]
+        public ObservableCollection<TimeActEventGroup> EventGroupList { get; set; }
+            = new ObservableCollection<TimeActEventGroup>();
+
         [Category("Only If \"Is Reference\" Is FALSE (Discarded Otherwise):")]
         [DisplayName("Is Looping Object Anim")]
         [Description("Cannot be stored in the file if \"Is Reference\" is True. Works only on objects; does not work on characters. " +
