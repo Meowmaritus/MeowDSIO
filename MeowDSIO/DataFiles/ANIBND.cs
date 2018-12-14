@@ -228,9 +228,15 @@ namespace MeowDSIO.DataFiles
                 return $@"{DirTae}\a{id:D02}.tae";
         }
 
-        private string GetStandardTaeFileName()
+        private string GetStandardTaeFileName(int id)
         {
-            return $@"{DirTae}\{ChrModelName}.tae";
+            if (id == 0 && StandardTAE.Count == 1)
+                return $@"{DirTae}\{ChrModelName}.tae";
+            else
+                if (id >= 100)
+                    return $@"{DirTae}\a{id:D03}.tae";
+                else
+                    return $@"{DirTae}\a{id:D02}.tae";
         }
 
         private string GetAdditionalAnibndName(string a)
@@ -309,7 +315,7 @@ namespace MeowDSIO.DataFiles
                     foreach (var tae in StandardTAE)
                     {
                         var entry = new BNDEntry(tae.Key + ID_STANDARD_TAE_START,
-                            GetPlayerTaeFileName(tae.Key), new byte[] { });
+                            GetStandardTaeFileName(tae.Key), new byte[] { });
                         entry.ReplaceData(tae.Value);
                         bnd.Add(entry);
                     }
