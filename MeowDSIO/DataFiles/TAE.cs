@@ -485,33 +485,17 @@ namespace MeowDSIO.DataFiles
         private void RecreateAnimGroups()
         {
             AnimationGroups.Clear();
-            int currentAnimID = Animations[0].ID;
-            int thisGroupStart = Animations[0].ID;
-            foreach (var anim in Animations)
-            {
-                if (anim.ID != (currentAnimID + 1))
-                {
-                    AnimationGroups.Add(new AnimationGroup(0)
-                    {
-                        FirstID = thisGroupStart,
-                        LastID = currentAnimID,
-                    });
-                    thisGroupStart = anim.ID;
-                }
 
-                currentAnimID = anim.ID;
-            }
-
-            if (currentAnimID > thisGroupStart)
+            for (int i = 0; i < Animations.Count; i++)
             {
-                if (!AnimationGroups.Any(x => x.FirstID == thisGroupStart && x.LastID >= currentAnimID))
+                int start = Animations[i].ID;
+                while (i < Animations.Count - 1 && Animations[i + 1].ID == Animations[i].ID + 1)
+                    i++;
+                AnimationGroups.Add(new AnimationGroup(0)
                 {
-                    AnimationGroups.Add(new AnimationGroup(0)
-                    {
-                        FirstID = thisGroupStart,
-                        LastID = currentAnimID,
-                    });
-                }
+                    FirstID = start,
+                    LastID = Animations[i].ID,
+                });
             }
         }
 
