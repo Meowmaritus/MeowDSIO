@@ -12,7 +12,9 @@ namespace MeowDSIO.DataFiles
 {
     public class PARAMBND : DataFile, IList<PARAMBNDEntry>
     {
-        const string PARAM_DIR = @"N:\FRPG\data\INTERROOT_win32\param";
+        public bool IsRemaster { get; set; } = false;
+
+        public BNDEntry RemasterLevelSyncParam { get; set; } = null;
 
         private List<PARAMBNDEntry> entries { get; set; } = new List<PARAMBNDEntry>();
         private Dictionary<string, PARAMBNDEntry> entryQuickLookup = new Dictionary<string, PARAMBNDEntry>();
@@ -47,6 +49,18 @@ namespace MeowDSIO.DataFiles
             }
         }
 
+        public void ApplyDefaultParamDefs()
+        {
+            string defName = $"PARAMDEF.{(IsRemaster ? "ds1r" : "ptde")}_paramdef.paramdefbnd";
+            using (var resStream = EmbResMan.GetStream(defName))
+            {
+                using (var reader = new DSBinaryReader(defName, resStream))
+                {
+                    ApplyParamDefBND(reader.ReadAsDataFile<PARAMDEFBND>(defName));
+                }
+            }    
+        }
+
         public void ApplyParamDefBND(PARAMDEFBND pdbnd)
         {
             foreach (var entry in this)
@@ -63,13 +77,31 @@ namespace MeowDSIO.DataFiles
 
             entries.Clear();
 
+            IsRemaster = false;
+            IsDrawParams = false;
+            RemasterLevelSyncParam = null;
+
             foreach (var bndEntry in bnd)
             {
-                Add(new PARAMBNDEntry(MiscUtil.GetFileNameWithoutDirectoryOrExtension(bndEntry.Name),
-                    bndEntry.ReadDataAs<PARAM>()));
-            }
+                var nameCheck = bndEntry.Name.ToUpper();
+                if (nameCheck.Contains("INTERROOT_X64"))
+                {
+                    IsRemaster = true;
+                }
 
-            IsDrawParams = entries.Any(x => x.Name.Contains("DrawParam"));
+                if (nameCheck.Contains("LEVELSYNC"))
+                {
+                    RemasterLevelSyncParam = bndEntry;
+                }
+                else
+                {
+                    Add(new PARAMBNDEntry(MiscUtil.GetFileNameWithoutDirectoryOrExtension(bndEntry.Name),
+                    bndEntry.ReadDataAs<PARAM>()));
+                }
+
+                if (nameCheck.Contains("DRAWPARAM"))
+                    IsDrawParams = true;
+            }
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
@@ -83,9 +115,17 @@ namespace MeowDSIO.DataFiles
             foreach (var entry in entries)
             {
                 bnd.Add(new BNDEntry(ID++,
-                    $@"{PARAM_DIR}\{(IsDrawParams ? "DrawParam" : "GameParam")}\{entry.Name}.param", 
+                    $@"N:\FRPG\data\INTERROOT_{(IsRemaster  ? "x64" : "win32")}\param\{(IsDrawParams ? "DrawParam" : "GameParam")}\{entry.Name}.param", 
                     DataFile.SaveAsBytes(entry.Param, entry.Name)));
             }
+
+            if (RemasterLevelSyncParam != null)
+            {
+                RemasterLevelSyncParam.ID = ID + 1;
+                bnd.Add(RemasterLevelSyncParam);
+            }
+
+            
 
             bin.WriteDataFile(bnd, bin.FileName);
         }

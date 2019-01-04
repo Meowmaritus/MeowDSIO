@@ -93,10 +93,8 @@
     <Compile Include="DataFiles\MTD.cs" />
     <Compile Include="DataFiles\MtdBND.cs" />
     <Compile Include="DataFiles\PARAM.cs" />
-    <Compile Include="DataFiles\PARAMBND_RemasterHotfix.cs" />
     <Compile Include="DataFiles\PARAMBND.cs" />
     <Compile Include="DataFiles\PARAMDEF.cs" />
-    <Compile Include="DataFiles\PARAMDEFBND_RemasterHotfix.cs" />
     <Compile Include="DataFiles\PARAMDEFBND.cs" />
     <Compile Include="DataFiles\REMOBND.cs" />
     <Compile Include="DataFiles\TAE.cs" />
@@ -313,10 +311,12 @@
     <Compile Include="WrapperDataTypes\ExcelParamSheet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="EmbeddedResource\TAE\AnimationEventParamDefs.h" />
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\ds1r_paramdef.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\ptde_paramdef.paramdefbnd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
