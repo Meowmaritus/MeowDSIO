@@ -121,7 +121,7 @@ namespace MeowDSIO.DataFiles
 
             if (RemasterLevelSyncParam != null)
             {
-                RemasterLevelSyncParam.ID = ID + 1;
+                RemasterLevelSyncParam.ID = ID;
                 bnd.Add(RemasterLevelSyncParam);
             }
 
