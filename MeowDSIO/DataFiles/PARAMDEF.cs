@@ -94,19 +94,19 @@ namespace MeowDSIO.DataFiles
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
             int length = bin.ReadInt32();
+            bin.BigEndian = false;
+            //if (length != bin.Length)
+            //{
+            //    // If lengths don't match, try opposite endianness.
+            //    bin.BigEndian = !bin.BigEndian;
+            //    bin.Position = 0;
+            //    length = bin.ReadInt32();
 
-            if (length != bin.Length)
-            {
-                // If lengths don't match, try opposite endianness.
-                bin.BigEndian = !bin.BigEndian;
-                bin.Position = 0;
-                length = bin.ReadInt32();
-
-                if (length != bin.Length)
-                {
-                    throw new Exception("ParamDef File Length Value was incorrect on both little endian and big endian. File is not valid.");
-                }
-            }
+            //    if (length != bin.Length)
+            //    {
+            //        throw new Exception("ParamDef File Length Value was incorrect on both little endian and big endian. File is not valid.");
+            //    }
+            //}
 
             Version = bin.ReadInt16();
 
@@ -182,7 +182,7 @@ namespace MeowDSIO.DataFiles
 
                 if (Version == 0x30)
                 {
-                    uint descriptionOffset = bin.ReadUInt32();
+                    int descriptionOffset = bin.ReadInt32();
                     descriptionOffsets.Add(descriptionOffset);
                 }
                 else if (Version == 0xFF)
@@ -313,23 +313,32 @@ namespace MeowDSIO.DataFiles
 
             for (int i = 0; i < Entries.Count; i++)
             {
-                descriptionOffsets.Add(bin.Position);
+                if (Entries[i].Description != null)
+                {
+                    descriptionOffsets.Add(bin.Position);
 
-                if (Version == 0x30)
-                {
-                    bin.WriteStringShiftJIS(Entries[i].Description, true);
-                }
-                else if (Version == 0xFF)
-                {
-                    if (BB_IsUnicode)
-                    {
-                        bin.WriteStringUnicode(Entries[i].Description, true);
-                    }
-                    else
+                    if (Version == 0x30)
                     {
                         bin.WriteStringShiftJIS(Entries[i].Description, true);
                     }
+                    else if (Version == 0xFF)
+                    {
+                        if (BB_IsUnicode)
+                        {
+                            bin.WriteStringUnicode(Entries[i].Description, true);
+                        }
+                        else
+                        {
+                            bin.WriteStringShiftJIS(Entries[i].Description, true);
+                        }
+                    }
                 }
+                else
+                {
+                    descriptionOffsets.Add(-1);
+                }
+
+                
 
                 prog?.Report((i, Entries.Count * 2));
             }
