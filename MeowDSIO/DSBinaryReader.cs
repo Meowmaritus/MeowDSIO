@@ -387,11 +387,11 @@ namespace MeowDSIO
             return Encoding.Unicode.GetString(data);
         }
 
-        public TData ReadAsDataFile<TData>(string virtualUri = null, int dataSizeInBytes = -1)
+        public TData ReadAsDataFile<TData>(string virtualUri = null, int dataSizeInBytes = -1, bool forceNoDcx = false)
             where TData: DataFile, new()
         {
             byte[] data = ReadBytes((dataSizeInBytes < 0) ? (int)Length : dataSizeInBytes);
-            return DataFile.LoadFromBytes<TData>(data, virtualUri ?? FileName);
+            return DataFile.LoadFromBytes<TData>(data, virtualUri ?? FileName, null, forceNoDcx);
         }
 
         public byte[] ReadAllBytes()

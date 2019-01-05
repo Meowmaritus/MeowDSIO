@@ -36,6 +36,65 @@ namespace MeowDSIO
             }
         }
 
+        public bool IsDcxCompressed { get; set; } = false;
+
+        private void OuterRead(DSBinaryReader bin, IProgress<(int, int)> prog, bool forceNoDcx = false)
+        {
+            IsDcxCompressed = false;
+
+            if (!forceNoDcx)
+            {
+                bin.StepIn(0);
+                {
+                    if (bin.ReadStringAscii(3) == "DCX")
+                    {
+                        IsDcxCompressed = true;
+                    }
+                }
+                bin.StepOut();
+            }
+
+            if (IsDcxCompressed)
+            {
+                var dcx = bin.ReadAsDataFile<DCX>(FilePath ?? VirtualUri, forceNoDcx: true).Data;
+                using (var innerReader = new DSBinaryReader(FilePath ?? VirtualUri, new MemoryStream(dcx)))
+                {
+                    Read(innerReader, prog);
+                }
+            }
+            else
+            {
+                Read(bin, prog);
+            }
+        }
+
+        private void OuterWrite(DSBinaryWriter bin, IProgress<(int, int)> prog)
+        {
+            if (IsDcxCompressed)
+            {
+                using (var innerStream = new MemoryStream())
+                {
+                    using (var innerWriter = new DSBinaryWriter(FilePath ?? VirtualUri, innerStream))
+                    {
+                        Write(innerWriter, prog);
+                        innerStream.Position = 0;
+                        using (var reader = new DSBinaryReader(FilePath ?? VirtualUri, innerStream))
+                        {
+                            var dcx = new DCX();
+                            dcx.VirtualUri = VirtualUri;
+                            dcx.FilePath = FilePath;
+                            dcx.Data = reader.ReadAllBytes();
+                            dcx.Write(bin, prog);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Write(bin, prog);
+            }
+        }
+
         protected abstract void Read(DSBinaryReader bin, IProgress<(int, int)> prog);
         protected abstract void Write(DSBinaryWriter bin, IProgress<(int, int)> prog);
 
@@ -135,37 +194,6 @@ namespace MeowDSIO
             }
         }
 
-        public static void ReloadDcx<T>(T data, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            if (data.FilePath == null)
-            {
-                throw new InvalidOperationException($"Data file cannot be reloaded unless it was " +
-                    $"previously saved to or loaded from a file and had its {nameof(FilePath)} property set.");
-            }
-
-            using (var fileStream = File.Open(data.FilePath, FileMode.Open))
-            {
-                using (var binaryReader = new DSBinaryReader(data.FilePath ?? data.VirtualUri, fileStream))
-                {
-                    DCX dcx = new DCX();
-                    dcx.FilePath = data.FilePath;
-                    dcx.VirtualUri = data.VirtualUri;
-                    dcx.Read(binaryReader, prog);
-
-                    using (var tempStream = new MemoryStream(dcx.Data))
-                    {
-                        using (var dcxBinaryReader = new DSBinaryReader(data.FilePath ?? data.VirtualUri, tempStream))
-                        {
-                            data.Read(dcxBinaryReader, prog);
-                            data.IsModified = false;
-                        }
-                    }
-
-                }
-            }
-        }
-
         public static void Reload<T>(T data, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
@@ -179,22 +207,10 @@ namespace MeowDSIO
             {
                 using (var binaryReader = new DSBinaryReader(data.FilePath, fileStream))
                 {
-                    data.Read(binaryReader, prog);
+                    data.OuterRead(binaryReader, prog);
                     data.IsModified = false;
                 }
             }
-        }
-
-        public static void ResaveDcx<T>(T data, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var dcx = new DCX()
-            {
-                Data = SaveAsBytes<T>(data, data.FilePath ?? data.VirtualUri, prog),
-                FilePath = data.FilePath,
-                VirtualUri = data.VirtualUri
-            };
-            Resave<DCX>(dcx, prog);
         }
 
         public static void Resave<T>(T data, IProgress<(int, int)> prog = null)
@@ -233,20 +249,6 @@ namespace MeowDSIO
         //    return data;
         //}
 
-        public static T LoadFromDcxFile<T>(string filePath, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var dcx = LoadFromFile<DCX>(filePath);
-            var data = LoadFromBytes<T>(dcx.Data, filePath, prog);
-            data.FilePath = filePath;
-            if (data.FilePath.ToUpper().EndsWith(".DCX"))
-            {
-                data.VirtualUri = data.FilePath.Substring(0, data.FilePath.Length - ".DCX".Length);
-            }
-            return data;
-        }
-
-
         public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
@@ -256,23 +258,11 @@ namespace MeowDSIO
                 {
                     T result = new T();
                     result.FilePath = filePath;
-                    result.Read(binaryReader, prog);
+                    result.OuterRead(binaryReader, prog);
                     result.IsModified = false;
                     return result;
                 }
             }
-        }
-
-        public static void SaveToDcxFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var bytes = SaveAsBytes<T>(data, filePath, prog);
-            SaveToFile<DCX>(new DCX()
-            {
-                Data = bytes,
-                FilePath = data.FilePath,
-                VirtualUri = data.VirtualUri
-            }, filePath, prog);
         }
 
         public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
@@ -292,14 +282,7 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromDcxBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var dcx = LoadFromBytes<DCX>(bytes, virtualUri, prog);
-            return LoadFromBytes<T>(dcx.Data, virtualUri, prog);
-        }
-
-        public static T LoadFromBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog = null)
+        public static T LoadFromBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog = null, bool forceNoDcx = false)
             where T : DataFile, new()
         {
             using (var tempStream = new MemoryStream(bytes))
@@ -308,23 +291,11 @@ namespace MeowDSIO
                 {
                     T result = new T();
                     result.VirtualUri = virtualUri;
-                    result.Read(binaryReader, prog);
+                    result.OuterRead(binaryReader, prog, forceNoDcx);
                     result.IsModified = false;
                     return result;
                 }
             }
-        }
-
-        public static byte[] SaveAsDcxBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var dcx = new DCX()
-            {
-                Data = SaveAsBytes<T>(data, virtualUri, prog),
-                FilePath = data.FilePath,
-                VirtualUri = data.VirtualUri
-            };
-            return SaveAsBytes<DCX>(dcx, virtualUri, prog);
         }
 
         public static byte[] SaveAsBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog = null)
@@ -338,19 +309,12 @@ namespace MeowDSIO
                 using (var binaryWriter = new DSBinaryWriter(null, tempStream))
                 {
                     data.VirtualUri = virtualUri;
-                    data.Write(binaryWriter, prog);
+                    data.OuterWrite(binaryWriter, prog);
                     var result = tempStream.ToArray();
                     data.IsModified = false;
                     return result;
                 }
             }
-        }
-
-        public static T LoadFromDcxStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog = null)
-            where T : DataFile, new()
-        {
-            var dcx = LoadFromStream<DCX>(stream, virtualUri, prog);
-            return LoadFromBytes<T>(dcx.Data, virtualUri, prog);
         }
 
         public static T LoadFromStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog = null)
@@ -360,7 +324,7 @@ namespace MeowDSIO
             {
                 T result = new T();
                 result.VirtualUri = virtualUri;
-                result.Read(binaryReader, prog);
+                result.OuterRead(binaryReader, prog);
                 result.IsModified = false;
                 return result;
             }
