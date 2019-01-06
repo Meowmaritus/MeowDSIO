@@ -249,9 +249,36 @@ namespace MeowDSIO
         //    return data;
         //}
 
-        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null)
+        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null, bool? loadDcxVersion = null)
             where T : DataFile, new()
         {
+            string filePathDcx = filePath + ".dcx";
+
+            if (loadDcxVersion == true)
+            {
+                if (!File.Exists(filePathDcx) && File.Exists(filePath))
+                    throw new Exception("Tried to load DCX version but only a non-DCX version existed.");
+
+                filePath = filePathDcx;
+            }
+            else if (loadDcxVersion == false)
+            {
+                if (File.Exists(filePathDcx) && !File.Exists(filePath))
+                    throw new Exception("Tried to load non-DCX version but only a DCX version existed.");
+            }
+            else
+            {
+                if (File.Exists(filePathDcx))
+                {
+                    filePath = filePathDcx;
+                }
+                else if (!File.Exists(filePath))
+                {
+                    throw new Exception("Tried to load file, but neither the non-DCX or DCX version was found.");
+                }
+                
+            }
+
             using (var fileStream = File.Open(filePath, FileMode.Open))
             {
                 using (var binaryReader = new DSBinaryReader(filePath, fileStream))

@@ -61,6 +61,11 @@ namespace MeowDSIO.DataFiles
 
             EntrySize = 0;
 
+            if (rowCount == 1)
+            {
+                EntrySize = stringsOffset - (int)bin.Position;
+            }
+
             Entries = new ObservableCollection<ParamRow>();
 
             for (int i = 0; i < rowCount; i++)

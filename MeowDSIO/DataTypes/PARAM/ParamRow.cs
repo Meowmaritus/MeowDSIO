@@ -44,6 +44,8 @@ namespace MeowDSIO.DataTypes.PARAM
             }
         }
 
+        public static List<string> TEST_DELETEME_EXTRATONMAPBANKSHIT = new List<string>();
+
         public void LoadValuesFromRawData(DataFiles.PARAM Parent)
         {
             int offset = 0, bitVal = 0, bitField = 0;
@@ -51,6 +53,14 @@ namespace MeowDSIO.DataTypes.PARAM
             Cells = new ObservableCollection<ParamCellValueRef>();
             for (int i = 0; i < Parent.AppliedPARAMDEF.Entries.Count; i++)
             {
+                if (i == Parent.AppliedPARAMDEF.Entries.Count - 1 && Parent.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONEMAPBANK"))
+                {
+                    var nextCellOof = new ParamCellValueRef(Parent.AppliedPARAMDEF.Entries[i]);
+                    nextCellOof.Value = 1.0f;
+                    Cells.Add(nextCellOof);
+                    break;
+                }
+
                 var nextCell = new ParamCellValueRef(Parent.AppliedPARAMDEF.Entries[i]);
                 nextCell.Value = Parent.AppliedPARAMDEF.Entries[i].ReadValueFromParamEntryRawData(this, ref offset, ref bitField, ref bitVal);
                 Cells.Add(nextCell);
