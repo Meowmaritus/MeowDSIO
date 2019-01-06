@@ -44,8 +44,6 @@ namespace MeowDSIO.DataTypes.PARAM
             }
         }
 
-        public static List<string> TEST_DELETEME_EXTRATONMAPBANKSHIT = new List<string>();
-
         public void LoadValuesFromRawData(DataFiles.PARAM Parent)
         {
             int offset = 0, bitVal = 0, bitField = 0;
