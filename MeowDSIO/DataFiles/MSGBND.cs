@@ -33,6 +33,7 @@ namespace MeowDSIO.DataFiles
             foreach (var kvp in FMGs)
             {
                 var entry = new BNDEntry((int)kvp.Key, kvp.Key.ToString(), DataFile.SaveAsBytes(kvp.Value, kvp.Key.ToString()));
+                bnd.Add(entry);
             }
             bin.WriteDataFile(bnd, FilePath ?? VirtualUri);
         }

@@ -132,17 +132,18 @@ namespace MeowDSIO
             }
         }
 
+        private string ExtFix(string ext) => ext.StartsWith(".") ? ext : "." + ext;
+
         /// <summary>
         /// Checks if a backup exists.
         /// </summary>
         /// <returns>Null if FilePath is null, True if backup exists, etc.</returns>
-        public bool? CheckBackupExist()
+        public bool? CheckBackupExist(string extension = ".bak")
         {
-            if (FilePath == null)
-                return null;
-
-            return File.Exists(FileBackupPath);
+            if (FilePath == null) return null;            
+            return File.Exists(FilePath + ExtFix(extension));
         }
+
 
         /// <summary>
         /// Creates backup.
@@ -152,47 +153,54 @@ namespace MeowDSIO
         /// <returns>True if backup is saved, False if no backup is saved to preserve existing, Null if FilePath == Null.</returns>
         public bool? CreateBackup(bool overwriteExisting = false)
         {
-            if (FilePath == null)
-                return null;
-
+            if (FilePath == null) return null;
             if (overwriteExisting || CheckBackupExist() == false)
             {
                 File.Copy(FilePath, FileBackupPath);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;            
         }
 
-        public DateTime? GetBackupDate()
+        /// <summary>
+        /// Creates backup with specified extension.
+        /// </summary>
+        /// <param name="overwriteExisting">If this is false, no new backups will be created if one already exists.
+        /// This preserves the initial backup, preventing any changes from ocurring to it.</param>
+        /// <returns>True if backup is saved, False if no backup is saved to preserve existing, Null if FilePath == Null.</returns>
+        public bool? CreateBackup(string extension, bool overwriteExisting = false)
         {
-            if (FilePath == null)
-                return null;
+            if (FilePath == null) return null;
+            extension = ExtFix(extension);
+            if (overwriteExisting || CheckBackupExist(extension) == false)
+            {
+                File.Copy(FilePath, FilePath + extension);
+                return true;
+            }
+            return false;
+        }
 
-            return File.GetCreationTime(FileBackupPath);
+        public DateTime? GetBackupDate(string extension = ".bak")
+        {
+            if (FilePath == null) return null;
+            return File.GetCreationTime(FileBackupPath + ExtFix(extension));
         }
 
         /// <summary>
         /// Overwrites the file with a previously-created backup.
         /// </summary>
         /// <returns>True if backup restored, False if no backup exists, Null if FilePath is Null</returns>
-        public bool? RestoreBackup()
+        public bool? RestoreBackup(string extension = ".bak")
         {
-            if (FilePath == null)
-                return null;
-
-            if (CheckBackupExist() == true)
+            if (FilePath == null) return null;
+            if (CheckBackupExist(ExtFix(extension)) == true)
             {
-                File.Copy(FileBackupPath, FilePath, overwrite: true);
+                File.Copy(FilePath + ExtFix(extension), FilePath, overwrite: true);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;            
         }
+
 
         public static void Reload<T>(T data, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
