@@ -55,10 +55,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\..\..\source\repos\MeowDSIO_TESTER\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\source\repos\MeowDSIO_TESTER\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -84,6 +84,7 @@
     <Compile Include="DataFiles\FLVEROptimized.cs" />
     <Compile Include="DataFiles\FMG.cs" />
     <Compile Include="DataFiles\GenericBinaryFile.cs" />
+    <Compile Include="DataFiles\LUABND.cs" />
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MCG.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="DataTypes\LUAINFO\Goal.cs" />
     <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
     <Compile Include="DataTypes\LUAINFO\ScriptRef.cs" />
-    <Compile Include="DataTypes\LUAGNL\StringRef.cs" />
     <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventBloodMsg.cs" />
     <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventEnvironment.cs" />
     <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventGenerator.cs" />

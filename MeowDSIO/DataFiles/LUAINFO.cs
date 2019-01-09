@@ -14,14 +14,7 @@ namespace MeowDSIO.DataFiles
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
-            Header.Signature = bin.ReadBytes(LUAINFOHeader.Signature_Length);
-
-            if (Header.Signature.Where((x, i) => x != LUAINFOHeader.Signature_Default[i]).Any())
-            {
-                throw new Exception($"Invalid signature in this LUAINFO file header: " +
-                    $"[{string.Join(",", Header.Signature.Select(x => x.ToString("X8")))}] " +
-                    $"(ASCII: '{Encoding.ASCII.GetString(Header.Signature)}')");
-            }
+            bin.AssertStringAscii("LUAI", 4);
 
             Header.UnknownA = bin.ReadBytes(LUAINFOHeader.UnknownA_Length);
 
@@ -76,7 +69,7 @@ namespace MeowDSIO.DataFiles
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
-            bin.Write(Header.Signature, LUAINFOHeader.Signature_Length);
+            bin.WriteStringAscii("LUAI", 4);
             bin.Write(Header.UnknownA, LUAINFOHeader.UnknownA_Length);
             bin.Write(Goals.Count);
             bin.Write(Header.UnknownB, LUAINFOHeader.UnknownB_Length);

@@ -1,5 +1,4 @@
-﻿using MeowDSIO.DataTypes.LUAGNL;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ namespace MeowDSIO.DataFiles
 {
     public class LUAGNL : DataFile
     {
-        public List<StringRef> GlobalVariableNames = new List<StringRef>();
+        public List<string> GlobalVariableNames = new List<string>();
 
         protected override void Read(DSBinaryReader bin, IProgress<(int, int)> prog)
         {
