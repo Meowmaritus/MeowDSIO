@@ -131,12 +131,8 @@ namespace MeowDSIO
                 return FilePath + ".bak";
             }
         }
-        
-        private string ExtFix(string ext)
-        {
-            if (!ext.StartsWith(".")) return "." + ext;
-            return ext;
-        }
+
+        private string ExtFix(string ext) => ext.StartsWith(".") ? ext : "." + ext;
 
         /// <summary>
         /// Checks if a backup exists.
