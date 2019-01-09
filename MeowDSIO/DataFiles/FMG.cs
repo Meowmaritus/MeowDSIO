@@ -37,7 +37,7 @@ namespace MeowDSIO.DataFiles
             int startIndex = -1;
             int startID = -1;
 
-            var entryList = entries.ToList();
+            var entryList = entries.OrderBy(kv => kv.Key).ToList();
 
             for (int i = 0; i < entryList.Count; i++)
             {
