@@ -29,13 +29,50 @@ namespace MeowDSIO.DataTypes.TAE
         [System.ComponentModel.Browsable(false)]
         public float EndTime { get; set; } = 0;
 
+        [System.ComponentModel.Category("Event Timing")]
+        [System.ComponentModel.DisplayName("Start Frame")]
+        public int StartFrame
+        {
+            get => (int)Math.Round(StartTime / FRAME);
+            set
+            {
+                int duration = FrameDuration;
+                StartTime = (float)(Math.Max(value, 0) * FRAME);
+                FrameDuration = duration;
+            }
+        }
+
+        [System.ComponentModel.Category("Event Timing")]
+        [System.ComponentModel.DisplayName("End Frame")]
+        public int EndFrame
+        {
+            get => (int)Math.Round(EndTime / FRAME);
+            set => EndTime = (float)(Math.Max(value, StartFrame + 1) * FRAME);
+        }
+
+        [System.ComponentModel.Category("Event Timing")]
+        [System.ComponentModel.DisplayName("Frame Duration")]
+        public int FrameDuration
+        {
+            get => EndFrame - StartFrame;
+            set
+            {
+                EndFrame = (StartFrame + Math.Max(value, 1));
+            }
+        }
+
         public const double FRAME = 0.0333333333333333;
 
-        [System.ComponentModel.Browsable(false)]
-        public float StartTimeFr => (float)(Math.Round(StartTime / FRAME) * FRAME);
+        public static float RoundTimeToFrame(float time)
+        {
+            return (float)(Math.Round(time / FRAME) * FRAME);
+        }
 
         [System.ComponentModel.Browsable(false)]
-        public float EndTimeFr => (float)(Math.Round(EndTime / FRAME) * FRAME);
+        public float StartTimeFr => RoundTimeToFrame(StartTime);
+
+        [System.ComponentModel.Browsable(false)]
+        public float EndTimeFr => RoundTimeToFrame(EndTime);
 
         public abstract void ReadParameters(DSBinaryReader bin);
         public abstract void WriteParameters(DSBinaryWriter bin);

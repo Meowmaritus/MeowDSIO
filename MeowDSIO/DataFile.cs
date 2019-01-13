@@ -260,7 +260,13 @@ namespace MeowDSIO
         public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null, bool? loadDcxVersion = null)
             where T : DataFile, new()
         {
-            string filePathDcx = filePath + ".dcx";
+            if (filePath.ToUpper().EndsWith(".DCX"))
+                filePath = filePath.Substring(0, filePath.Length - 4);
+
+            string filePathDcx = filePath;
+
+            if (!filePathDcx.ToUpper().EndsWith(".DCX"))
+                filePathDcx += ".dcx";
 
             if (loadDcxVersion == true)
             {
